@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Video-Image Editor</string>
+    <string name="cut_video_using_time">CUT VIDEO USING TIME</string>
+    <string name="image_to_video">CONVERT IMAGE TO VIDEO</string>
+    <string name="add_water_mark_on_video">ADD A WATER MARK ON VIDEO</string>
+    <string name="merge_image_and_video">COMBINE IMAGE AND VIDEO</string>
+    <string name="merge_images">COMBINE IMAGES</string>
+    <string name="merge_videos">COMBINE VIDEOS</string>
+    <string name="camera_storage_permission_message">This app needs access to your camera and storage so you can take/get video and pictures.</string>
+    <string name="input_path">Input Path</string>
+    <string name="uploadvideo">Select Video File</string>
+    <string name="uploadImage">Select Image File</string>
+    <string name="select_starting_time">Select Starting Time (hh:mm:ss)</string>
+    <string name="select_end_time">Select End Time (hh:mm:ss)</string>
+    <string name="cut_video">Cut</string>
+    <string name="zero_time">00:00:00</string>
+    <string name="video_not_selected_toast_message">Video not selected</string>
+    <string name="image_not_selected_toast_message">Image not selected</string>
+    <string name="input_video_validate_message">Please select Input video</string>
+    <string name="start_time_end_time_validation_message"><![CDATA[Start Time < End Time]]></string>
+    <string name="end_time_validate_message">Please select end time</string>
+    <string name="start_time_validate_message">Please select start time</string>
+    <string name="time_range_validate_message">Please select time in Range</string>
+    <string name="create">Create</string>
+
+    <string name="input_image_validate_message">Please select Input image</string>
+    <string name="please_enter_second">Please enter second</string>
+    <string name="please_add_x_and_y_position_of_water_mark_in_percentage">Please Add X and Y position of water mark in Percentage(%)</string>
+    <string name="x">X</string>
+    <string name="y">Y</string>
+    <string name="add_water_mark">Add Water Mark</string>
+    <string name="x_position_validation">Please add X position of water mark</string>
+    <string name="y_position_validation">Please add Y position of water mark</string>
+    <string name="x_validation_invalid">Please add X in percentage(%)</string>
+    <string name="y_validation_invalid">Please add Y in percentage(%)</string>
+    <string name="combine">Combine</string>
+    <string name="enter_image_display_time_in_second">Enter image display time in second</string>
+    <string name="select_images">Select Images</string>
+    <string name="select_videos">Select Videos</string>
+    <string name="compress">Compress</string>
+    <string name="extract_frames">Extract Frames</string>
+    <string name="extract_frame_from_video">Extract Frames from Video</string>
+    <string name="compress_a_video">Compress a video</string>
+    <string name="extract_audio_from_video">Extract audio from video</string>
+    <string name="extract_audio">Extract Audio</string>
+</resources>
