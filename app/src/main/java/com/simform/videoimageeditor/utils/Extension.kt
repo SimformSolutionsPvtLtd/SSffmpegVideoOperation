@@ -205,13 +205,13 @@ object Extension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun extractImages(inputVideo: String, output: String): Array<String> {
+    fun extractImages(inputVideo: String, output: String, spaceOfFrame: Float): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
             add(inputVideo)
             add("-vf")
-            add("fps=4") // here It is 4 frames per second,
+            add("fps=$spaceOfFrame") // here It is 4 frames per second,
             // If you will get frame per second then replace fps=1 and
             // if you will get frames per 30 seconds then replace it into fps = 1/30
             add("-preset")
@@ -243,12 +243,52 @@ object Extension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun videoMotion(inputVideo: String, isFast: Boolean) {
+    fun videoMotion(
+        inputVideo: String,
+        output: String,
+        setpts: Double,
+        atempo: Double
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
-            //"-y", "-i", inputFileAbsolutePath, "-filter_complex", "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]", "-map", "[v]", "-map", "[a]", "-b:v", "2097k", "-r", "60", "-vcodec", "mpeg4", outputFileAbsolutePath
+            add("-y")
+            add("-i")
+            add(inputVideo)
+            add("-filter_complex")
+            add("[0:v]setpts=${setpts}*PTS[v];[0:a]atempo=${atempo}[a]")
+            add("-map")
+            add("[v]")
+            add("-map")
+            add("[a]")
+            add("-b:v")
+            add("2097k")
+            add("-r")
+            add("60")
+            add("-vcodec")
+            add("mpeg4")
+            add("-preset")
+            add("ultrafast")
+            add(output)
         }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
 
+    fun videoReverse(inputVideo: String,isWithAudioReverse:Boolean, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+       /* inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-vf")
+            add("reverse")
+            if(isWithAudioReverse) {
+                add("-af")
+                add("areverse")
+            }
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }*/
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 }
 

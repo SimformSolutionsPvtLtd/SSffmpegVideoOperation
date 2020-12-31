@@ -7,5 +7,5 @@ import com.jaiselrahman.filepicker.model.MediaFile
  * Simform Solutions Pvt Ltd.
  */
 interface FileSelection {
-    fun selectedFiles(mediaFiles:List<MediaFile>?,fileRequestCode: Int)
+    fun selectedFiles(mediaFiles:List<MediaFile>?,requestCode: Int)
 }

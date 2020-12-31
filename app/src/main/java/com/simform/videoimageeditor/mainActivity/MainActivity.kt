@@ -4,26 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.processActivity.AddWaterMarkOnVideoActivity
-import com.simform.videoimageeditor.processActivity.CombineImageAndVideoActivity
-import com.simform.videoimageeditor.processActivity.CombineImagesActivity
-import com.simform.videoimageeditor.processActivity.CombineVideosActivity
-import com.simform.videoimageeditor.processActivity.CompressVideoActivity
-import com.simform.videoimageeditor.processActivity.CutVideoUsingTimeActivity
-import com.simform.videoimageeditor.processActivity.ExtractAudioActivity
-import com.simform.videoimageeditor.processActivity.ExtractImagesActivity
-import com.simform.videoimageeditor.processActivity.ImageToVideoConvertActivity
+import com.simform.videoimageeditor.processActivity.*
 import com.simform.videoimageeditor.utils.Common.getPermission
 import com.simform.videoimageeditor.utils.Common.openActivity
-import kotlinx.android.synthetic.main.activity_main.btnAddWaterMarkOnVideo
-import kotlinx.android.synthetic.main.activity_main.btnCombineImageVideo
-import kotlinx.android.synthetic.main.activity_main.btnCombineImages
-import kotlinx.android.synthetic.main.activity_main.btnCombineVideos
-import kotlinx.android.synthetic.main.activity_main.btnCompressVideo
-import kotlinx.android.synthetic.main.activity_main.btnCutVideo
-import kotlinx.android.synthetic.main.activity_main.btnExtractAudio
-import kotlinx.android.synthetic.main.activity_main.btnExtractVideo
-import kotlinx.android.synthetic.main.activity_main.btnImageToVideo
+import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.EasyPermissions
 
 class MainActivity : AppCompatActivity(), View.OnClickListener,
@@ -42,6 +26,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         btnCompressVideo.setOnClickListener(this)
         btnExtractVideo.setOnClickListener(this)
         btnExtractAudio.setOnClickListener(this)
+        btnMotion.setOnClickListener(this)
+        btnReverseVideo.setOnClickListener(this)
 
         allPermissionGranted = getPermission(this)
     }
@@ -85,6 +71,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                 }
                 R.id.btnExtractAudio -> {
                     openActivity(this, ExtractAudioActivity())
+                }
+                R.id.btnMotion -> {
+                    openActivity(this, MotionActivity())
+                }
+                R.id.btnReverseVideo -> {
+                    openActivity(this, ReverseVideoActivity())
                 }
             }
         } else {

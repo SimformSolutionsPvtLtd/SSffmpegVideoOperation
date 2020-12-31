@@ -17,7 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoImageEditor">
-        <activity android:name=".processActivity.ExtractAudioActivity"></activity>
+
+        <activity android:name=".processActivity.ReverseVideoActivity"/>
+        <activity android:name=".processActivity.MotionActivity"/>
+        <activity android:name=".processActivity.ExtractAudioActivity" />
         <activity android:name=".processActivity.ExtractImagesActivity" />
         <activity android:name=".processActivity.CompressVideoActivity" />
         <activity android:name=".processActivity.CombineVideosActivity" />

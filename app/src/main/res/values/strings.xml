@@ -43,4 +43,10 @@
     <string name="compress_a_video">Compress a video</string>
     <string name="extract_audio_from_video">Extract audio from video</string>
     <string name="extract_audio">Extract Audio</string>
+    <string name="fast_slow_motion_video">Fast/Slow Motion Video</string>
+    <string name="fast">Fast</string>
+    <string name="slow">Slow</string>
+    <string name="reverse_video">Reverse Video</string>
+    <string name="if_you_want_to_reverse_video_with_audio_then_please_on_this_switch">If you want to reverse video with audio then please \'ON\' this switch</string>
+    <string name="if_you_want_to_fast_motion_video_then_please_on_this_switch_otherwise_video_converted_in_to_slow_motion">If you want to fast motion video then please \'ON\' this switch otherwise video converted in to slow motion</string>
 </resources>
