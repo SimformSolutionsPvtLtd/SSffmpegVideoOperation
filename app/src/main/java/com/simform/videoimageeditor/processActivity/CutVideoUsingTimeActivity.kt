@@ -1,31 +1,21 @@
 package com.simform.videoimageeditor.processActivity
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.os.Environment
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
-import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
-import com.arthenica.mobileffmpeg.Config.enableLogCallback
-import com.arthenica.mobileffmpeg.Config.printLastCommandOutput
-import com.arthenica.mobileffmpeg.FFmpeg
+import com.arthenica.mobileffmpeg.LogMessage
 import com.ikovac.timepickerwithseconds.MyTimePickerDialog
-import com.jaiselrahman.filepicker.activity.FilePickerActivity
-import com.jaiselrahman.filepicker.config.Configurations
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
-import com.simform.videoimageeditor.utils.Common.OUT_PUT_DIR
-import com.simform.videoimageeditor.utils.Common.VIDEO_FILE_REQUEST_CODE
 import com.simform.videoimageeditor.utils.Common.TIME_FORMAT
+import com.simform.videoimageeditor.utils.Common.VIDEO_FILE_REQUEST_CODE
 import com.simform.videoimageeditor.utils.Common.stringForTime
-import com.simform.videoimageeditor.utils.Extension.cutVideo
-import java.io.File
+import com.simform.videoimageeditor.utils.FFmpegCallBack
+import com.simform.videoimageeditor.utils.FFmpegQueryExtension.cutVideo
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -87,6 +77,7 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
                     }
                     else -> {
                         if (isValidation()) {
+                            processStart()
                             val gate = CyclicBarrier(2)
                             val imageToVideo = object : Thread() {
                                 override fun run() {
@@ -113,11 +104,7 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
                 maxTimeString = stringForTime(mediaFiles[0].duration)
                 tvMaxTime.text = "Selected video max time : $maxTimeString"
             } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.video_not_selected_toast_message),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -125,10 +112,7 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     @SuppressLint("SetTextI18n")
     private fun selectTime(tvTime: TextView, isStartTime: Boolean) {
         MyTimePickerDialog(this, { _, hourOfDay, minute, seconds ->
-            val selectedTime = String.format("%02d", hourOfDay) + ":" + String.format(
-                "%02d",
-                minute
-            ) + ":" + String.format("%02d", seconds)
+            val selectedTime = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute) + ":" + String.format("%02d", seconds)
             if (isSelectedTimeValid(selectedTime)) {
                 tvTime.text = selectedTime
                 if (isStartTime) {
@@ -137,11 +121,7 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
                     endTimeString = selectedTime
                 }
             } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.time_range_validate_message),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, getString(R.string.time_range_validate_message), Toast.LENGTH_SHORT).show()
             }
         }, 0, 0, 0, true).show()
     }
@@ -177,39 +157,26 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
 
     @SuppressLint("SetTextI18n")
     private fun cutProcess() {
-        processStart()
-        val dir = File(getExternalFilesDir(OUT_PUT_DIR).toString())
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        val dest = File(dir.path + File.separator + OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + ".mp4")
-        val outputPath = dest.absolutePath
-        val query = cutVideo(
-            tvInputPath.text.toString(),
-            startTimeString,
-            endTimeString,
-            outputPath
-        )
-        enableLogCallback { log ->
-            tvOutputPath.text = log?.text
-        }
-        when (FFmpeg.execute(query)) {
-            RETURN_CODE_SUCCESS -> {
-                runOnUiThread {
-                    tvOutputPath.text = "Output Path : \n$outputPath"
-                    processStop()
-                }
+        val outputPath = Common.getFilePath(this, Common.VIDEO)
+        val query = cutVideo(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
+        Common.callQuery(this, query, object : FFmpegCallBack {
+            override fun process(logMessage: LogMessage) {
+                tvOutputPath.text = logMessage.text
             }
-            RETURN_CODE_CANCEL -> {
-                processStop()
-                FFmpeg.cancel()
-            }
-            else -> {
-                processStop()
-                printLastCommandOutput(Log.INFO)
-            }
-        }
 
+            override fun success() {
+                tvOutputPath.text = "Output Path : \n$outputPath"
+                processStop()
+            }
+
+            override fun cancel() {
+                processStop()
+            }
+
+            override fun failed() {
+                processStop()
+            }
+        })
     }
 
     private fun processStop() {
@@ -223,12 +190,10 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     }
 
     private fun processStart() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = false
-            btnSelectStartTime.isEnabled = false
-            btnSelectEndTime.isEnabled = false
-            btnConvert.isEnabled = false
-            mProgressView.visibility = View.VISIBLE
-        }
+        btnVideoPath.isEnabled = false
+        btnSelectStartTime.isEnabled = false
+        btnSelectEndTime.isEnabled = false
+        btnConvert.isEnabled = false
+        mProgressView.visibility = View.VISIBLE
     }
 }

@@ -28,6 +28,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         btnExtractAudio.setOnClickListener(this)
         btnMotion.setOnClickListener(this)
         btnReverseVideo.setOnClickListener(this)
+        btnFadeInFadeOutVideo.setOnClickListener(this)
+        btnVideoConvertIntoGIF.setOnClickListener(this)
+        btnVideoRotateFlip.setOnClickListener(this)
 
         allPermissionGranted = getPermission(this)
     }
@@ -77,6 +80,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                 }
                 R.id.btnReverseVideo -> {
                     openActivity(this, ReverseVideoActivity())
+                }
+                R.id.btnFadeInFadeOutVideo -> {
+                    openActivity(this, VideoFadeInFadeOutActivity())
+                }
+                R.id.btnVideoConvertIntoGIF -> {
+                    openActivity(this, VideoToGifActivity())
+                }
+                R.id.btnVideoRotateFlip -> {
+                    openActivity(this, VideoRotateFlipActivity())
                 }
             }
         } else {

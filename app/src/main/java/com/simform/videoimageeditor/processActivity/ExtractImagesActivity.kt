@@ -1,19 +1,16 @@
 package com.simform.videoimageeditor.processActivity
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.Config
-import com.arthenica.mobileffmpeg.FFmpeg
-import com.jaiselrahman.filepicker.activity.FilePickerActivity
-import com.jaiselrahman.filepicker.config.Configurations
+import com.arthenica.mobileffmpeg.LogMessage
+import com.arthenica.mobileffmpeg.Statistics
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
-import com.simform.videoimageeditor.utils.Extension
+import com.simform.videoimageeditor.utils.FFmpegCallBack
+import com.simform.videoimageeditor.utils.FFmpegQueryExtension
 import java.io.File
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_extract_images.btnExtract
@@ -37,11 +34,7 @@ class ExtractImagesActivity : BaseActivity(R.layout.activity_extract_images) {
             R.id.btnExtract -> {
                 when {
                     !isInputVideoSelected -> {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.input_video_validate_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         processStart()
@@ -68,11 +61,7 @@ class ExtractImagesActivity : BaseActivity(R.layout.activity_extract_images) {
                     tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.video_not_selected_toast_message),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -80,38 +69,28 @@ class ExtractImagesActivity : BaseActivity(R.layout.activity_extract_images) {
 
     @SuppressLint("SetTextI18n")
     private fun extractProcess() {
-        val dir = File(getExternalFilesDir(Common.OUT_PUT_DIR).toString())
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        val dest = File(dir.path + File.separator + Common.OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + "%03d.jpg")
-        val outputPath = dest.absolutePath
-
-        val query = Extension.extractImages(tvInputPathVideo.text.toString(), outputPath, spaceOfFrame = 4f)
-
+        val outputPath = Common.getFilePath(this, Common.IMAGE)
+        val query = FFmpegQueryExtension.extractImages(tvInputPathVideo.text.toString(), outputPath, spaceOfFrame = 4f)
         var totalFramesExtracted = 0
-        Config.enableStatisticsCallback { log ->
-            log?.videoFrameNumber?.let {
-                totalFramesExtracted = it
+        Common.callQuery(this, query, object : FFmpegCallBack {
+            override fun statisticsProcess(statistics: Statistics) {
+                totalFramesExtracted = statistics.videoFrameNumber
+                tvOutputPath.text = "Frames : ${statistics.videoFrameNumber}"
             }
-            tvOutputPath.text = "Frames : ${log?.videoFrameNumber}"
-        }
-        when (FFmpeg.execute(query)) {
-            Config.RETURN_CODE_SUCCESS -> {
-                runOnUiThread {
-                    tvOutputPath.text = "Output Directory : \n${File(dir.path + File.separator + Common.OUT_PUT_DIR).absolutePath} \n\nTotal Frames Extracted: $totalFramesExtracted"
-                    processStop()
-                }
-            }
-            Config.RETURN_CODE_CANCEL -> {
+
+            override fun success() {
+                tvOutputPath.text = "Output Directory : \n${File(getExternalFilesDir(Common.OUT_PUT_DIR).toString()).absolutePath} \n\nTotal Frames Extracted: $totalFramesExtracted"
                 processStop()
-                FFmpeg.cancel()
             }
-            else -> {
+
+            override fun cancel() {
                 processStop()
-                Config.printLastCommandOutput(Log.INFO)
             }
-        }
+
+            override fun failed() {
+                processStop()
+            }
+        })
     }
 
     private fun processStop() {
@@ -123,10 +102,8 @@ class ExtractImagesActivity : BaseActivity(R.layout.activity_extract_images) {
     }
 
     private fun processStart() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = false
-            btnExtract.isEnabled = false
-            mProgressView.visibility = View.VISIBLE
-        }
+        btnVideoPath.isEnabled = false
+        btnExtract.isEnabled = false
+        mProgressView.visibility = View.VISIBLE
     }
 }

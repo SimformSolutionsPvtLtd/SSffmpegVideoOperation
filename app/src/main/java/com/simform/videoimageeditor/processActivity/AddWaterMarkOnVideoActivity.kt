@@ -1,33 +1,25 @@
 package com.simform.videoimageeditor.processActivity
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.Config
-import com.arthenica.mobileffmpeg.FFmpeg
+import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
 import com.simform.videoimageeditor.utils.Common.OUT_PUT_DIR
+import com.simform.videoimageeditor.utils.Common.VIDEO
+import com.simform.videoimageeditor.utils.Common.getFilePath
 import com.simform.videoimageeditor.utils.Common.selectFile
-import com.simform.videoimageeditor.utils.Extension.addVideoWaterMark
+import com.simform.videoimageeditor.utils.FFmpegQueryExtension.addVideoWaterMark
+import com.simform.videoimageeditor.utils.FFmpegCallBack
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.*
 import java.io.File
 import java.util.concurrent.CompletableFuture.runAsync
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.btnAdd
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.btnImagePath
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.btnVideoPath
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.edtXPos
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.edtYPos
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.mProgressView
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.tvInputPathImage
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.tvOutputPath
 
 class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mark_on_video) {
     private var isInputVideoSelected = false
@@ -113,43 +105,32 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
     }
 
     private fun addWaterMarkProcess() {
-        val dir = File(getExternalFilesDir(OUT_PUT_DIR).toString())
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        val dest = File(dir.path + File.separator + OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + ".mp4")
-        val outputPath = dest.absolutePath
+        val outputPath = getFilePath(this, VIDEO)
         val xPos = width?.let {
             (edtXPos.text.toString().toFloat().times(it)).div(100)
         }
         val yPos = height?.let {
             (edtYPos.text.toString().toFloat().times(it)).div(100)
         }
-        val query = addVideoWaterMark(
-            tvInputPathVideo.text.toString(),
-            tvInputPathImage.text.toString(),
-            xPos, yPos, outputPath
-        )
+        val query = addVideoWaterMark(tvInputPathVideo.text.toString(), tvInputPathImage.text.toString(), xPos, yPos, outputPath)
+        Common.callQuery(this, query, object : FFmpegCallBack {
+            override fun process(logMessage: LogMessage) {
+                tvOutputPath.text = logMessage.text
+            }
 
-        Config.enableLogCallback { log ->
-            tvOutputPath.text = log?.text
-        }
-        when (FFmpeg.execute(query)) {
-            Config.RETURN_CODE_SUCCESS -> {
-                runOnUiThread {
-                    tvOutputPath.text = "Output Path : \n$outputPath"
-                    processStop()
-                }
-            }
-            Config.RETURN_CODE_CANCEL -> {
+            override fun success() {
+                tvOutputPath.text = "Output Path : \n$outputPath"
                 processStop()
-                FFmpeg.cancel()
             }
-            else -> {
+
+            override fun cancel() {
                 processStop()
-                Config.printLastCommandOutput(Log.INFO)
             }
-        }
+
+            override fun failed() {
+                processStop()
+            }
+        })
     }
 
     private fun processStop() {
@@ -162,11 +143,9 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
     }
 
     private fun processStart() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = false
-            btnImagePath.isEnabled = false
-            btnAdd.isEnabled = false
-            mProgressView.visibility = View.VISIBLE
-        }
+        btnVideoPath.isEnabled = false
+        btnImagePath.isEnabled = false
+        btnAdd.isEnabled = false
+        mProgressView.visibility = View.VISIBLE
     }
 }

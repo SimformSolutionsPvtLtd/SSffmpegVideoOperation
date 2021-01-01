@@ -49,4 +49,16 @@
     <string name="reverse_video">Reverse Video</string>
     <string name="if_you_want_to_reverse_video_with_audio_then_please_on_this_switch">If you want to reverse video with audio then please \'ON\' this switch</string>
     <string name="if_you_want_to_fast_motion_video_then_please_on_this_switch_otherwise_video_converted_in_to_slow_motion">If you want to fast motion video then please \'ON\' this switch otherwise video converted in to slow motion</string>
+    <string name="apply_fade_in_and_fade_out">Apply Fade-In and Fade-Out</string>
+    <string name="video_fade_in_and_fade_out">Video Fade In and Fade Out</string>
+    <string name="video_to_gif">Video To GIF</string>
+    <string name="convert_into_gif">Convert into GIF</string>
+    <string name="video_rotate">Video Rotate/Flip(Mirroring)</string>
+    <string name="rotate_90_degree">Rotate 90 Degree</string>
+    <string name="rotate_180_degree">Rotate 180 Degree</string>
+    <string name="rotate_270_degree">Rotate 270 Degree</string>
+    <string name="_90_counter_clockwise_and_vertical_flip">90 Counter Clockwise and Vertical Flip</string>
+    <string name="_90_clockwise">90 Clockwise</string>
+    <string name="_90_counter_clockwise">90 Counter Clockwise</string>
+    <string name="_90_clockwise_and_vertical_flip">90 Clockwise and Vertical Flip</string>
 </resources>

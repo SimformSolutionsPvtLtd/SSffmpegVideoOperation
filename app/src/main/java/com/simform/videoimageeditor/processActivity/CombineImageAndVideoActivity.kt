@@ -1,34 +1,21 @@
 package com.simform.videoimageeditor.processActivity
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.Config
-import com.arthenica.mobileffmpeg.FFmpeg
-import com.jaiselrahman.filepicker.activity.FilePickerActivity
-import com.jaiselrahman.filepicker.config.Configurations
+import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
-import com.simform.videoimageeditor.utils.Common.OUT_PUT_DIR
-import com.simform.videoimageeditor.utils.Extension.combineImagesAndVideos
+import com.simform.videoimageeditor.utils.FFmpegCallBack
+import com.simform.videoimageeditor.utils.FFmpegQueryExtension.combineImagesAndVideos
 import com.simform.videoimageeditor.utils.Paths
-import java.io.File
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.*
 import java.util.concurrent.CompletableFuture.runAsync
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.btnCombine
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.btnImagePath
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.btnVideoPath
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.edtSecond
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.mProgressView
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.tvInputPathImage
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.tvOutputPath
 
 class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_and_video) {
     private var isInputVideoSelected = false
@@ -51,26 +38,13 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
             R.id.btnCombine -> {
                 when {
                     !isInputVideoSelected -> {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.input_video_validate_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
                     }
                     !isWaterMarkImageSelected -> {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.input_image_validate_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, getString(R.string.input_image_validate_message), Toast.LENGTH_SHORT).show()
                     }
-                    TextUtils.isEmpty(edtSecond.text.toString().trim()) || edtSecond.text.toString()
-                        .trim().toInt() == 0 -> {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.please_enter_second),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    TextUtils.isEmpty(edtSecond.text.toString().trim()) || edtSecond.text.toString().trim().toInt() == 0 -> {
+                        Toast.makeText(this, getString(R.string.please_enter_second), Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         processStart()
@@ -104,11 +78,7 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
                         height = bit?.height
                     }
                 } else {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.video_not_selected_toast_message),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
             }
             Common.IMAGE_FILE_REQUEST_CODE -> {
@@ -116,25 +86,14 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
                     tvInputPathImage.text = mediaFiles[0].path
                     isWaterMarkImageSelected = true
                 } else {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.image_not_selected_toast_message),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this, getString(R.string.image_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
     fun combineImageAndVideoProcess() {
-        val dir = File(getExternalFilesDir(OUT_PUT_DIR).toString())
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        val dest = File(
-            dir.path + File.separator + OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + ".mp4"
-        )
-        val outputPath = dest.absolutePath
+        val outputPath = Common.getFilePath(this, Common.VIDEO)
         val paths = ArrayList<Paths>()
 
         val videoPaths1 = Paths()
@@ -148,32 +107,26 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
         paths.add(videoPaths1)
         paths.add(videoPaths2)
 
-        val combineQuery = combineImagesAndVideos(
-            paths,
-            width,
-            height,
-            edtSecond.text.toString(),
-            outputPath
-        )
-        Config.enableLogCallback { log ->
-            tvOutputPath.text = log?.text
-        }
-        when (FFmpeg.execute(combineQuery)) {
-            Config.RETURN_CODE_SUCCESS -> {
-                runOnUiThread {
-                    tvOutputPath.text = "Output Path : \n$outputPath"
-                    processStop()
-                }
+        val query = combineImagesAndVideos(paths, width, height, edtSecond.text.toString(), outputPath)
+
+        Common.callQuery(this, query, object : FFmpegCallBack {
+            override fun process(logMessage: LogMessage) {
+                tvOutputPath.text = logMessage.text
             }
-            Config.RETURN_CODE_CANCEL -> {
+
+            override fun success() {
+                tvOutputPath.text = "Output Path : \n$outputPath"
                 processStop()
-                FFmpeg.cancel()
             }
-            else -> {
+
+            override fun cancel() {
                 processStop()
-                Config.printLastCommandOutput(Log.INFO)
             }
-        }
+
+            override fun failed() {
+                processStop()
+            }
+        })
     }
 
     private fun processStop() {
@@ -186,11 +139,9 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
     }
 
     private fun processStart() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = false
-            btnImagePath.isEnabled = false
-            btnCombine.isEnabled = false
-            mProgressView.visibility = View.VISIBLE
-        }
+        btnVideoPath.isEnabled = false
+        btnImagePath.isEnabled = false
+        btnCombine.isEnabled = false
+        mProgressView.visibility = View.VISIBLE
     }
 }

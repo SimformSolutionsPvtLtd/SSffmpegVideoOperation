@@ -3,7 +3,7 @@ package com.simform.videoimageeditor.utils
 import android.graphics.BitmapFactory
 
 //Not thread safe
-class SizeFromImage(private val path: String) : ISize {
+class SizeOfImage(private val path: String) : ISize {
     private var width: Int
     private var height: Int
     override fun width(): Int {

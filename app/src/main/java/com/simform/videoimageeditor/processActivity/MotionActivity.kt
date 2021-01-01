@@ -1,18 +1,21 @@
 package com.simform.videoimageeditor.processActivity
 
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.Config
-import com.arthenica.mobileffmpeg.FFmpeg
+import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
-import com.simform.videoimageeditor.utils.Extension
-import kotlinx.android.synthetic.main.activity_motion.*
-import java.io.File
+import com.simform.videoimageeditor.utils.FFmpegCallBack
+import com.simform.videoimageeditor.utils.FFmpegQueryExtension
 import java.util.concurrent.CyclicBarrier
+import kotlinx.android.synthetic.main.activity_motion.btnMotion
+import kotlinx.android.synthetic.main.activity_motion.btnVideoPath
+import kotlinx.android.synthetic.main.activity_motion.mProgressView
+import kotlinx.android.synthetic.main.activity_motion.motionType
+import kotlinx.android.synthetic.main.activity_motion.tvInputPathVideo
+import kotlinx.android.synthetic.main.activity_motion.tvOutputPath
 
 class MotionActivity : BaseActivity(R.layout.activity_motion) {
     private var isInputVideoSelected: Boolean = false
@@ -29,11 +32,7 @@ class MotionActivity : BaseActivity(R.layout.activity_motion) {
             R.id.btnMotion -> {
                 when {
                     !isInputVideoSelected -> {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.input_video_validate_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         processStart()
@@ -53,39 +52,32 @@ class MotionActivity : BaseActivity(R.layout.activity_motion) {
     }
 
     private fun motionProcess() {
-        val dir = File(getExternalFilesDir(Common.OUT_PUT_DIR).toString())
-        if (!dir.exists()) {
-            dir.mkdirs()
+        val outputPath = Common.getFilePath(this, Common.VIDEO)
+        var setpts = 0.5
+        var atempo = 2.0
+        if (!motionType.isChecked) {
+            setpts = 0.5
+            atempo = 2.0
         }
-        val dest = File(dir.path + File.separator + Common.OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + ".mp4")
-        val outputPath = dest.absolutePath
-        var setpts=0.5
-        var atempo=2.0
-        if(!motionType.isChecked){
-            setpts=0.5
-            atempo=2.0
-        }
-        val query = Extension.videoMotion(tvInputPathVideo.text.toString(), outputPath, setpts, atempo)
-        Config.enableLogCallback { log ->
-            tvOutputPath.text = log?.text
-        }
+        val query = FFmpegQueryExtension.videoMotion(tvInputPathVideo.text.toString(), outputPath, setpts, atempo)
+        Common.callQuery(this, query, object : FFmpegCallBack {
+            override fun process(logMessage: LogMessage) {
+                tvOutputPath.text = logMessage.text
+            }
 
-        when (FFmpeg.execute(query)) {
-            Config.RETURN_CODE_SUCCESS -> {
-                runOnUiThread {
-                    tvOutputPath.text = "Output Path : \n$outputPath"
-                    processStop()
-                }
-            }
-            Config.RETURN_CODE_CANCEL -> {
+            override fun success() {
+                tvOutputPath.text = "Output Path : \n$outputPath"
                 processStop()
-                FFmpeg.cancel()
             }
-            else -> {
+
+            override fun cancel() {
                 processStop()
-                Config.printLastCommandOutput(Log.INFO)
             }
-        }
+
+            override fun failed() {
+                processStop()
+            }
+        })
     }
 
     override fun selectedFiles(mediaFiles: List<MediaFile>?, requestCode: Int) {
@@ -95,11 +87,7 @@ class MotionActivity : BaseActivity(R.layout.activity_motion) {
                     tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.video_not_selected_toast_message),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -114,10 +102,8 @@ class MotionActivity : BaseActivity(R.layout.activity_motion) {
     }
 
     private fun processStart() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = false
-            btnMotion.isEnabled = false
-            mProgressView.visibility = View.VISIBLE
-        }
+        btnVideoPath.isEnabled = false
+        btnMotion.isEnabled = false
+        mProgressView.visibility = View.VISIBLE
     }
 }

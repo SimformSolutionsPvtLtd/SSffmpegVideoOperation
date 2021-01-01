@@ -1,5 +1,6 @@
 package com.simform.videoimageeditor.processActivity
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.Toast
 import com.arthenica.mobileffmpeg.LogMessage
@@ -10,18 +11,17 @@ import com.simform.videoimageeditor.utils.Common
 import com.simform.videoimageeditor.utils.FFmpegCallBack
 import com.simform.videoimageeditor.utils.FFmpegQueryExtension
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_reverse.btnMotion
-import kotlinx.android.synthetic.main.activity_reverse.btnVideoPath
-import kotlinx.android.synthetic.main.activity_reverse.isWithAudioSwitch
-import kotlinx.android.synthetic.main.activity_reverse.mProgressView
-import kotlinx.android.synthetic.main.activity_reverse.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_reverse.tvOutputPath
+import kotlinx.android.synthetic.main.activity_video_to_gif.btnConvertIntoGif
+import kotlinx.android.synthetic.main.activity_video_to_gif.btnVideoPath
+import kotlinx.android.synthetic.main.activity_video_to_gif.mProgressView
+import kotlinx.android.synthetic.main.activity_video_to_gif.tvInputPathVideo
+import kotlinx.android.synthetic.main.activity_video_to_gif.tvOutputPath
 
-class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
+class VideoToGifActivity : BaseActivity(R.layout.activity_video_to_gif) {
     private var isInputVideoSelected: Boolean = false
     override fun initialization() {
         btnVideoPath.setOnClickListener(this)
-        btnMotion.setOnClickListener(this)
+        btnConvertIntoGif.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -29,7 +29,7 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
             R.id.btnVideoPath -> {
                 Common.selectFile(this, maxSelection = 1, isImageSelection = false)
             }
-            R.id.btnMotion -> {
+            R.id.btnConvertIntoGif -> {
                 when {
                     !isInputVideoSelected -> {
                         Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
@@ -40,7 +40,7 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
                         val imageToVideo = object : Thread() {
                             override fun run() {
                                 gate.await()
-                                reverseProcess()
+                                convertProcess()
                             }
                         }
                         imageToVideo.start()
@@ -51,9 +51,9 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
         }
     }
 
-    private fun reverseProcess() {
+    private fun convertProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = FFmpegQueryExtension.videoReverse(tvInputPathVideo.text.toString(), isWithAudioSwitch.isChecked, outputPath)
+        val query = FFmpegQueryExtension.convertVideoToGIF(tvInputPathVideo.text.toString(), outputPath)
 
         Common.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
@@ -76,6 +76,7 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
         })
     }
 
+    @SuppressLint("NewApi")
     override fun selectedFiles(mediaFiles: List<MediaFile>?, requestCode: Int) {
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
@@ -92,14 +93,14 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
     private fun processStop() {
         runOnUiThread {
             btnVideoPath.isEnabled = true
-            btnMotion.isEnabled = true
+            btnConvertIntoGif.isEnabled = true
             mProgressView.visibility = View.GONE
         }
     }
 
     private fun processStart() {
         btnVideoPath.isEnabled = false
-        btnMotion.isEnabled = false
+        btnConvertIntoGif.isEnabled = false
         mProgressView.visibility = View.VISIBLE
     }
 }

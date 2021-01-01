@@ -23,6 +23,7 @@ abstract class BaseActivity(view: Int) : AppCompatActivity(), EasyPermissions.Pe
     var width: Int? = 0
     var mediaFiles: List<MediaFile>? = null
     var retriever: MediaMetadataRetriever? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutView)

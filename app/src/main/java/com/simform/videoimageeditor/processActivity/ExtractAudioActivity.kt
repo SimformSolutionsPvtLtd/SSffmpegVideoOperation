@@ -1,16 +1,14 @@
 package com.simform.videoimageeditor.processActivity
 
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.Config
-import com.arthenica.mobileffmpeg.FFmpeg
+import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
-import com.simform.videoimageeditor.utils.Extension
-import java.io.File
+import com.simform.videoimageeditor.utils.FFmpegCallBack
+import com.simform.videoimageeditor.utils.FFmpegQueryExtension
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_extract_audio.btnExtract
 import kotlinx.android.synthetic.main.activity_extract_audio.btnVideoPath
@@ -33,11 +31,7 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio) {
             R.id.btnExtract -> {
                 when {
                     !isInputVideoSelected -> {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.input_video_validate_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         processStart()
@@ -57,32 +51,27 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio) {
     }
 
     private fun extractProcess() {
-        val dir = File(getExternalFilesDir(Common.OUT_PUT_DIR).toString())
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        val dest = File(dir.path + File.separator + Common.OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + ".mp3")
-        val outputPath = dest.absolutePath
-        val query = Extension.extractAudio(tvInputPathVideo.text.toString(), outputPath)
-        Config.enableLogCallback { log ->
-            tvOutputPath.text = log?.text
-        }
-        when (FFmpeg.execute(query)) {
-            Config.RETURN_CODE_SUCCESS -> {
-                runOnUiThread {
-                    tvOutputPath.text = "Output Path : \n$outputPath"
-                    processStop()
-                }
+        val outputPath = Common.getFilePath(this, Common.MP3)
+        val query = FFmpegQueryExtension.extractAudio(tvInputPathVideo.text.toString(), outputPath)
+
+        Common.callQuery(this, query, object : FFmpegCallBack {
+            override fun process(logMessage: LogMessage) {
+                tvOutputPath.text = logMessage.text
             }
-            Config.RETURN_CODE_CANCEL -> {
+
+            override fun success() {
+                tvOutputPath.text = "Output Path : \n$outputPath"
                 processStop()
-                FFmpeg.cancel()
             }
-            else -> {
+
+            override fun cancel() {
                 processStop()
-                Config.printLastCommandOutput(Log.INFO)
             }
-        }
+
+            override fun failed() {
+                processStop()
+            }
+        })
     }
 
     override fun selectedFiles(mediaFiles: List<MediaFile>?, requestCode: Int) {
@@ -92,11 +81,7 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio) {
                     tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.video_not_selected_toast_message),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -111,10 +96,8 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio) {
     }
 
     private fun processStart() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = false
-            btnExtract.isEnabled = false
-            mProgressView.visibility = View.VISIBLE
-        }
+        btnVideoPath.isEnabled = false
+        btnExtract.isEnabled = false
+        mProgressView.visibility = View.VISIBLE
     }
 }

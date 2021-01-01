@@ -1,5 +1,7 @@
 package com.simform.videoimageeditor.processActivity
 
+import android.annotation.SuppressLint
+import android.media.MediaMetadataRetriever
 import android.view.View
 import android.widget.Toast
 import com.arthenica.mobileffmpeg.LogMessage
@@ -9,19 +11,21 @@ import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
 import com.simform.videoimageeditor.utils.FFmpegCallBack
 import com.simform.videoimageeditor.utils.FFmpegQueryExtension
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_reverse.btnMotion
-import kotlinx.android.synthetic.main.activity_reverse.btnVideoPath
-import kotlinx.android.synthetic.main.activity_reverse.isWithAudioSwitch
-import kotlinx.android.synthetic.main.activity_reverse.mProgressView
-import kotlinx.android.synthetic.main.activity_reverse.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_reverse.tvOutputPath
+import java.util.concurrent.TimeUnit
+import kotlinx.android.synthetic.main.activity_video_fade_in_fade_out.btnApplyFadeInFadeOut
+import kotlinx.android.synthetic.main.activity_video_fade_in_fade_out.btnVideoPath
+import kotlinx.android.synthetic.main.activity_video_fade_in_fade_out.mProgressView
+import kotlinx.android.synthetic.main.activity_video_fade_in_fade_out.tvInputPathVideo
+import kotlinx.android.synthetic.main.activity_video_fade_in_fade_out.tvOutputPath
 
-class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
+class VideoFadeInFadeOutActivity : BaseActivity(R.layout.activity_video_fade_in_fade_out) {
     private var isInputVideoSelected: Boolean = false
+    private var selectedVideoDurationInSecond = 0L
     override fun initialization() {
         btnVideoPath.setOnClickListener(this)
-        btnMotion.setOnClickListener(this)
+        btnApplyFadeInFadeOut.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -29,7 +33,7 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
             R.id.btnVideoPath -> {
                 Common.selectFile(this, maxSelection = 1, isImageSelection = false)
             }
-            R.id.btnMotion -> {
+            R.id.btnApplyFadeInFadeOut -> {
                 when {
                     !isInputVideoSelected -> {
                         Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
@@ -40,7 +44,7 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
                         val imageToVideo = object : Thread() {
                             override fun run() {
                                 gate.await()
-                                reverseProcess()
+                                fadeInFadeOutProcess()
                             }
                         }
                         imageToVideo.start()
@@ -51,9 +55,9 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
         }
     }
 
-    private fun reverseProcess() {
+    private fun fadeInFadeOutProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = FFmpegQueryExtension.videoReverse(tvInputPathVideo.text.toString(), isWithAudioSwitch.isChecked, outputPath)
+        val query = FFmpegQueryExtension.videoFadeInFadeOut(tvInputPathVideo.text.toString(), selectedVideoDurationInSecond, fadeInEndSeconds = 3, fadeOutStartSeconds = 3, outputPath)
 
         Common.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
@@ -76,12 +80,21 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
         })
     }
 
+    @SuppressLint("NewApi")
     override fun selectedFiles(mediaFiles: List<MediaFile>?, requestCode: Int) {
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
                     tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
+                    CompletableFuture.runAsync {
+                        retriever = MediaMetadataRetriever()
+                        retriever?.setDataSource(tvInputPathVideo.text.toString())
+                        val time = retriever?.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                        time?.toLong()?.let {
+                            selectedVideoDurationInSecond = TimeUnit.MILLISECONDS.toSeconds(it)
+                        }
+                    }
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
@@ -92,14 +105,14 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
     private fun processStop() {
         runOnUiThread {
             btnVideoPath.isEnabled = true
-            btnMotion.isEnabled = true
+            btnApplyFadeInFadeOut.isEnabled = true
             mProgressView.visibility = View.GONE
         }
     }
 
     private fun processStart() {
         btnVideoPath.isEnabled = false
-        btnMotion.isEnabled = false
+        btnApplyFadeInFadeOut.isEnabled = false
         mProgressView.visibility = View.VISIBLE
     }
 }

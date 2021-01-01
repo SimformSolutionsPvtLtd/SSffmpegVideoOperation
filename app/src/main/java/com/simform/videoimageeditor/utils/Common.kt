@@ -5,16 +5,20 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaExtractor
 import android.media.MediaFormat
+import android.text.TextUtils
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.arthenica.mobileffmpeg.Config
+import com.arthenica.mobileffmpeg.FFmpeg
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.utils.FFmpegQueryExtension.FRAME_RATE
+import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.io.FileInputStream
 import java.text.DecimalFormat
-import java.util.Formatter
-import java.util.Locale
-import pub.devrel.easypermissions.EasyPermissions
+import java.util.*
 
 /**
  * Created by Ashvin Vavaliya on 24,November,2020
@@ -25,11 +29,38 @@ object Common {
     const val VIDEO_FILE_REQUEST_CODE = 112
     const val IMAGE_FILE_REQUEST_CODE = 113
     const val TIME_FORMAT = "HH:mm:ss"
-    var FRAME_RATE: Int = 25
     const val OUT_PUT_DIR: String = "Output"
     private val format: DecimalFormat = DecimalFormat("#.##")
     private const val MB = (1024 * 1024).toLong()
     private const val KB: Long = 1024
+    const val IMAGE: String = "IMAGE"
+    const val VIDEO: String = "VIDEO"
+    const val GIF: String = "GIF"
+    const val MP3: String = "MP3"
+
+    fun callQuery(context: AppCompatActivity, query: Array<String>, fFmpegCallBack: FFmpegCallBack) {
+        Config.enableLogCallback { logMessage ->
+            fFmpegCallBack.process(logMessage)
+        }
+        Config.enableStatisticsCallback { statistics ->
+            fFmpegCallBack.statisticsProcess(statistics)
+        }
+        when (FFmpeg.execute(query)) {
+            Config.RETURN_CODE_SUCCESS -> {
+                context.runOnUiThread {
+                    fFmpegCallBack.success()
+                }
+            }
+            Config.RETURN_CODE_CANCEL -> {
+                fFmpegCallBack.cancel()
+                FFmpeg.cancel()
+            }
+            else -> {
+                fFmpegCallBack.failed()
+                Config.printLastCommandOutput(Log.INFO)
+            }
+        }
+    }
 
     fun addSupportActionBar(context: AppCompatActivity) {
         if (context.supportActionBar != null) {
@@ -43,20 +74,11 @@ object Common {
     }
 
     fun getPermission(context: AppCompatActivity): Boolean {
-        val perms = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
+        val perms = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
         return if (EasyPermissions.hasPermissions(context, *perms)) {
             true
         } else {
-            EasyPermissions.requestPermissions(
-                context,
-                context.getString(R.string.camera_storage_permission_message),
-                PERM,
-                *perms
-            )
+            EasyPermissions.requestPermissions(context, context.getString(R.string.camera_storage_permission_message), PERM, *perms)
             false
         }
     }
@@ -110,7 +132,9 @@ object Common {
         }
         return if (length > KB) {
             format.format(length / KB).toString() + " KB"
-        } else format.format(length).toString() + " GB"
+        } else {
+            format.format(length).toString() + " GB"
+        }
     }
 
     fun selectFile(activity: AppCompatActivity, maxSelection: Int, isImageSelection: Boolean) {
@@ -142,6 +166,29 @@ object Common {
             )
             activity.startActivityForResult(intent, VIDEO_FILE_REQUEST_CODE)
         }
+    }
 
+    fun getFilePath(context: Context, fileExtension: String) : String {
+        val dir = File(context.getExternalFilesDir(Common.OUT_PUT_DIR).toString())
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        var extension:String? = null
+        when {
+            TextUtils.equals(fileExtension, IMAGE) -> {
+                extension = "%03d.jpg"
+            }
+            TextUtils.equals(fileExtension, VIDEO) -> {
+                extension = ".mp4"
+            }
+            TextUtils.equals(fileExtension, GIF) -> {
+                extension = ".gif"
+            }
+            TextUtils.equals(fileExtension, MP3) -> {
+                extension = ".mp3"
+            }
+        }
+        val dest = File(dir.path + File.separator + Common.OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + extension)
+        return dest.absolutePath
     }
 }

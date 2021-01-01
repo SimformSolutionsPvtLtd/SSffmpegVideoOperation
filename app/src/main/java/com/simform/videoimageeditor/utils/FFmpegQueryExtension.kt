@@ -4,84 +4,68 @@ package com.simform.videoimageeditor.utils
  * Created by Ashvin Vavaliya on 10,December,2020
  * Simform Solutions Pvt Ltd.
  */
-object Extension {
-    fun cutVideo(
-        inputVideoPath: String,
-        startTime: String?,
-        endTime: String?,
-        output: String
-    ): Array<String> {
+object FFmpegQueryExtension {
+    var FRAME_RATE: Int = 25
+
+    fun cutVideo(inputVideoPath: String, startTime: String?, endTime: String?, output: String): Array<String> {
         Common.getFrameRate(inputVideoPath)
-        return arrayOf(
-            "-i",
-            inputVideoPath,
-            "-ss",
-            startTime.toString(), //hh:mm:ss
-            "-to",
-            endTime.toString(), //hh:mm:ss
-            "-r",
-            "${Common.FRAME_RATE}",
-            "-preset",
-            "ultrafast",
-            output
-        )
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideoPath)
+            add("-ss")
+            add(startTime.toString())
+            add("-to")
+            add(endTime.toString())
+            add("-r")
+            add("$FRAME_RATE")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun imageToVideo(
-        input: String,
-        output: String,
-        second: Int,
-        width: Int?,
-        height: Int?
-    ): Array<String> {
+    fun imageToVideo(input: String, output: String, second: Int, width: Int?, height: Int?): Array<String> {
         val fadeEndDuration = second - 0.5
         Common.getFrameRate(input)
-        val fade =
-            "fps=${Common.FRAME_RATE},fade=type=in:duration=1,fade=type=out:duration=0.5:start_time=$fadeEndDuration"
-        return arrayOf(
-            "-loop",
-            "1",
-            "-i",
-            input,
-            "-s",
-            "${width}x${height}",
-            "-vf",
-            "format=yuv420p,$fade",
-            "-t",
-            "$second",
-            "-preset",
-            "ultrafast",
-            output
-        )
+        val fade = "fps=$FRAME_RATE,fade=type=in:duration=1,fade=type=out:duration=0.5:start_time=$fadeEndDuration"
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-loop")
+            add("1")
+            add("-i")
+            add(input)
+            add("-s")
+            add("${width}x${height}")
+            add("-vf")
+            add("format=yuv420p,$fade")
+            add("-t")
+            add("$second")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun addVideoWaterMark(
-        inputVideo: String,
-        imageInput: String,
-        posX: Float?,
-        posY: Float?,
-        output: String
-    ): Array<String> {
-        return arrayOf(
-            "-i",
-            inputVideo,
-            "-i",
-            imageInput,
-            "-filter_complex",
-            "overlay=$posX:$posY",
-            "-preset",
-            "ultrafast",
-            output
-        )
+    fun addVideoWaterMark(inputVideo: String, imageInput: String, posX: Float?, posY: Float?, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-i")
+            add(imageInput)
+            add("-filter_complex")
+            add("overlay=$posX:$posY")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun combineImagesAndVideos(
-        paths: ArrayList<Paths>,
-        width: Int?,
-        height: Int?,
-        second: String,
-        output: String
-    ): Array<String> {
+    fun combineImagesAndVideos(paths: ArrayList<Paths>, width: Int?, height: Int?, second: String, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         for (i in 0 until paths.size) {
             //for input
@@ -89,14 +73,14 @@ object Extension {
                 inputs.add("-loop")
                 inputs.add("1")
                 inputs.add("-framerate")
-                inputs.add("${Common.FRAME_RATE}")
+                inputs.add("$FRAME_RATE")
                 inputs.add("-t")
                 inputs.add(second)
                 inputs.add("-i")
                 inputs.add(paths[i].filePath)
             } else {
                 inputs.add("-i")
-                inputs.add(paths[i].filePath.toString())
+                inputs.add(paths[i].filePath)
             }
         }
 
@@ -116,19 +100,14 @@ object Extension {
         return getResult(inputs, query, queryAudio, paths, output)
     }
 
-    fun combineVideos(
-        paths: ArrayList<Paths>,
-        width: Int?,
-        height: Int?,
-        output: String
-    ): Array<String> {
+    fun combineVideos(paths: ArrayList<Paths>, width: Int?, height: Int?, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         var query: String? = ""
         var queryAudio: String? = ""
         for (i in 0 until paths.size) {
             //for input
             inputs.add("-i")
-            inputs.add(paths[i].filePath.toString())
+            inputs.add(paths[i].filePath)
 
             //for video setting with width and height
             query = query?.trim()
@@ -145,13 +124,7 @@ object Extension {
         return getResult(inputs, query, queryAudio, paths, output)
     }
 
-    private fun getResult(
-        inputs: java.util.ArrayList<String>,
-        query: String?,
-        queryAudio: String?,
-        paths: ArrayList<Paths>,
-        output: String
-    ): Array<String> {
+    private fun getResult(inputs: java.util.ArrayList<String>, query: String?, queryAudio: String?, paths: ArrayList<Paths>, output: String): Array<String> {
         inputs.apply {
             add("-f")
             add("lavfi")
@@ -172,12 +145,7 @@ object Extension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun compressor(
-        inputVideo: String,
-        width: Int?,
-        height: Int?,
-        outputVideo: String
-    ): Array<String> {
+    fun compressor(inputVideo: String, width: Int?, height: Int?, outputVideo: String): Array<String> {
         Common.getFrameRate(inputVideo)
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
@@ -187,7 +155,7 @@ object Extension {
             add("-s")
             add("{${width}x${height}")
             add("-r")
-            add("${if (Common.FRAME_RATE >= 10) Common.FRAME_RATE - 5 else Common.FRAME_RATE}")
+            add("${if (FRAME_RATE >= 10) FRAME_RATE - 5 else FRAME_RATE}")
             add("-vcodec")
             add("mpeg4")
             add("-b:v")
@@ -243,12 +211,7 @@ object Extension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun videoMotion(
-        inputVideo: String,
-        output: String,
-        setpts: Double,
-        atempo: Double
-    ): Array<String> {
+    fun videoMotion(inputVideo: String, output: String, setpts: Double, atempo: Double): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-y")
@@ -273,21 +236,90 @@ object Extension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun videoReverse(inputVideo: String,isWithAudioReverse:Boolean, output: String): Array<String> {
+    fun videoReverse(inputVideo: String, isWithAudioReverse: Boolean, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
-       /* inputs.apply {
+        inputs.apply {
             add("-i")
             add(inputVideo)
-            add("-vf")
-            add("reverse")
-            if(isWithAudioReverse) {
+            if (isWithAudioReverse) {
+                add("-vf")
+                add("reverse")
                 add("-af")
                 add("areverse")
+            } else {
+                add("-an")
+                add("-vf")
+                add("reverse")
             }
             add("-preset")
             add("ultrafast")
             add(output)
-        }*/
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun videoFadeInFadeOut(inputVideo: String, duration: Long,fadeInEndSeconds:Int, fadeOutStartSeconds:Int, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-y")
+            add("-i")
+            add(inputVideo)
+            add("-acodec")
+            add("copy")
+            add("-vf")
+            add("fade=t=in:st=0:d=$fadeInEndSeconds,fade=t=out:st=${duration - fadeOutStartSeconds}:d=$fadeOutStartSeconds")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun convertVideoToGIF(inputVideo: String, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun rotateVideo(inputVideo: String, degree : Int,output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-map_metadata")
+            add("0")
+            add("-metadata:s:v")
+            add("rotate=$degree")
+            add("-codec")
+            add("copy")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun flipVideo(inputVideo: String, degree : Int,output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+//        degree = 0: 90 Counter Clockwise and Vertical Flip  (default)
+//        degree = 1: 90 Clockwise
+//        degree = 2: 90 Counter Clockwise
+//        degree = 3: 90 Clockwise and Vertical Flip
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-vf")
+            add("transpose=$degree")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 }
