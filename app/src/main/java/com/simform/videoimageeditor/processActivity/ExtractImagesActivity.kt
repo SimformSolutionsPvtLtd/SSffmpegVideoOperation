@@ -3,7 +3,6 @@ package com.simform.videoimageeditor.processActivity
 import android.annotation.SuppressLint
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.arthenica.mobileffmpeg.Statistics
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
@@ -29,7 +28,7 @@ class ExtractImagesActivity : BaseActivity(R.layout.activity_extract_images) {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnExtract -> {
                 when {

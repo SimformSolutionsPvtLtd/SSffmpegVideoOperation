@@ -27,7 +27,7 @@ class VideoToGifActivity : BaseActivity(R.layout.activity_video_to_gif) {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnConvertIntoGif -> {
                 when {

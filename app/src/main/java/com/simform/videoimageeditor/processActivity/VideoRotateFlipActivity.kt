@@ -39,7 +39,7 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnRotate90 -> {
                 rotateDegree(90,true)

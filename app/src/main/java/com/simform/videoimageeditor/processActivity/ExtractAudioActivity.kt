@@ -26,7 +26,7 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio) {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnExtract -> {
                 when {

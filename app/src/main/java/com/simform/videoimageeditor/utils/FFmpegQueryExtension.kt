@@ -322,5 +322,29 @@ object FFmpegQueryExtension {
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
+
+    fun mergeAudioVideo(inputVideo: String, inputAudio: String,output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-i")
+            add(inputAudio)
+            add("-filter_complex")
+            add("[1:a]volume=0.15,apad[A];[0:a][A]amerge[out]")
+            add("-c:v")
+            add("copy")
+            add("-map")
+            add("0:v")
+            add("-map")
+            add("[out]")
+            add("-y")
+            add("-shortest")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
 }
 

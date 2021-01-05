@@ -31,7 +31,7 @@ class VideoFadeInFadeOutActivity : BaseActivity(R.layout.activity_video_fade_in_
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnApplyFadeInFadeOut -> {
                 when {

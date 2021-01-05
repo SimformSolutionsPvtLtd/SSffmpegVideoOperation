@@ -61,4 +61,7 @@
     <string name="_90_clockwise">90 Clockwise</string>
     <string name="_90_counter_clockwise">90 Counter Clockwise</string>
     <string name="_90_clockwise_and_vertical_flip">90 Clockwise and Vertical Flip</string>
+    <string name="merge_video_and_audio">Merge Video and Audio</string>
+    <string name="select_audio_file">Select Audio File</string>
+    <string name="please_select_input_audio">Please select Input Audio</string>
 </resources>

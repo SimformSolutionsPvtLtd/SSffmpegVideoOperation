@@ -28,6 +28,7 @@ object Common {
     const val PERM = 111
     const val VIDEO_FILE_REQUEST_CODE = 112
     const val IMAGE_FILE_REQUEST_CODE = 113
+    const val AUDIO_FILE_REQUEST_CODE = 114
     const val TIME_FORMAT = "HH:mm:ss"
     const val OUT_PUT_DIR: String = "Output"
     private val format: DecimalFormat = DecimalFormat("#.##")
@@ -137,34 +138,52 @@ object Common {
         }
     }
 
-    fun selectFile(activity: AppCompatActivity, maxSelection: Int, isImageSelection: Boolean) {
+    fun selectFile(activity: AppCompatActivity, maxSelection: Int, isImageSelection: Boolean, isAudioSelection: Boolean) {
         val intent = Intent(activity, FilePickerActivity::class.java)
-        if (isImageSelection) {
-            intent.putExtra(
-                FilePickerActivity.CONFIGS, Configurations.Builder()
-                    .setCheckPermission(true)
-                    .setShowImages(true)
-                    .setShowVideos(false)
-                    .enableImageCapture(true)
-                    .enableVideoCapture(false)
-                    .setMaxSelection(maxSelection)
-                    .setSkipZeroSizeFiles(true)
-                    .build()
-            )
-            activity.startActivityForResult(intent, IMAGE_FILE_REQUEST_CODE)
-        } else {
-            intent.putExtra(
-                FilePickerActivity.CONFIGS, Configurations.Builder()
-                    .setCheckPermission(true)
-                    .setShowImages(false)
-                    .setShowVideos(true)
-                    .enableImageCapture(false)
-                    .enableVideoCapture(true)
-                    .setMaxSelection(maxSelection)
-                    .setSkipZeroSizeFiles(true)
-                    .build()
-            )
-            activity.startActivityForResult(intent, VIDEO_FILE_REQUEST_CODE)
+        when {
+            isImageSelection -> {
+                intent.putExtra(
+                    FilePickerActivity.CONFIGS, Configurations.Builder()
+                        .setCheckPermission(true)
+                        .setShowImages(true)
+                        .setShowVideos(false)
+                        .enableImageCapture(true)
+                        .enableVideoCapture(false)
+                        .setMaxSelection(maxSelection)
+                        .setSkipZeroSizeFiles(true)
+                        .build()
+                )
+                activity.startActivityForResult(intent, IMAGE_FILE_REQUEST_CODE)
+            }
+            isAudioSelection -> {
+                intent.putExtra(
+                    FilePickerActivity.CONFIGS, Configurations.Builder()
+                        .setCheckPermission(true)
+                        .setShowImages(false)
+                        .setShowVideos(false)
+                        .setShowAudios(true)
+                        .enableImageCapture(false)
+                        .enableVideoCapture(false)
+                        .setMaxSelection(maxSelection)
+                        .setSkipZeroSizeFiles(true)
+                        .build()
+                )
+                activity.startActivityForResult(intent, AUDIO_FILE_REQUEST_CODE)
+            }
+            else -> {
+                intent.putExtra(
+                    FilePickerActivity.CONFIGS, Configurations.Builder()
+                        .setCheckPermission(true)
+                        .setShowImages(false)
+                        .setShowVideos(true)
+                        .enableImageCapture(false)
+                        .enableVideoCapture(true)
+                        .setMaxSelection(maxSelection)
+                        .setSkipZeroSizeFiles(true)
+                        .build()
+                )
+                activity.startActivityForResult(intent, VIDEO_FILE_REQUEST_CODE)
+            }
         }
     }
 

@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         btnFadeInFadeOutVideo.setOnClickListener(this)
         btnVideoConvertIntoGIF.setOnClickListener(this)
         btnVideoRotateFlip.setOnClickListener(this)
+        btnMergeVideoAndAudio.setOnClickListener(this)
 
         allPermissionGranted = getPermission(this)
     }
@@ -89,6 +90,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                 }
                 R.id.btnVideoRotateFlip -> {
                     openActivity(this, VideoRotateFlipActivity())
+                }
+                R.id.btnMergeVideoAndAudio -> {
+                    openActivity(this, MergeAudioVideoActivity())
                 }
             }
         } else {

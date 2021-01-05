@@ -48,7 +48,7 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnSelectStartTime -> {
                 if (!TextUtils.isEmpty(maxTimeString) && !TextUtils.equals(maxTimeString, getString(R.string.zero_time))) {

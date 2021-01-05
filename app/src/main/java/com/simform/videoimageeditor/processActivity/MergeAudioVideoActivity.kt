@@ -10,18 +10,21 @@ import com.simform.videoimageeditor.utils.Common
 import com.simform.videoimageeditor.utils.FFmpegCallBack
 import com.simform.videoimageeditor.utils.FFmpegQueryExtension
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_reverse.btnMotion
-import kotlinx.android.synthetic.main.activity_reverse.btnVideoPath
-import kotlinx.android.synthetic.main.activity_reverse.isWithAudioSwitch
-import kotlinx.android.synthetic.main.activity_reverse.mProgressView
-import kotlinx.android.synthetic.main.activity_reverse.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_reverse.tvOutputPath
+import kotlinx.android.synthetic.main.activity_merge_audio_video.btnAudioPath
+import kotlinx.android.synthetic.main.activity_merge_audio_video.btnMerge
+import kotlinx.android.synthetic.main.activity_merge_audio_video.btnVideoPath
+import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathAudio
+import kotlinx.android.synthetic.main.activity_merge_audio_video.mProgressView
+import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathVideo
+import kotlinx.android.synthetic.main.activity_merge_audio_video.tvOutputPath
 
-class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
+class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video) {
     private var isInputVideoSelected: Boolean = false
+    private var isInputAudioSelected: Boolean = false
     override fun initialization() {
         btnVideoPath.setOnClickListener(this)
-        btnMotion.setOnClickListener(this)
+        btnAudioPath.setOnClickListener(this)
+        btnMerge.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -29,10 +32,16 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
             R.id.btnVideoPath -> {
                 Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
-            R.id.btnMotion -> {
+            R.id.btnAudioPath -> {
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = true)
+            }
+            R.id.btnMerge -> {
                 when {
                     !isInputVideoSelected -> {
                         Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
+                    }
+                    !isInputAudioSelected -> {
+                        Toast.makeText(this, getString(R.string.please_select_input_audio), Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         processStart()
@@ -40,7 +49,7 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
                         val imageToVideo = object : Thread() {
                             override fun run() {
                                 gate.await()
-                                reverseProcess()
+                                mergeProcess()
                             }
                         }
                         imageToVideo.start()
@@ -51,9 +60,9 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
         }
     }
 
-    private fun reverseProcess() {
+    private fun mergeProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = FFmpegQueryExtension.videoReverse(tvInputPathVideo.text.toString(), isWithAudioSwitch.isChecked, outputPath)
+        val query = FFmpegQueryExtension.mergeAudioVideo(tvInputPathVideo.text.toString(), tvInputPathAudio.text.toString(), outputPath)
 
         Common.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
@@ -86,20 +95,30 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse) {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
             }
+            Common.AUDIO_FILE_REQUEST_CODE -> {
+                if (mediaFiles != null && mediaFiles.isNotEmpty()) {
+                    tvInputPathAudio.text = mediaFiles[0].path
+                    isInputAudioSelected = true
+                } else {
+                    Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
     private fun processStop() {
         runOnUiThread {
             btnVideoPath.isEnabled = true
-            btnMotion.isEnabled = true
+            btnAudioPath.isEnabled = true
+            btnMerge.isEnabled = true
             mProgressView.visibility = View.GONE
         }
     }
 
     private fun processStart() {
         btnVideoPath.isEnabled = false
-        btnMotion.isEnabled = false
+        btnAudioPath.isEnabled = false
+        btnMerge.isEnabled = false
         mProgressView.visibility = View.VISIBLE
     }
 }

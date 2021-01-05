@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoImageEditor">
-        <activity android:name=".processActivity.VideoFlipActivity"></activity>
+        <activity android:name=".processActivity.MergeAudioVideoActivity"></activity>
+        <activity android:name=".processActivity.VideoFlipActivity" />
         <activity android:name=".processActivity.VideoRotateFlipActivity" />
         <activity android:name=".processActivity.VideoToGifActivity" />
         <activity android:name=".processActivity.VideoFadeInFadeOutActivity" />

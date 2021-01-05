@@ -166,5 +166,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnVideoConvertIntoGIF" />
 
+        <Button
+            android:id="@+id/btnMergeVideoAndAudio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Merge Video And Audio"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnVideoRotateFlip" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

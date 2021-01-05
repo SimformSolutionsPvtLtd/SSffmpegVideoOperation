@@ -31,7 +31,7 @@ class ImageToVideoConvertActivity : BaseActivity(R.layout.activity_image_to_vide
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnImagePath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = true)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = true, isAudioSelection = false)
             }
             R.id.btnConvert -> {
                 when {

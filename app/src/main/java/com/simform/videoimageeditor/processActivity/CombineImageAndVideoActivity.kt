@@ -30,10 +30,10 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnImagePath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = true)
+                Common.selectFile(this, maxSelection = 1, isImageSelection = true, isAudioSelection = false)
             }
             R.id.btnCombine -> {
                 when {

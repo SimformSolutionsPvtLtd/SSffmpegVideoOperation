@@ -30,7 +30,7 @@ class CombineImagesActivity : BaseActivity(R.layout.activity_combine_images) {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnImagePath -> {
-                Common.selectFile(this, maxSelection = 25, isImageSelection = true)
+                Common.selectFile(this, maxSelection = 25, isImageSelection = true, isAudioSelection = false)
             }
             R.id.btnCombine -> {
                 when {

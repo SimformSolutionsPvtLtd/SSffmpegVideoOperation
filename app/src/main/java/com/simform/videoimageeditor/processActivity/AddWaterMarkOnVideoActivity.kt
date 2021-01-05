@@ -10,14 +10,12 @@ import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
-import com.simform.videoimageeditor.utils.Common.OUT_PUT_DIR
 import com.simform.videoimageeditor.utils.Common.VIDEO
 import com.simform.videoimageeditor.utils.Common.getFilePath
 import com.simform.videoimageeditor.utils.Common.selectFile
 import com.simform.videoimageeditor.utils.FFmpegQueryExtension.addVideoWaterMark
 import com.simform.videoimageeditor.utils.FFmpegCallBack
 import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.*
-import java.io.File
 import java.util.concurrent.CompletableFuture.runAsync
 import java.util.concurrent.CyclicBarrier
 
@@ -33,10 +31,10 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                selectFile(this,maxSelection = 1,isImageSelection = false)
+                selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnImagePath -> {
-                selectFile(this,maxSelection = 1,isImageSelection = true)
+                selectFile(this, maxSelection = 1, isImageSelection = true, isAudioSelection = false)
             }
             R.id.btnAdd -> {
                 when {

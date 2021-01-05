@@ -9,11 +9,9 @@ import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
-import com.simform.videoimageeditor.utils.Common.OUT_PUT_DIR
 import com.simform.videoimageeditor.utils.FFmpegQueryExtension
 import com.simform.videoimageeditor.utils.FFmpegCallBack
 import com.simform.videoimageeditor.utils.Paths
-import java.io.File
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_combine_videos.btnCombine
@@ -34,7 +32,7 @@ class CombineVideosActivity : BaseActivity(R.layout.activity_combine_videos) {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 5, isImageSelection = false)
+                Common.selectFile(this, maxSelection = 5, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnCombine -> {
                 when {
