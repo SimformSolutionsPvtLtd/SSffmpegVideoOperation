@@ -17,6 +17,7 @@ import com.simform.videoimageeditor.utils.FFmpegQueryExtension.FRAME_RATE
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.io.FileInputStream
+import java.io.IOException
 import java.text.DecimalFormat
 import java.util.*
 
@@ -34,10 +35,21 @@ object Common {
     private val format: DecimalFormat = DecimalFormat("#.##")
     private const val MB = (1024 * 1024).toLong()
     private const val KB: Long = 1024
+
+    //Output Files
     const val IMAGE: String = "IMAGE"
     const val VIDEO: String = "VIDEO"
     const val GIF: String = "GIF"
     const val MP3: String = "MP3"
+
+   // Standard Ratio
+    const val RATIO_1: String = "16:9"
+    const val RATIO_2: String = "4:3"
+    const val RATIO_3: String = "16:10"
+    const val RATIO_4: String = "5:4"
+    const val RATIO_5: String = "2:21:1"
+    const val RATIO_6: String = "2:35:1"
+    const val RATIO_7: String = "2:39:1"
 
     fun callQuery(context: AppCompatActivity, query: Array<String>, fFmpegCallBack: FFmpegCallBack) {
         Config.enableLogCallback { logMessage ->
@@ -210,4 +222,16 @@ object Common {
         val dest = File(dir.path + File.separator + Common.OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + extension)
         return dest.absolutePath
     }
+
+    @Throws(IOException::class)
+    fun getFileFromAssets(context: Context, fileName: String): File =
+        File(context.cacheDir, fileName).also {
+            if (!it.exists()) {
+                it.outputStream().use { cache ->
+                    context.assets.open(fileName).use { inputStream ->
+                        inputStream.copyTo(cache)
+                    }
+                }
+            }
+        }
 }

@@ -1,5 +1,6 @@
 package com.simform.videoimageeditor.processActivity
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.Toast
 import com.arthenica.mobileffmpeg.LogMessage
@@ -7,24 +8,21 @@ import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utils.Common
+import com.simform.videoimageeditor.utils.Common.RATIO_1
 import com.simform.videoimageeditor.utils.FFmpegCallBack
 import com.simform.videoimageeditor.utils.FFmpegQueryExtension
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_merge_audio_video.btnMp3Path
-import kotlinx.android.synthetic.main.activity_merge_audio_video.btnMerge
-import kotlinx.android.synthetic.main.activity_merge_audio_video.btnVideoPath
-import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathAudio
-import kotlinx.android.synthetic.main.activity_merge_audio_video.mProgressView
-import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_merge_audio_video.tvOutputPath
+import kotlinx.android.synthetic.main.activity_aspect_ratio.btnAspectRatio
+import kotlinx.android.synthetic.main.activity_aspect_ratio.btnVideoPath
+import kotlinx.android.synthetic.main.activity_aspect_ratio.mProgressView
+import kotlinx.android.synthetic.main.activity_aspect_ratio.tvInputPathVideo
+import kotlinx.android.synthetic.main.activity_aspect_ratio.tvOutputPath
 
-class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video) {
+class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio) {
     private var isInputVideoSelected: Boolean = false
-    private var isInputAudioSelected: Boolean = false
     override fun initialization() {
         btnVideoPath.setOnClickListener(this)
-        btnMp3Path.setOnClickListener(this)
-        btnMerge.setOnClickListener(this)
+        btnAspectRatio.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -32,16 +30,10 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
             R.id.btnVideoPath -> {
                 Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
-            R.id.btnMp3Path -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = true)
-            }
-            R.id.btnMerge -> {
+            R.id.btnAspectRatio -> {
                 when {
                     !isInputVideoSelected -> {
                         Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
-                    }
-                    !isInputAudioSelected -> {
-                        Toast.makeText(this, getString(R.string.please_select_input_audio), Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         processStart()
@@ -49,7 +41,7 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
                         val imageToVideo = object : Thread() {
                             override fun run() {
                                 gate.await()
-                                mergeProcess()
+                                applyRatioProcess()
                             }
                         }
                         imageToVideo.start()
@@ -60,9 +52,9 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
         }
     }
 
-    private fun mergeProcess() {
+    private fun applyRatioProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = FFmpegQueryExtension.mergeAudioVideo(tvInputPathVideo.text.toString(), tvInputPathAudio.text.toString(), outputPath)
+        val query = FFmpegQueryExtension.applyRatio(tvInputPathVideo.text.toString(),RATIO_1, outputPath)
 
         Common.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
@@ -85,6 +77,7 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
         })
     }
 
+    @SuppressLint("NewApi")
     override fun selectedFiles(mediaFiles: List<MediaFile>?, requestCode: Int) {
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
@@ -95,30 +88,21 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
             }
-            Common.AUDIO_FILE_REQUEST_CODE -> {
-                if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathAudio.text = mediaFiles[0].path
-                    isInputAudioSelected = true
-                } else {
-                    Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
-                }
-            }
         }
     }
 
     private fun processStop() {
         runOnUiThread {
             btnVideoPath.isEnabled = true
-            btnMp3Path.isEnabled = true
-            btnMerge.isEnabled = true
+            btnAspectRatio.isEnabled = true
             mProgressView.visibility = View.GONE
         }
     }
 
     private fun processStart() {
         btnVideoPath.isEnabled = false
-        btnMp3Path.isEnabled = false
-        btnMerge.isEnabled = false
+        btnAspectRatio.isEnabled = false
         mProgressView.visibility = View.VISIBLE
     }
+
 }

@@ -65,6 +65,26 @@ object FFmpegQueryExtension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
+    fun addTextOnVideo(inputVideo: String, textInput: String, posX: Float?, posY: Float?, fontPath: String, isTextBackgroundDisplay: Boolean, fontSize: Int, fontcolor: String, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        var borderQuery=""
+        if (isTextBackgroundDisplay){
+            borderQuery = ":box=1:boxcolor=black@0.5:boxborderw=5"
+        }
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-vf")
+            add("drawtext=text='$textInput':fontfile=$fontPath:x=$posX:y=$posY:fontsize=$fontSize:fontcolor=$fontcolor${borderQuery.trim()}")
+            add("-c:a")
+            add("copy")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
     fun combineImagesAndVideos(paths: ArrayList<Paths>, width: Int?, height: Int?, second: String, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         for (i in 0 until paths.size) {
@@ -340,6 +360,53 @@ object FFmpegQueryExtension {
             add("[out]")
             add("-y")
             add("-shortest")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun removeAudioFromVideo(inputVideo: String, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-an")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun mergeImageAndAudio(inputImage: String, inputAudio: String, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-y")
+            add("-loop")
+            add("1")
+            add("-i")
+            add(inputImage)
+            add("-i")
+            add(inputAudio)
+            add("-shortest")
+            add("-c:a")
+            add("copy")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun applyRatio(inputVideo: String,ratio: String, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-aspect")
+            add(ratio)
             add("-preset")
             add("ultrafast")
             add(output)

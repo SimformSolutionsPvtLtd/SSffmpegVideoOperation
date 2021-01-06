@@ -46,6 +46,17 @@
             app:layout_constraintTop_toBottomOf="@+id/btnImageToVideo" />
 
         <Button
+            android:id="@+id/btnAddTextOnVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_text_on_video"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnAddWaterMarkOnVideo" />
+
+        <Button
             android:id="@+id/btnCombineImageVideo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +65,7 @@
             android:layout_marginEnd="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnAddWaterMarkOnVideo" />
+            app:layout_constraintTop_toBottomOf="@+id/btnAddTextOnVideo" />
 
         <Button
             android:id="@+id/btnCombineImages"
@@ -170,11 +181,44 @@
             android:id="@+id/btnMergeVideoAndAudio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Merge Video And Audio"
+            android:text="@string/merge_video_and_audio"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnVideoRotateFlip" />
+
+        <Button
+            android:id="@+id/btnRemoveAudioFromVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/audio_remove_from_video"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnVideoRotateFlip" />
+
+        <Button
+            android:id="@+id/btnMergeImageAndAudio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/merge_image_and_audio"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRemoveAudioFromVideo" />
+
+        <Button
+            android:id="@+id/btnSetAspectRatio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_aspect_ratio"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRemoveAudioFromVideo" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

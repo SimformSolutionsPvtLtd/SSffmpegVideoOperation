@@ -26,11 +26,12 @@
     <string name="input_image_validate_message">Please select Input image</string>
     <string name="please_enter_second">Please enter second</string>
     <string name="please_add_x_and_y_position_of_water_mark_in_percentage">Please Add X and Y position of water mark in Percentage(%)</string>
+    <string name="please_add_x_and_y_position_of_text_in_percentage">Please Add X and Y position of Text in Percentage(%)</string>
     <string name="x">X</string>
     <string name="y">Y</string>
     <string name="add_water_mark">Add Water Mark</string>
-    <string name="x_position_validation">Please add X position of water mark</string>
-    <string name="y_position_validation">Please add Y position of water mark</string>
+    <string name="x_position_validation">Please add X position</string>
+    <string name="y_position_validation">Please add Y position</string>
     <string name="x_validation_invalid">Please add X in percentage(%)</string>
     <string name="y_validation_invalid">Please add Y in percentage(%)</string>
     <string name="combine">Combine</string>
@@ -64,4 +65,18 @@
     <string name="merge_video_and_audio">Merge Video and Audio</string>
     <string name="select_audio_file">Select Audio File</string>
     <string name="please_select_input_audio">Please select Input Audio</string>
+    <string name="add_text_on_video">Add Text On Video</string>
+    <string name="enter_text">Enter Text</string>
+    <string name="please_add_text_validation">Please enter text for this process</string>
+    <string name="select_font_file">Select Font File</string>
+    <string name="font_selection_validation">Please select Font</string>
+    <string name="font_not_selected">Font not selected</string>
+    <string name="audio_remove_from_video">Audio Remove from Video</string>
+    <string name="remove_audio">Remove Audio</string>
+    <string name="select_image_file">Select Image File</string>
+    <string name="merge_image_and_audio">Merge Image And MP3 Audio</string>
+    <string name="please_select_input_image">Please select input image</string>
+    <string name="select_mp3_file">Select MP3 File</string>
+    <string name="set_aspect_ratio">Set Aspect Ratio</string>
+    <string name="apply_aspect_ratio">Apply Aspect Ratio</string>
 </resources>

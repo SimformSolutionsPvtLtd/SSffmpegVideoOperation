@@ -32,42 +32,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvInputPathVideo" />
 
-    <TextView
-        android:id="@+id/tvInputPathAudio"
+    <Button
+        android:id="@+id/btnAspectRatio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/input_path"
-        android:gravity="center|start"
-        android:padding="5dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvInputPathVideo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnVideoPath"/>
-
-    <Button
-        android:id="@+id/btnMp3Path"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        android:padding="10dp"
-        android:text="@string/select_audio_file"
-        app:layout_constraintBottom_toBottomOf="@+id/tvInputPathAudio"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvInputPathAudio" />
-
-
-    <Button
-        android:id="@+id/btnMerge"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/merge_video_and_audio"
+        android:text="@string/apply_aspect_ratio"
         android:padding="10dp"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvInputPathAudio"
+        app:layout_constraintTop_toBottomOf="@+id/tvInputPathVideo"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
@@ -81,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnMerge" />
+        app:layout_constraintTop_toBottomOf="@+id/btnAspectRatio" />
 
     <include
         android:id="@+id/mProgressView"

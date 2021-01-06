@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         btnVideoConvertIntoGIF.setOnClickListener(this)
         btnVideoRotateFlip.setOnClickListener(this)
         btnMergeVideoAndAudio.setOnClickListener(this)
+        btnAddTextOnVideo.setOnClickListener(this)
+        btnRemoveAudioFromVideo.setOnClickListener(this)
+        btnMergeImageAndAudio.setOnClickListener(this)
+        btnSetAspectRatio.setOnClickListener(this)
 
         allPermissionGranted = getPermission(this)
     }
@@ -93,6 +97,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                 }
                 R.id.btnMergeVideoAndAudio -> {
                     openActivity(this, MergeAudioVideoActivity())
+                }
+                R.id.btnAddTextOnVideo -> {
+                    openActivity(this, AddTextOnVideoActivity())
+                }
+                R.id.btnRemoveAudioFromVideo -> {
+                    openActivity(this, RemoveAudioFromVideoActivity())
+                }
+                R.id.btnMergeImageAndAudio -> {
+                    openActivity(this, MergeImageAndMP3Activity())
+                }
+                R.id.btnSetAspectRatio -> {
+                    openActivity(this, AspectRatioActivity())
                 }
             }
         } else {
