@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Video-Image Editor</string>
-    <string name="cut_video_using_time">CUT VIDEO USING TIME</string>
-    <string name="image_to_video">CONVERT IMAGE TO VIDEO</string>
-    <string name="add_water_mark_on_video">ADD A WATER MARK ON VIDEO</string>
-    <string name="merge_image_and_video">COMBINE IMAGE AND VIDEO</string>
-    <string name="merge_images">COMBINE IMAGES</string>
-    <string name="merge_videos">COMBINE VIDEOS</string>
+    <string name="cut_video_using_time">Cut Video Using Time</string>
+    <string name="image_to_video">Convert Image To Video</string>
+    <string name="add_water_mark_on_video">Add a Water Mark on Video</string>
+    <string name="merge_image_and_video">Combine Image and Video</string>
+    <string name="merge_images">Combine Images</string>
+    <string name="merge_videos">Combine Videos</string>
     <string name="camera_storage_permission_message">This app needs access to your camera and storage so you can take/get video and pictures.</string>
     <string name="input_path">Input Path</string>
     <string name="uploadvideo">Select Video File</string>
@@ -27,6 +27,7 @@
     <string name="please_enter_second">Please enter second</string>
     <string name="please_add_x_and_y_position_of_water_mark_in_percentage">Please Add X and Y position of water mark in Percentage(%)</string>
     <string name="please_add_x_and_y_position_of_text_in_percentage">Please Add X and Y position of Text in Percentage(%)</string>
+    <string name="please_add_x_and_y_position_of_second_gif_in_percentage">Please Add X and Y position of second GIF in Percentage(%)</string>
     <string name="x">X</string>
     <string name="y">Y</string>
     <string name="add_water_mark">Add Water Mark</string>
@@ -79,4 +80,14 @@
     <string name="select_mp3_file">Select MP3 File</string>
     <string name="set_aspect_ratio">Set Aspect Ratio</string>
     <string name="apply_aspect_ratio">Apply Aspect Ratio</string>
+    <string name="video_operations">Video FFMPEG Operations</string>
+    <string name="other_ffmpeg_operations">Other FFMPEG Operations</string>
+    <string name="ffpmeg_title">FFMPEG</string>
+    <string name="merge_gif">Merge GIF</string>
+    <string name="select_gif_file">Select GIF File</string>
+    <string name="please_select_gif_file">Please select GIF file</string>
+    <string name="please_selected_minimum_2_gif_file">Please select min 2 Gif file</string>
+    <string name="gif_extension_validation">There is other file selected, Please select  Gif file</string>
+    <string name="input_gif_validate_message">Please select Input GIFs</string>
+    <string name="merge_gifs">Merge GIFs</string>
 </resources>
