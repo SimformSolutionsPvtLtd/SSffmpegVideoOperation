@@ -1,11 +1,17 @@
 package com.simform.videoimageeditor.otherFFMPEGProcessActivity
 
 import android.annotation.SuppressLint
-import android.media.MediaMetadataRetriever
 import android.text.TextUtils
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import com.arthenica.mobileffmpeg.LogMessage
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.ViewTarget
+import com.bumptech.glide.request.transition.Transition
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
@@ -14,16 +20,18 @@ import com.simform.videoimageeditor.utility.FFmpegCallBack
 import com.simform.videoimageeditor.utility.FFmpegQueryExtension
 import com.simform.videoimageeditor.utility.Paths
 import java.io.File
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_merge_gif.edtXPos
-import kotlinx.android.synthetic.main.activity_merge_gif.edtYPos
-import kotlinx.android.synthetic.main.activity_merge_gif.tvOutputPath
-import kotlinx.android.synthetic.main.activity_merge_gif.mProgressView
 import kotlinx.android.synthetic.main.activity_merge_gif.btnGifPath
 import kotlinx.android.synthetic.main.activity_merge_gif.btnMerge
+import kotlinx.android.synthetic.main.activity_merge_gif.edtXPos
+import kotlinx.android.synthetic.main.activity_merge_gif.edtXScale
+import kotlinx.android.synthetic.main.activity_merge_gif.edtYPos
+import kotlinx.android.synthetic.main.activity_merge_gif.edtYScale
+import kotlinx.android.synthetic.main.activity_merge_gif.mFirstGif
+import kotlinx.android.synthetic.main.activity_merge_gif.mProgressView
 import kotlinx.android.synthetic.main.activity_merge_gif.tvInputPathGif
+import kotlinx.android.synthetic.main.activity_merge_gif.tvOutputPath
+
 
 class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merge_gif) {
     private var isInputGifSelected: Boolean = false
@@ -53,6 +61,18 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
                     }
                     edtYPos.text.toString().toFloat() > 100 || edtYPos.text.toString().toFloat() <= 0 -> {
                         Toast.makeText(this, getString(R.string.y_validation_invalid), Toast.LENGTH_SHORT).show()
+                    }
+                    TextUtils.isEmpty(edtXScale.text.toString()) -> {
+                        Toast.makeText(this, getString(R.string.x_width_validation), Toast.LENGTH_SHORT).show()
+                    }
+                    edtXScale.text.toString().toFloat() > 100 || edtXScale.text.toString().toFloat() <= 0 -> {
+                        Toast.makeText(this, getString(R.string.x_width_invalid), Toast.LENGTH_SHORT).show()
+                    }
+                    TextUtils.isEmpty(edtYScale.text.toString()) -> {
+                        Toast.makeText(this, getString(R.string.y_height_validation), Toast.LENGTH_SHORT).show()
+                    }
+                    edtYScale.text.toString().toFloat() > 100 || edtYScale.text.toString().toFloat() <= 0 -> {
+                        Toast.makeText(this, getString(R.string.y_height_invalid), Toast.LENGTH_SHORT).show()
                     }
                     else -> {
                         processStart()
@@ -88,7 +108,14 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
             val yPos = height?.let { height ->
                 (edtYPos.text.toString().toFloat().times(height)).div(100)
             }
-            val query = FFmpegQueryExtension.mergeGIF(pathsList,xPos,yPos, outputPath)
+
+            val widthScale = width?.let { width ->
+                (edtXScale.text.toString().toFloat().times(width)).div(100)
+            }
+            val heightScale = height?.let { height ->
+                (edtYScale.text.toString().toFloat().times(height)).div(100)
+            }
+            val query = FFmpegQueryExtension.mergeGIF(pathsList, xPos, yPos, widthScale, heightScale, outputPath)
 
             Common.callQuery(this, query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
@@ -138,8 +165,16 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
                         }
                     }
                     if (size == 2 && isGifFile) {
-                        width = 300
-                        height = 300
+                        Glide.with(this)
+                            .asGif()
+                            .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                            .load(mediaFiles[0].path)
+                            .into(object : ViewTarget<ImageView?, GifDrawable?>(mFirstGif) {
+                                override fun onResourceReady(gifDrawable: GifDrawable, transition: Transition<in GifDrawable?>?) {
+                                    width = gifDrawable.intrinsicWidth
+                                    height = gifDrawable.intrinsicHeight
+                                }
+                            })
                         tvInputPathGif.text = "$size GIF selected"
                         isInputGifSelected = true
                     } else if (size != 2) {

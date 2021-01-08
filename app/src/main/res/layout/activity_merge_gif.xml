@@ -71,6 +71,45 @@
         app:layout_constraintTop_toBottomOf="@+id/txtHintContain"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <TextView
+        android:id="@+id/txtHintContain2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/please_add_scale_second_gif_in_percentage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/edtXPos" />
+
+    <EditText
+        android:id="@+id/edtXScale"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/width_scale"
+        android:gravity="center"
+        android:maxLength="3"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toStartOf="@+id/edtYScale"
+        app:layout_constraintTop_toBottomOf="@+id/txtHintContain2"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/edtYScale"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="@string/height_scale"
+        android:gravity="center"
+        android:maxLength="3"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toEndOf="@+id/edtXScale"
+        app:layout_constraintTop_toBottomOf="@+id/txtHintContain2"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <Button
         android:id="@+id/btnMerge"
         android:layout_width="0dp"
@@ -79,8 +118,21 @@
         android:padding="10dp"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtXPos"
+        app:layout_constraintTop_toBottomOf="@+id/edtXScale"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/mFirstGif"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:gravity="center|top"
+        android:visibility="invisible"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnMerge" />
 
     <TextView
         android:id="@+id/tvOutputPath"

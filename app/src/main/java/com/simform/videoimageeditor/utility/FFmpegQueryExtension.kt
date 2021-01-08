@@ -414,7 +414,7 @@ object FFmpegQueryExtension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun mergeGIF(gifInput: ArrayList<Paths>, posX: Float?, posY: Float?, output: String): Array<String> {
+    fun mergeGIF(gifInput: ArrayList<Paths>, posX: Float?, posY: Float?, width: Float?, height: Float?, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-y")
@@ -425,7 +425,7 @@ object FFmpegQueryExtension {
                 add(gifInput[i].filePath)
             }
             add("-filter_complex")
-            add("[1]scale=iw*1.5:ih*1.5[s1];[0][s1]overlay=100:H-320:shortest=1")
+            add("[1]scale=$width:$height[s1];[0][s1]overlay=$posX:$posY:shortest=1")
             add("-preset")
             add("ultrafast")
             add(output)

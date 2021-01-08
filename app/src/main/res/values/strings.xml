@@ -28,6 +28,7 @@
     <string name="please_add_x_and_y_position_of_water_mark_in_percentage">Please Add X and Y position of water mark in Percentage(%)</string>
     <string name="please_add_x_and_y_position_of_text_in_percentage">Please Add X and Y position of Text in Percentage(%)</string>
     <string name="please_add_x_and_y_position_of_second_gif_in_percentage">Please Add X and Y position of second GIF in Percentage(%)</string>
+    <string name="please_add_scale_second_gif_in_percentage">Please Add height and width of second GIF in Percentage(%)</string>
     <string name="x">X</string>
     <string name="y">Y</string>
     <string name="add_water_mark">Add Water Mark</string>
@@ -35,6 +36,11 @@
     <string name="y_position_validation">Please add Y position</string>
     <string name="x_validation_invalid">Please add X in percentage(%)</string>
     <string name="y_validation_invalid">Please add Y in percentage(%)</string>
+
+    <string name="x_width_validation">Please add width position</string>
+    <string name="y_height_validation">Please add height position</string>
+    <string name="x_width_invalid">Please add width in percentage(%)</string>
+    <string name="y_height_invalid">Please add height in percentage(%)</string>
     <string name="combine">Combine</string>
     <string name="enter_image_display_time_in_second">Enter image display time in second</string>
     <string name="select_images">Select Images</string>
@@ -90,4 +96,6 @@
     <string name="gif_extension_validation">There is other file selected, Please select  Gif file</string>
     <string name="input_gif_validate_message">Please select Input GIFs</string>
     <string name="merge_gifs">Merge GIFs</string>
+    <string name="width_scale">Width</string>
+    <string name="height_scale">Height</string>
 </resources>
