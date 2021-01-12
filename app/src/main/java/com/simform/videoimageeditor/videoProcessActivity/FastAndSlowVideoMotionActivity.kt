@@ -10,14 +10,14 @@ import com.simform.videoimageeditor.utility.Common
 import com.simform.videoimageeditor.utility.FFmpegCallBack
 import com.simform.videoimageeditor.utility.FFmpegQueryExtension
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_motion.btnMotion
-import kotlinx.android.synthetic.main.activity_motion.btnVideoPath
-import kotlinx.android.synthetic.main.activity_motion.mProgressView
-import kotlinx.android.synthetic.main.activity_motion.motionType
-import kotlinx.android.synthetic.main.activity_motion.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_motion.tvOutputPath
+import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.btnMotion
+import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.btnVideoPath
+import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.mProgressView
+import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.motionType
+import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.tvInputPathVideo
+import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.tvOutputPath
 
-class MotionActivity : BaseActivity(R.layout.activity_motion, R.string.fast_slow_motion_video) {
+class FastAndSlowVideoMotionActivity : BaseActivity(R.layout.activity_fast_and_slow_video_motion, R.string.fast_slow_motion_video) {
     private var isInputVideoSelected: Boolean = false
     override fun initialization() {
         btnVideoPath.setOnClickListener(this)
@@ -56,8 +56,8 @@ class MotionActivity : BaseActivity(R.layout.activity_motion, R.string.fast_slow
         var setpts = 0.5
         var atempo = 2.0
         if (!motionType.isChecked) {
-            setpts = 0.5
-            atempo = 2.0
+            setpts = 2.0
+            atempo = 0.5
         }
         val query = FFmpegQueryExtension.videoMotion(tvInputPathVideo.text.toString(), outputPath, setpts, atempo)
         Common.callQuery(this, query, object : FFmpegCallBack {

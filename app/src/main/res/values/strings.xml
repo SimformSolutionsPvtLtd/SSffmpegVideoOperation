@@ -15,6 +15,7 @@
     <string name="cut_video">Cut</string>
     <string name="zero_time">00:00:00</string>
     <string name="video_not_selected_toast_message">Video not selected</string>
+    <string name="audio_not_selected_toast_message">Audio not selected</string>
     <string name="image_not_selected_toast_message">Image not selected</string>
     <string name="input_video_validate_message">Please select Input video</string>
     <string name="start_time_end_time_validation_message"><![CDATA[Start Time < End Time]]></string>
@@ -57,6 +58,7 @@
     <string name="reverse_video">Reverse Video</string>
     <string name="if_you_want_to_reverse_video_with_audio_then_please_on_this_switch">If you want to reverse video with audio then please \'ON\' this switch</string>
     <string name="if_you_want_to_fast_motion_video_then_please_on_this_switch_otherwise_video_converted_in_to_slow_motion">If you want to fast motion video then please \'ON\' this switch otherwise video converted in to slow motion</string>
+    <string name="if_you_want_to_fast_audio_then_please_on_this_switch_otherwise_audio_converted_in_to_slow_audio">If you want to fast audi then please \'ON\' this switch otherwise audio converted in to slow.</string>
     <string name="apply_fade_in_and_fade_out">Apply Fade-In and Fade-Out</string>
     <string name="video_fade_in_and_fade_out">Video Fade In and Fade Out</string>
     <string name="video_to_gif">Video To GIF</string>
@@ -98,4 +100,9 @@
     <string name="merge_gifs">Merge GIFs</string>
     <string name="width_scale">Width</string>
     <string name="height_scale">Height</string>
+    <string name="merge_audios">Merge Audios</string>
+    <string name="change_audio_volume">Change Audio Volume</string>
+    <string name="min_audio_selection_validation">Please select minimum 2 audio files</string>
+    <string name="validation_of_audio">Please select audio</string>
+    <string name="fast_slow_audio_convert">Fast/Slow audio convert</string>
 </resources>

@@ -17,7 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoImageEditor">
-        <activity android:name=".otherFFMPEGProcessActivity.MergeGIFActivity"></activity>
+        <activity android:name=".otherFFMPEGProcessActivity.ChangeAudioVolumeActivity"/>
+        <activity android:name=".otherFFMPEGProcessActivity.AudiosMergeActivity" />
+        <activity android:name=".otherFFMPEGProcessActivity.MergeGIFActivity" />
+        <activity android:name=".otherFFMPEGProcessActivity.FastAndSlowAudioActivity" />
         <activity android:name=".videoProcessActivity.AspectRatioActivity" />
         <activity android:name=".videoProcessActivity.MergeImageAndMP3Activity" />
         <activity android:name=".videoProcessActivity.RemoveAudioFromVideoActivity" />
@@ -27,7 +30,7 @@
         <activity android:name=".videoProcessActivity.VideoToGifActivity" />
         <activity android:name=".videoProcessActivity.VideoFadeInFadeOutActivity" />
         <activity android:name=".videoProcessActivity.ReverseVideoActivity" />
-        <activity android:name=".videoProcessActivity.MotionActivity" />
+        <activity android:name=".videoProcessActivity.FastAndSlowVideoMotionActivity" />
         <activity android:name=".videoProcessActivity.ExtractAudioActivity" />
         <activity android:name=".videoProcessActivity.ExtractImagesActivity" />
         <activity android:name=".videoProcessActivity.CompressVideoActivity" />

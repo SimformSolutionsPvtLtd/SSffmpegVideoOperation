@@ -65,7 +65,7 @@ class VideoProcessActivity : BaseActivity(R.layout.activity_video_process, R.str
                 openActivity(this, ExtractAudioActivity())
             }
             R.id.btnMotion -> {
-                openActivity(this, MotionActivity())
+                openActivity(this, FastAndSlowVideoMotionActivity())
             }
             R.id.btnReverseVideo -> {
                 openActivity(this, ReverseVideoActivity())

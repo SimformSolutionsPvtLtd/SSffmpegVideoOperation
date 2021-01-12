@@ -65,10 +65,20 @@ object FFmpegQueryExtension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun addTextOnVideo(inputVideo: String, textInput: String, posX: Float?, posY: Float?, fontPath: String, isTextBackgroundDisplay: Boolean, fontSize: Int, fontcolor: String, output: String): Array<String> {
+    fun addTextOnVideo(
+        inputVideo: String,
+        textInput: String,
+        posX: Float?,
+        posY: Float?,
+        fontPath: String,
+        isTextBackgroundDisplay: Boolean,
+        fontSize: Int,
+        fontcolor: String,
+        output: String
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
-        var borderQuery=""
-        if (isTextBackgroundDisplay){
+        var borderQuery = ""
+        if (isTextBackgroundDisplay) {
             borderQuery = ":box=1:boxcolor=black@0.5:boxborderw=5"
         }
         inputs.apply {
@@ -278,7 +288,7 @@ object FFmpegQueryExtension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun videoFadeInFadeOut(inputVideo: String, duration: Long,fadeInEndSeconds:Int, fadeOutStartSeconds:Int, output: String): Array<String> {
+    fun videoFadeInFadeOut(inputVideo: String, duration: Long, fadeInEndSeconds: Int, fadeOutStartSeconds: Int, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-y")
@@ -307,7 +317,7 @@ object FFmpegQueryExtension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun rotateVideo(inputVideo: String, degree : Int,output: String): Array<String> {
+    fun rotateVideo(inputVideo: String, degree: Int, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -325,7 +335,7 @@ object FFmpegQueryExtension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun flipVideo(inputVideo: String, degree : Int,output: String): Array<String> {
+    fun flipVideo(inputVideo: String, degree: Int, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
 //        degree = 0: 90 Counter Clockwise and Vertical Flip  (default)
 //        degree = 1: 90 Clockwise
@@ -343,7 +353,7 @@ object FFmpegQueryExtension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun mergeAudioVideo(inputVideo: String, inputAudio: String,output: String): Array<String> {
+    fun mergeAudioVideo(inputVideo: String, inputAudio: String, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -400,7 +410,7 @@ object FFmpegQueryExtension {
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun applyRatio(inputVideo: String,ratio: String, output: String): Array<String> {
+    fun applyRatio(inputVideo: String, ratio: String, output: String): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -420,12 +430,62 @@ object FFmpegQueryExtension {
             add("-y")
             add("-ignore_loop")
             add("0")
-            for(i in 0 until gifInput.size){
+            for (i in 0 until gifInput.size) {
                 add("-i")
                 add(gifInput[i].filePath)
             }
             add("-filter_complex")
             add("[1]scale=$width:$height[s1];[0][s1]overlay=$posX:$posY:shortest=1")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun mergeAudios(inputAudioList: ArrayList<Paths>, duration: String, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            for (i in 0 until inputAudioList.size) {
+                add("-i")
+                add(inputAudioList[i].filePath)
+            }
+            add("-filter_complex")
+            add("amix=inputs=${inputAudioList.size}:duration=$duration:dropout_transition=${inputAudioList.size}")
+            add("-codec:a")
+            add("libmp3lame")
+            add("-q:a")
+            add("0")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun audioVolumeUpdate(inputFile: String, volume: Float, output: String): Array<String>
+    {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputFile)
+            add("-af")
+            add("volume=$volume")
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    fun audioMotion(inputVideo: String, output: String, atempo: Double): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideo)
+            add("-filter:a")
+            add("atempo=$atempo")
+            add("-vn")
             add("-preset")
             add("ultrafast")
             add(output)

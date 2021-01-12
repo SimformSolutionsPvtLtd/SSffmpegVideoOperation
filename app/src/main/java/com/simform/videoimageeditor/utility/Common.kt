@@ -50,6 +50,10 @@ object Common {
     const val RATIO_6: String = "2:35:1"
     const val RATIO_7: String = "2:39:1"
 
+    const val DURATION_LONGEST: String = "longest"
+    const val DURATION_SHORTEST: String = "shortest"
+    const val DURATION_FIRST: String = "first"
+
     fun callQuery(context: AppCompatActivity, query: Array<String>, fFmpegCallBack: FFmpegCallBack) {
         Config.enableLogCallback { logMessage ->
             fFmpegCallBack.process(logMessage)

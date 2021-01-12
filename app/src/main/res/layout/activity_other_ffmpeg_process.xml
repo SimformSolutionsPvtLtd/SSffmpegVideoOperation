@@ -23,5 +23,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+      <Button
+        android:id="@+id/btnMergeAudios"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/merge_audios"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnMergeGIF" />
+
+      <Button
+          android:id="@+id/btnAudiosVolumeUpdate"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/change_audio_volume"
+          android:layout_marginStart="10dp"
+          android:layout_marginEnd="10dp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/btnMergeAudios" />
+
+      <Button
+          android:id="@+id/btnFastAndSlowAudio"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/fast_slow_audio_convert"
+          android:layout_marginStart="10dp"
+          android:layout_marginEnd="10dp"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/btnAudiosVolumeUpdate" />
    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
