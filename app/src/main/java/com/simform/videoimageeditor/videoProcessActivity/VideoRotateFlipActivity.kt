@@ -73,13 +73,12 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
             else -> {
                 processStart()
                 val gate = CyclicBarrier(2)
-                val imageToVideo = object : Thread() {
+                object : Thread() {
                     override fun run() {
                         gate.await()
                         rotateProcess(degree,isRotate)
                     }
-                }
-                imageToVideo.start()
+                }.start()
                 gate.await()
             }
         }

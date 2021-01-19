@@ -492,5 +492,22 @@ object FFmpegQueryExtension {
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
+
+    fun cutAudio(inputVideoPath: String, startTime: String?, endTime: String?, output: String): Array<String> {
+        Common.getFrameRate(inputVideoPath)
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputVideoPath)
+            add("-ss")
+            add(startTime.toString())
+            add("-to")
+            add(endTime.toString())
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
 }
 

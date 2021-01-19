@@ -1,4 +1,4 @@
-package com.simform.videoimageeditor.videoProcessActivity
+package com.simform.videoimageeditor.otherFFMPEGProcessActivity
 
 import android.annotation.SuppressLint
 import android.text.TextUtils
@@ -11,35 +11,31 @@ import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.Common.TIME_FORMAT
-import com.simform.videoimageeditor.utility.Common.VIDEO_FILE_REQUEST_CODE
-import com.simform.videoimageeditor.utility.Common.stringForTime
 import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension.cutVideo
+import com.simform.videoimageeditor.utility.FFmpegQueryExtension
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.btnConvert
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.btnSelectEndTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.btnSelectStartTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.btnVideoPath
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.edtEndTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.edtStartTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.mProgressView
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.tvInputPath
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.tvMaxTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.tvOutputPath
+import kotlinx.android.synthetic.main.activity_crop_audio.btnAudioPath
+import kotlinx.android.synthetic.main.activity_crop_audio.btnConvert
+import kotlinx.android.synthetic.main.activity_crop_audio.btnSelectEndTime
+import kotlinx.android.synthetic.main.activity_crop_audio.btnSelectStartTime
+import kotlinx.android.synthetic.main.activity_crop_audio.edtEndTime
+import kotlinx.android.synthetic.main.activity_crop_audio.edtStartTime
+import kotlinx.android.synthetic.main.activity_crop_audio.mProgressView
+import kotlinx.android.synthetic.main.activity_crop_audio.tvInputPath
+import kotlinx.android.synthetic.main.activity_crop_audio.tvMaxTime
+import kotlinx.android.synthetic.main.activity_crop_audio.tvOutputPath
 
-
-class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using_time, R.string.cut_video_using_time) {
+class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.crop_audio_using_time) {
     private var startTimeString: String? = null
     private var endTimeString: String? = null
     private var maxTimeString: String? = null
 
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
+        btnAudioPath.setOnClickListener(this)
         btnSelectStartTime.setOnClickListener(this)
         btnSelectEndTime.setOnClickListener(this)
         btnConvert.setOnClickListener(this)
@@ -47,27 +43,27 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
+            R.id.btnAudioPath -> {
+                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = true)
             }
             R.id.btnSelectStartTime -> {
                 if (!TextUtils.isEmpty(maxTimeString) && !TextUtils.equals(maxTimeString, getString(R.string.zero_time))) {
                     selectTime(edtStartTime, true)
                 } else {
-                    Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.input_audio_validate_message), Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.btnSelectEndTime -> {
                 if (!TextUtils.isEmpty(maxTimeString) && !TextUtils.equals(maxTimeString, getString(R.string.zero_time))) {
                     selectTime(edtEndTime, false)
                 } else {
-                    Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.input_audio_validate_message), Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.btnConvert -> {
                 when {
                     TextUtils.isEmpty(maxTimeString) -> {
-                        Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.input_audio_validate_message), Toast.LENGTH_SHORT).show()
                     }
                     TextUtils.isEmpty(startTimeString) -> {
                         Toast.makeText(this, getString(R.string.start_time_validate_message), Toast.LENGTH_SHORT).show()
@@ -97,13 +93,13 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
 
     @SuppressLint("NewApi")
     override fun selectedFiles(mediaFiles: List<MediaFile>?, requestCode: Int) {
-        if (requestCode == VIDEO_FILE_REQUEST_CODE) {
+        if (requestCode == Common.AUDIO_FILE_REQUEST_CODE) {
             if (mediaFiles != null && mediaFiles.isNotEmpty()) {
                 tvInputPath.text = mediaFiles[0].path
-                maxTimeString = stringForTime(mediaFiles[0].duration)
-                tvMaxTime.text = "Selected video max time : $maxTimeString"
+                maxTimeString = Common.stringForTime(mediaFiles[0].duration)
+                tvMaxTime.text = "Selected audio max time : $maxTimeString"
             } else {
-                Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.audio_not_selected_toast_message), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -128,9 +124,9 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     private fun isSelectedTimeValid(selectedTime: String?): Boolean {
         var isBetween = false
         try {
-            val time1: Date = SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH).parse(getString(R.string.zero_time))
-            val time2: Date = SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH).parse(maxTimeString)
-            val sTime: Date = SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH).parse(selectedTime)
+            val time1: Date = SimpleDateFormat(Common.TIME_FORMAT, Locale.ENGLISH).parse(getString(R.string.zero_time))
+            val time2: Date = SimpleDateFormat(Common.TIME_FORMAT, Locale.ENGLISH).parse(maxTimeString)
+            val sTime: Date = SimpleDateFormat(Common.TIME_FORMAT, Locale.ENGLISH).parse(selectedTime)
             if (time1.before(sTime) && time2.after(sTime)) {
                 isBetween = true
             }
@@ -143,8 +139,8 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     private fun isValidation(): Boolean {
         var isBetween = false
         try {
-            val time1: Date = SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH).parse(startTimeString)
-            val time2: Date = SimpleDateFormat(TIME_FORMAT, Locale.ENGLISH).parse(endTimeString)
+            val time1: Date = SimpleDateFormat(Common.TIME_FORMAT, Locale.ENGLISH).parse(startTimeString)
+            val time2: Date = SimpleDateFormat(Common.TIME_FORMAT, Locale.ENGLISH).parse(endTimeString)
             if (time1.before(time2)) {
                 isBetween = true
             }
@@ -156,8 +152,8 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
 
     @SuppressLint("SetTextI18n")
     private fun cutProcess() {
-        val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = cutVideo(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
+        val outputPath = Common.getFilePath(this, Common.MP3)
+        val query = FFmpegQueryExtension.cutAudio(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
         Common.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
@@ -180,7 +176,7 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
 
     private fun processStop() {
         runOnUiThread {
-            btnVideoPath.isEnabled = true
+            btnAudioPath.isEnabled = true
             btnSelectStartTime.isEnabled = true
             btnSelectEndTime.isEnabled = true
             btnConvert.isEnabled = true
@@ -189,7 +185,7 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
+        btnAudioPath.isEnabled = false
         btnSelectStartTime.isEnabled = false
         btnSelectEndTime.isEnabled = false
         btnConvert.isEnabled = false

@@ -43,13 +43,12 @@ class CombineImagesActivity : BaseActivity(R.layout.activity_combine_images, R.s
                     else -> {
                         processStart()
                         val gate = CyclicBarrier(2)
-                        val imageToVideo = object : Thread() {
+                        object : Thread() {
                             override fun run() {
                                 gate.await()
                                 combineImagesProcess()
                             }
-                        }
-                        imageToVideo.start()
+                        }.start()
                         gate.await()
                     }
                 }

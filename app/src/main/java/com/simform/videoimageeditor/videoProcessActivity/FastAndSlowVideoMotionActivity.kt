@@ -37,13 +37,12 @@ class FastAndSlowVideoMotionActivity : BaseActivity(R.layout.activity_fast_and_s
                     else -> {
                         processStart()
                         val gate = CyclicBarrier(2)
-                        val imageToVideo = object : Thread() {
+                        object : Thread() {
                             override fun run() {
                                 gate.await()
                                 motionProcess()
                             }
-                        }
-                        imageToVideo.start()
+                        }.start()
                         gate.await()
                     }
                 }

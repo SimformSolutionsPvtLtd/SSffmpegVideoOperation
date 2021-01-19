@@ -41,13 +41,12 @@ class VideoFadeInFadeOutActivity : BaseActivity(R.layout.activity_video_fade_in_
                     else -> {
                         processStart()
                         val gate = CyclicBarrier(2)
-                        val imageToVideo = object : Thread() {
+                        object : Thread() {
                             override fun run() {
                                 gate.await()
                                 fadeInFadeOutProcess()
                             }
-                        }
-                        imageToVideo.start()
+                        }.start()
                         gate.await()
                     }
                 }

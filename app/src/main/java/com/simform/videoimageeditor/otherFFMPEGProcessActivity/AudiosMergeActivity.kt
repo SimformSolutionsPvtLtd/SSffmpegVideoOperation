@@ -41,13 +41,12 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
 
                 processStart()
                 val gate = CyclicBarrier(2)
-                val imageToVideo = object : Thread() {
+                object : Thread() {
                     override fun run() {
                         gate.await()
                         mergeAudioProcess()
                     }
-                }
-                imageToVideo.start()
+                }.start()
                 gate.await()
             }
         }

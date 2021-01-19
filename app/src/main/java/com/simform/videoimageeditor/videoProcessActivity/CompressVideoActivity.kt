@@ -42,13 +42,12 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
                     else -> {
                         processStart()
                         val gate = CyclicBarrier(2)
-                        val imageToVideo = object : Thread() {
+                        object : Thread() {
                             override fun run() {
                                 gate.await()
                                 compressProcess()
                             }
-                        }
-                        imageToVideo.start()
+                        }.start()
                         gate.await()
                     }
                 }

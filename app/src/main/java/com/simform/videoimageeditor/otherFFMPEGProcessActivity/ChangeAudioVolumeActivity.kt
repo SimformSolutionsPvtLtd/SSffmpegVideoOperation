@@ -39,13 +39,12 @@ class ChangeAudioVolumeActivity : BaseActivity(R.layout.activity_change_audio_va
 
                 processStart()
                 val gate = CyclicBarrier(2)
-                val imageToVideo = object : Thread() {
+                object : Thread() {
                     override fun run() {
                         gate.await()
                         mergeAudioProcess()
                     }
-                }
-                imageToVideo.start()
+                }.start()
                 gate.await()
             }
         }

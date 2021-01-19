@@ -37,13 +37,12 @@ class FastAndSlowAudioActivity : BaseActivity(R.layout.activity_fast_and_slow_au
                     else -> {
                         processStart()
                         val gate = CyclicBarrier(2)
-                        val imageToVideo = object : Thread() {
+                        object : Thread() {
                             override fun run() {
                                 gate.await()
                                 motionProcess()
                             }
-                        }
-                        imageToVideo.start()
+                        }.start()
                         gate.await()
                     }
                 }

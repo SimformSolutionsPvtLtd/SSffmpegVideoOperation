@@ -44,13 +44,12 @@ class ImageToVideoConvertActivity : BaseActivity(R.layout.activity_image_to_vide
                     else -> {
                         processStart()
                         val gate = CyclicBarrier(2)
-                        val imageToVideo = object : Thread() {
+                        object : Thread() {
                             override fun run() {
                                 gate.await()
                                 createVideo()
                             }
-                        }
-                        imageToVideo.start()
+                        }.start()
                         gate.await()
                     }
                 }

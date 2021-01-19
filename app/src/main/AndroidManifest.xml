@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoImageEditor">
-        <activity android:name=".otherFFMPEGProcessActivity.ChangeAudioVolumeActivity"/>
+        <activity android:name=".otherFFMPEGProcessActivity.CropAudioActivity"></activity>
+        <activity android:name=".otherFFMPEGProcessActivity.ChangeAudioVolumeActivity" />
         <activity android:name=".otherFFMPEGProcessActivity.AudiosMergeActivity" />
         <activity android:name=".otherFFMPEGProcessActivity.MergeGIFActivity" />
         <activity android:name=".otherFFMPEGProcessActivity.FastAndSlowAudioActivity" />

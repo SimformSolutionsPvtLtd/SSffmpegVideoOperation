@@ -77,13 +77,12 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
                     else -> {
                         processStart()
                         val gate = CyclicBarrier(2)
-                        val imageToVideo = object : Thread() {
+                        object : Thread() {
                             override fun run() {
                                 gate.await()
                                 combineGifProcess()
                             }
-                        }
-                        imageToVideo.start()
+                        }.start()
                         gate.await()
                     }
                 }

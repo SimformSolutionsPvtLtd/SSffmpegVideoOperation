@@ -59,13 +59,12 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
                     else -> {
                         processStart()
                         val gate = CyclicBarrier(2)
-                        val imageToVideo = object : Thread() {
+                        object : Thread() {
                             override fun run() {
                                 gate.await()
                                 addWaterMarkProcess()
                             }
-                        }
-                        imageToVideo.start()
+                        }.start()
                         gate.await()
                     }
                 }
