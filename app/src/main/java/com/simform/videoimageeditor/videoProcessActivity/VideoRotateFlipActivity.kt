@@ -3,13 +3,14 @@ package com.simform.videoimageeditor.videoProcessActivity
 import android.annotation.SuppressLint
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
+import com.simform.videooperations.LogMessage
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90Clockwise
 import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90ClockwiseVerticalFlip
@@ -92,7 +93,7 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
             FFmpegQueryExtension.flipVideo(tvInputPathVideo.text.toString(), degree, outputPath)
         }
 
-        Common.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

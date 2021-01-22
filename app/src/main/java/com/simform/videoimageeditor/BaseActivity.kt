@@ -8,8 +8,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.FileSelection
+import com.simform.videoimageeditor.utils.utils.addSupportActionBar
+import com.simform.videooperations.FileSelection
 
 /**
  * Created by Ashvin Vavaliya on 29,December,2020
@@ -26,7 +26,7 @@ abstract class BaseActivity(view: Int, title: Int) : AppCompatActivity(), View.O
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutView)
-        Common.addSupportActionBar(this, toolbarTitle)
+        addSupportActionBar(this, toolbarTitle)
         initialization()
     }
 

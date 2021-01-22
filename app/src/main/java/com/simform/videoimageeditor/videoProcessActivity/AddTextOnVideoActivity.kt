@@ -5,14 +5,15 @@ import android.media.MediaMetadataRetriever
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.Common.getFileFromAssets
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.Common.getFileFromAssets
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
+import com.simform.videooperations.LogMessage
 import java.util.concurrent.CompletableFuture.runAsync
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_add_text_on_video.btnAdd
@@ -81,8 +82,8 @@ class AddTextOnVideoActivity : BaseActivity(R.layout.activity_add_text_on_video,
             (edtYPos.text.toString().toFloat().times(it)).div(100)
         }
         val fontPath =  getFileFromAssets(this, "little_lord.ttf").absolutePath
-        val query = FFmpegQueryExtension.addTextOnVideo(tvInputPathVideo.text.toString(), edtText.text.toString(), xPos, yPos, fontPath = fontPath,false,24,"green", outputPath)
-        Common.callQuery(this, query, object : FFmpegCallBack {
+        val query = FFmpegQueryExtension.addTextOnVideo(tvInputPathVideo.text.toString(), edtText.text.toString(), xPos, yPos, fontPath = fontPath,true,28,"red", outputPath)
+        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

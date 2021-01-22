@@ -2,13 +2,14 @@ package com.simform.videoimageeditor.videoProcessActivity
 
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
+import com.simform.videooperations.LogMessage
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.btnMotion
 import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.btnVideoPath
@@ -59,7 +60,7 @@ class FastAndSlowVideoMotionActivity : BaseActivity(R.layout.activity_fast_and_s
             atempo = 0.5
         }
         val query = FFmpegQueryExtension.videoMotion(tvInputPathVideo.text.toString(), outputPath, setpts, atempo)
-        Common.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

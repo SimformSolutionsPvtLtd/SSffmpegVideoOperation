@@ -3,8 +3,8 @@ package com.simform.videoimageeditor.middlewareActivity
 import android.view.View
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.utils.utils.openActivity
 import com.simform.videoimageeditor.videoProcessActivity.*
-import com.simform.videoimageeditor.utility.Common.openActivity
 import kotlinx.android.synthetic.main.activity_video_process.*
 
 /**

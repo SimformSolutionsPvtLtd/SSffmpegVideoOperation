@@ -5,14 +5,15 @@ import android.media.MediaMetadataRetriever
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension.combineImagesAndVideos
-import com.simform.videoimageeditor.utility.Paths
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension.combineImagesAndVideos
+import com.simform.videooperations.LogMessage
+import com.simform.videooperations.Paths
 import kotlinx.android.synthetic.main.activity_merge_image_and_video.*
 import java.util.concurrent.CompletableFuture.runAsync
 import java.util.concurrent.CyclicBarrier
@@ -108,7 +109,7 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
 
         val query = combineImagesAndVideos(paths, width, height, edtSecond.text.toString(), outputPath)
 
-        Common.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
