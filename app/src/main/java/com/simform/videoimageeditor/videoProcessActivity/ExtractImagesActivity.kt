@@ -3,13 +3,14 @@ package com.simform.videoimageeditor.videoProcessActivity
 import android.annotation.SuppressLint
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.Statistics
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
+import com.simform.videooperations.Statistics
 import java.io.File
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_extract_images.btnExtract
@@ -70,7 +71,7 @@ class ExtractImagesActivity : BaseActivity(R.layout.activity_extract_images, R.s
         val outputPath = Common.getFilePath(this, Common.IMAGE)
         val query = FFmpegQueryExtension.extractImages(tvInputPathVideo.text.toString(), outputPath, spaceOfFrame = 4f)
         var totalFramesExtracted = 0
-        Common.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun statisticsProcess(statistics: Statistics) {
                 totalFramesExtracted = statistics.videoFrameNumber
                 tvOutputPath.text = "Frames : ${statistics.videoFrameNumber}"

@@ -3,15 +3,16 @@ package com.simform.videoimageeditor.otherFFMPEGProcessActivity
 import android.annotation.SuppressLint
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.Common.DURATION_FIRST
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension
-import com.simform.videoimageeditor.utility.Paths
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.Common.DURATION_FIRST
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
+import com.simform.videooperations.LogMessage
+import com.simform.videooperations.Paths
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_audios_merge.btnAudioPath
 import kotlinx.android.synthetic.main.activity_audios_merge.btnMerge
@@ -65,7 +66,7 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
 
             val query = FFmpegQueryExtension.mergeAudios(pathsList, DURATION_FIRST, outputPath)
 
-            Common.callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }

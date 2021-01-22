@@ -5,16 +5,17 @@ import android.media.MediaMetadataRetriever
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.Common.VIDEO
-import com.simform.videoimageeditor.utility.Common.getFilePath
-import com.simform.videoimageeditor.utility.Common.selectFile
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension.addVideoWaterMark
-import com.simform.videoimageeditor.utility.FFmpegCallBack
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.Common.VIDEO
+import com.simform.videooperations.Common.getFilePath
+import com.simform.videooperations.Common.selectFile
+import com.simform.videooperations.FFmpegQueryExtension.addVideoWaterMark
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.LogMessage
 import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.*
 import java.util.concurrent.CompletableFuture.runAsync
 import java.util.concurrent.CyclicBarrier
@@ -110,7 +111,7 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
             (edtYPos.text.toString().toFloat().times(it)).div(100)
         }
         val query = addVideoWaterMark(tvInputPathVideo.text.toString(), tvInputPathImage.text.toString(), xPos, yPos, outputPath)
-        Common.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

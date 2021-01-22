@@ -4,15 +4,16 @@ import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension
-import com.simform.videoimageeditor.utility.ISize
-import com.simform.videoimageeditor.utility.SizeOfImage
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
+import com.simform.videooperations.ISize
+import com.simform.videooperations.LogMessage
+import com.simform.videooperations.SizeOfImage
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_image_to_video_convert.btnConvert
 import kotlinx.android.synthetic.main.activity_image_to_video_convert.btnImagePath
@@ -75,7 +76,7 @@ class ImageToVideoConvertActivity : BaseActivity(R.layout.activity_image_to_vide
         val size: ISize = SizeOfImage(tvInputPath.text.toString())
         val query = FFmpegQueryExtension.imageToVideo(tvInputPath.text.toString(), outputPath, edtSecond.text.toString().toInt(), size.width(), size.height())
 
-        Common.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

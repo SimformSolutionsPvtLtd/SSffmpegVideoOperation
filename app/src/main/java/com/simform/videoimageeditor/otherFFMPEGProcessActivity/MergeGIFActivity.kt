@@ -5,7 +5,6 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.gif.GifDrawable
@@ -15,10 +14,12 @@ import com.bumptech.glide.request.transition.Transition
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension
-import com.simform.videoimageeditor.utility.Paths
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
+import com.simform.videooperations.LogMessage
+import com.simform.videooperations.Paths
 import java.io.File
 import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_merge_gif.btnGifPath
@@ -116,7 +117,7 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
             }
             val query = FFmpegQueryExtension.mergeGIF(pathsList, xPos, yPos, widthScale, heightScale, outputPath)
 
-            Common.callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }

@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.simform.videoimageeditor"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -62,7 +62,6 @@ kapt {
 }
 
 dependencies {
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -73,5 +72,5 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'com.github.jaiselrahman:FilePicker:1.3.2'
     implementation 'com.kovachcode:timePickerWithSeconds:1.0.1'
-    implementation project(':FFMPEG')
+    implementation project(':VideoOperations')
 }

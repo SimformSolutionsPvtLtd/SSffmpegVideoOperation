@@ -5,14 +5,15 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import com.arthenica.mobileffmpeg.LogMessage
 import com.ikovac.timepickerwithseconds.MyTimePickerDialog
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utility.Common
-import com.simform.videoimageeditor.utility.FFmpegCallBack
-import com.simform.videoimageeditor.utility.FFmpegQueryExtension
+import com.simform.videooperations.CallBackOfQuery
+import com.simform.videooperations.Common
+import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
+import com.simform.videooperations.LogMessage
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -154,7 +155,7 @@ class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.cr
     private fun cutProcess() {
         val outputPath = Common.getFilePath(this, Common.MP3)
         val query = FFmpegQueryExtension.cutAudio(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
-        Common.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

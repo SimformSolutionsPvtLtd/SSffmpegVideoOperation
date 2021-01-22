@@ -1,3 +1,4 @@
-include ':FFMPEG'
+//include ':FFMPEG'
+include ':VideoOperations'
 include ':app'
 rootProject.name = "FFMPEG Video Operation"

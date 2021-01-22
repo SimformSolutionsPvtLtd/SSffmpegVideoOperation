@@ -3,7 +3,7 @@ package com.simform.videoimageeditor
 import android.view.View
 import com.simform.videoimageeditor.middlewareActivity.OtherFFMPEGProcessActivity
 import com.simform.videoimageeditor.middlewareActivity.VideoProcessActivity
-import com.simform.videoimageeditor.utility.Common
+import com.simform.videoimageeditor.utils.utils.openActivity
 import kotlinx.android.synthetic.main.activity_main.imageGifOperation
 import kotlinx.android.synthetic.main.activity_main.videoOperation
 
@@ -17,10 +17,10 @@ class MainActivity : BaseActivity(R.layout.activity_main, R.string.ffpmeg_title)
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.videoOperation -> {
-                Common.openActivity(this, VideoProcessActivity())
+                openActivity(this, VideoProcessActivity())
             }
             R.id.imageGifOperation -> {
-                Common.openActivity(this, OtherFFMPEGProcessActivity())
+                openActivity(this, OtherFFMPEGProcessActivity())
             }
         }
     }
