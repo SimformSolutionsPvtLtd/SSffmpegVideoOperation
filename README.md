@@ -1,4 +1,4 @@
-# FFMPEG video operation
+# FFMPEG video operations
 
 ![Screenshot_1611307416](https://user-images.githubusercontent.com/16113993/105489978-1c28e480-5cda-11eb-9b68-e6f2f5399868.png)
 
@@ -6,7 +6,7 @@ FFMpeg compiled for Android.
 Execute FFmpeg commands with ease in your Android app.
 
 ## About
-This project is provide inbuild ffmpeg operations queries:
+This project is provide inbuild ffmpeg operation queries:
 ##### Video operation ffmpeg queries like
 - Cut video using time
 - Convert image to video
@@ -56,17 +56,6 @@ Include the dependency
 ```gradle
 dependencies {
     implementation ''
-}
-```
-
-also include ndk support
-```gradle
-android {
-    defaultConfig {
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86'
-        }
-    }
 }
 ```
 
