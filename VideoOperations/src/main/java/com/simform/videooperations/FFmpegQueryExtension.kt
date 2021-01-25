@@ -514,5 +514,19 @@ object FFmpegQueryExtension {
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
+
+    fun compressAudio(inputAudioPath: String, bitrate: String, output: String): Array<String> {
+        val inputs: ArrayList<String> = ArrayList()
+        inputs.apply {
+            add("-i")
+            add(inputAudioPath)
+            add("-ab")
+            add(bitrate)
+            add("-preset")
+            add("ultrafast")
+            add(output)
+        }
+        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
 }
 

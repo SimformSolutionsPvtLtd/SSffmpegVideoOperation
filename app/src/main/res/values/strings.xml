@@ -107,4 +107,5 @@
     <string name="validation_of_audio">Please select audio</string>
     <string name="fast_slow_audio_convert">Fast/Slow audio convert</string>
     <string name="crop_audio_using_time">Crop audio using time</string>
+    <string name="compress_audio">Compress Audio</string>
 </resources>

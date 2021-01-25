@@ -30,6 +30,7 @@ This project is provide inbuild ffmpeg operation queries:
 - Update audio volume
 - Fast/Slow audio
 - Crop audio using time
+- Compress Audio
 
 ### Architectures
 FFmpeg Android runs on the following architectures:

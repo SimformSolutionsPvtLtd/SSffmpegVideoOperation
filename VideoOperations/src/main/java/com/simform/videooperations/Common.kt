@@ -5,10 +5,7 @@ import android.content.Intent
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.text.TextUtils
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.arthenica.mobileffmpeg.Config
-import com.arthenica.mobileffmpeg.FFmpeg
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import com.simform.videooperations.FFmpegQueryExtension.FRAME_RATE
@@ -16,7 +13,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Formatter
+import java.util.Locale
 
 /**
  * Created by Ashvin Vavaliya on 24,November,2020
@@ -47,6 +45,15 @@ object Common {
     const val RATIO_5: String = "2:21:1"
     const val RATIO_6: String = "2:35:1"
     const val RATIO_7: String = "2:39:1"
+
+    // Standard  Bitrate
+    const val BITRATE_96: String = "96" //kbps
+    const val BITRATE_112: String = "112" //kbps
+    const val BITRATE_128: String = "128" //kbps
+    const val BITRATE_160: String = "160" //kbps
+    const val BITRATE_192: String = "192" //kbps
+    const val BITRATE_256: String = "256" //kbps
+    const val BITRATE_320: String = "320" //kbps
 
     const val DURATION_LONGEST: String = "longest"
     const val DURATION_SHORTEST: String = "shortest"
