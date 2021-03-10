@@ -161,7 +161,7 @@ class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.cr
             }
 
             override fun success() {
-                tvOutputPath.text = "Output Path : \n$outputPath"
+                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 

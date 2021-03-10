@@ -72,7 +72,7 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
                 }
 
                 override fun success() {
-                    tvOutputPath.text = "Output Path : \n$outputPath"
+                    tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                     processStop()
                 }
 

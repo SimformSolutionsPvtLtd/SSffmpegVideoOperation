@@ -108,4 +108,6 @@
     <string name="fast_slow_audio_convert">Fast/Slow audio convert</string>
     <string name="crop_audio_using_time">Crop audio using time</string>
     <string name="compress_audio">Compress Audio</string>
+    <string name="output_path">Output Path : \n%s</string>
+    <string name="output_path_with_size">Output Path : \n%s Output file Size : \n%s</string>
 </resources>

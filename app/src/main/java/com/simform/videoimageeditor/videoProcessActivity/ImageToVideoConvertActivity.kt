@@ -82,7 +82,7 @@ class ImageToVideoConvertActivity : BaseActivity(R.layout.activity_image_to_vide
             }
 
             override fun success() {
-                tvOutputPath.text = "Output Path : \n$outputPath"
+                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 

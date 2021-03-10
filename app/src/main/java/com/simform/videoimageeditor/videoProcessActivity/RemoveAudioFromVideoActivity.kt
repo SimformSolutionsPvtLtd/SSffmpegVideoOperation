@@ -61,7 +61,7 @@ class RemoveAudioFromVideoActivity : BaseActivity(R.layout.activity_remove_audio
             }
 
             override fun success() {
-                tvOutputPath.text = "Output Path : \n$outputPath"
+                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 

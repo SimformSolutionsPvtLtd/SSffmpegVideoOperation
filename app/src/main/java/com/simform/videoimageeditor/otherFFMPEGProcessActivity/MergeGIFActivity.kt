@@ -123,7 +123,7 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
                 }
 
                 override fun success() {
-                    tvOutputPath.text = "Output Path : \n$outputPath"
+                    tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                     processStop()
                 }
 

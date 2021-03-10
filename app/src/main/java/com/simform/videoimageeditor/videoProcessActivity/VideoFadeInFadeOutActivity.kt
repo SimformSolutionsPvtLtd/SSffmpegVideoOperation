@@ -65,7 +65,7 @@ class VideoFadeInFadeOutActivity : BaseActivity(R.layout.activity_video_fade_in_
             }
 
             override fun success() {
-                tvOutputPath.text = "Output Path : \n$outputPath"
+                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 

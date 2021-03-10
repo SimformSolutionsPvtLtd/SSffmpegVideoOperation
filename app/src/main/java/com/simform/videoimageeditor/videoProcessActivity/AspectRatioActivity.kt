@@ -62,7 +62,7 @@ class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio, R.strin
             }
 
             override fun success() {
-                tvOutputPath.text = "Output Path : \n$outputPath"
+                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 

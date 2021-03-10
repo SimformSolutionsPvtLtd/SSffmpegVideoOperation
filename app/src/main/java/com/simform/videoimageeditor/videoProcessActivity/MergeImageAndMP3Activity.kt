@@ -70,7 +70,7 @@ class MergeImageAndMP3Activity : BaseActivity(R.layout.activity_merge_image_and_
             }
 
             override fun success() {
-                tvOutputPath.text = "Output Path : \n$outputPath"
+                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 

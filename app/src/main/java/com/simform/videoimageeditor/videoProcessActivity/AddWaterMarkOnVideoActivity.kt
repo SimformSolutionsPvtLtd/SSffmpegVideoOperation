@@ -117,7 +117,7 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
             }
 
             override fun success() {
-                tvOutputPath.text = "Output Path : \n$outputPath"
+                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 

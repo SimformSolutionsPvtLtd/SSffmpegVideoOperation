@@ -88,7 +88,7 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
 
             @SuppressLint("SetTextI18n")
             override fun success() {
-                tvOutputPath.text = "Output Path : \n$outputPath \n Output file Size : ${Common.getFileSize(File(outputPath))}"
+                tvOutputPath.text = String.format(getString(R.string.output_path_with_size), outputPath, Common.getFileSize(File(outputPath)))
                 processStop()
             }
 
