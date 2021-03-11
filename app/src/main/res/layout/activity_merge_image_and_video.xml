@@ -28,6 +28,7 @@
         android:layout_marginTop="10dp"
         android:padding="10dp"
         android:text="@string/uploadvideo"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/tvInputPathVideo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvInputPathVideo" />
@@ -66,6 +67,7 @@
         android:layout_marginTop="10dp"
         android:padding="10dp"
         android:text="@string/uploadImage"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/tvInputPathImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvInputPathImage" />
@@ -77,6 +79,7 @@
         android:text="@string/combine"
         android:padding="10dp"
         android:layout_marginTop="20dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtSecond"
         app:layout_constraintEnd_toEndOf="parent"/>

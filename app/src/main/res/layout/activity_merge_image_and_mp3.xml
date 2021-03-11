@@ -27,6 +27,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
         android:padding="10dp"
+        android:textColor="@android:color/white"
         android:text="@string/select_image_file"
         app:layout_constraintBottom_toBottomOf="@+id/tvInputPathImage"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,6 +54,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
         android:padding="10dp"
+        android:textColor="@android:color/white"
         android:text="@string/select_mp3_file"
         app:layout_constraintBottom_toBottomOf="@+id/tvInputPathAudio"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,6 +68,7 @@
         android:text="@string/merge_image_and_audio"
         android:padding="10dp"
         android:layout_marginTop="20dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInputPathAudio"
         app:layout_constraintEnd_toEndOf="parent"/>

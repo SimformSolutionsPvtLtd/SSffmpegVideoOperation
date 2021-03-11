@@ -19,6 +19,7 @@
         android:text="@string/merge_gifs"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +31,7 @@
         android:text="@string/merge_audios"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+          android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnMergeGIF" />
@@ -41,6 +43,7 @@
           android:text="@string/change_audio_volume"
           android:layout_marginStart="10dp"
           android:layout_marginEnd="10dp"
+          android:textColor="@android:color/white"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/btnMergeAudios" />
@@ -52,6 +55,7 @@
           android:text="@string/fast_slow_audio_convert"
           android:layout_marginStart="10dp"
           android:layout_marginEnd="10dp"
+          android:textColor="@android:color/white"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintTop_toBottomOf="@+id/btnAudiosVolumeUpdate" />
@@ -63,6 +67,7 @@
         android:text="@string/crop_audio_using_time"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnFastAndSlowAudio" />
@@ -74,6 +79,7 @@
         android:text="@string/compress_audio"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnCutAudio" />

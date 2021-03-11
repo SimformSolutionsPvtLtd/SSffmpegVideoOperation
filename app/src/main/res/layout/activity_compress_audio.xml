@@ -28,6 +28,7 @@
         android:layout_marginTop="10dp"
         android:padding="10dp"
         android:text="@string/select_audio_file"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/tvInputPathAudio"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvInputPathAudio" />
@@ -39,6 +40,7 @@
         android:text="@string/compress_audio"
         android:padding="10dp"
         android:layout_marginTop="30dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInputPathAudio"
         app:layout_constraintEnd_toEndOf="parent"/>

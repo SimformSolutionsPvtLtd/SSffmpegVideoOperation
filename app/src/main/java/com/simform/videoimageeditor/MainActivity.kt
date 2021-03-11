@@ -10,6 +10,8 @@ import kotlinx.android.synthetic.main.activity_main.videoOperation
 class MainActivity : BaseActivity(R.layout.activity_main, R.string.ffpmeg_title) {
     override fun initialization() {
         supportActionBar?.title = getString(R.string.ffpmeg_title)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
         videoOperation.setOnClickListener(this)
         imageGifOperation.setOnClickListener(this)
     }

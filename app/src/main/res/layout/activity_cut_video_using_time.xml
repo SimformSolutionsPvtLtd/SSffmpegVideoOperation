@@ -28,6 +28,7 @@
         android:layout_marginTop="10dp"
         android:padding="10dp"
         android:text="@string/uploadvideo"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/tvInputPath"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvInputPath" />
@@ -61,6 +62,7 @@
         android:text="Select Start Time"
         android:padding="10dp"
         android:layout_marginEnd="10dp"
+        android:textColor="@android:color/white"
         app:layout_constraintTop_toTopOf="@+id/edtStartTime"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -81,6 +83,7 @@
         android:text="Select End Time"
         android:padding="10dp"
         android:layout_marginEnd="10dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="@+id/btnSelectStartTime"
         app:layout_constraintTop_toBottomOf="@+id/btnSelectStartTime"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -92,6 +95,7 @@
         android:text="@string/cut_video"
         android:padding="10dp"
         android:layout_margin="10dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtEndTime"
         app:layout_constraintEnd_toEndOf="parent"/>

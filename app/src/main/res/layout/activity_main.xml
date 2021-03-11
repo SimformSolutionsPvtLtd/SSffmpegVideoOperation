@@ -12,6 +12,7 @@
         android:layout_height="150dp"
         android:text="@string/video_operations"
         android:layout_margin="10dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -22,6 +23,7 @@
         android:layout_height="150dp"
         android:text="@string/other_ffmpeg_operations"
         android:layout_margin="10dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/videoOperation"/>

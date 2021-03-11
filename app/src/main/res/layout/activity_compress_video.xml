@@ -28,6 +28,7 @@
         android:layout_marginTop="10dp"
         android:padding="10dp"
         android:text="@string/uploadvideo"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/tvInputPathVideo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvInputPathVideo" />
@@ -52,6 +53,7 @@
         android:text="@string/compress"
         android:padding="10dp"
         android:layout_marginTop="20dp"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputFileSize"
         app:layout_constraintEnd_toEndOf="parent"/>
