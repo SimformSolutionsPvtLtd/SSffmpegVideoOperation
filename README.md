@@ -12,9 +12,9 @@ This project is provide in-build FFmpeg operation queries:
 
 <table>
   <tr>
-    <td><img src="https://user-images.githubusercontent.com/16113993/110896687-1aff5580-8322-11eb-8039-173f5d26296c.png" width=270 height=480></td>
-    <td><img src="https://user-images.githubusercontent.com/16113993/110896765-3d916e80-8322-11eb-97c9-9ec07aabff27.png" width=270 height=480></td>
-    <td><img src="https://user-images.githubusercontent.com/16113993/110897937-5d299680-8324-11eb-8cc9-232abc47b7e3.gif" width=270 height=480></td>
+    <td><img src="https://user-images.githubusercontent.com/16113993/111145681-86f5ee00-85ae-11eb-9057-c54955819459.png" width=270 height=480></td>
+    <td><img src="https://user-images.githubusercontent.com/16113993/111145695-8a897500-85ae-11eb-9c92-625865c0bfd4.png" width=270 height=480></td>
+    <td><img src="https://user-images.githubusercontent.com/16113993/111145578-6cbc1000-85ae-11eb-90a6-3550842db092.gif" width=270 height=480></td>
   </tr>
 </table>
 
@@ -76,7 +76,7 @@ FFmpeg Android runs on the following architectures:
 
 	```
 	dependencies {
-		implementation ''
+		implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOpertaion:1.0.0'
 	}
 	```
 
