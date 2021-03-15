@@ -21,7 +21,6 @@ import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import com.simform.videooperations.Paths
 import java.io.File
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_merge_gif.btnGifPath
 import kotlinx.android.synthetic.main.activity_merge_gif.btnMerge
 import kotlinx.android.synthetic.main.activity_merge_gif.edtXPos
@@ -77,14 +76,7 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                combineGifProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        combineGifProcess()
                     }
                 }
             }

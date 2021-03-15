@@ -14,7 +14,6 @@ import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.ISize
 import com.simform.videooperations.LogMessage
 import com.simform.videooperations.SizeOfImage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_image_to_video_convert.btnConvert
 import kotlinx.android.synthetic.main.activity_image_to_video_convert.btnImagePath
 import kotlinx.android.synthetic.main.activity_image_to_video_convert.edtSecond
@@ -44,14 +43,7 @@ class ImageToVideoConvertActivity : BaseActivity(R.layout.activity_image_to_vide
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                createVideo()
-                            }
-                        }.start()
-                        gate.await()
+                        createVideo()
                     }
                 }
             }

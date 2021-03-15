@@ -13,12 +13,19 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.Common.VIDEO
 import com.simform.videooperations.Common.getFilePath
 import com.simform.videooperations.Common.selectFile
-import com.simform.videooperations.FFmpegQueryExtension.addVideoWaterMark
 import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension.addVideoWaterMark
 import com.simform.videooperations.LogMessage
-import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.*
 import java.util.concurrent.CompletableFuture.runAsync
-import java.util.concurrent.CyclicBarrier
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.btnAdd
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.btnImagePath
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.btnVideoPath
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.edtXPos
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.edtYPos
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.mProgressView
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.tvInputPathImage
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.tvInputPathVideo
+import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.tvOutputPath
 
 class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mark_on_video, R.string.add_water_mark_on_video) {
     private var isInputVideoSelected = false
@@ -59,14 +66,7 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                addWaterMarkProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        addWaterMarkProcess()
                     }
                 }
             }

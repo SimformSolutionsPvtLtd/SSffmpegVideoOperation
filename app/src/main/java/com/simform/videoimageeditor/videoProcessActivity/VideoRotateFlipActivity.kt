@@ -11,7 +11,6 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90Clockwise
 import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90ClockwiseVerticalFlip
 import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90CounterClockwise
@@ -43,25 +42,25 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
                 Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
             }
             R.id.btnRotate90 -> {
-                rotateDegree(90,true)
+                rotateDegree(90, true)
             }
             R.id.btnRotate180 -> {
-                rotateDegree(180,true)
+                rotateDegree(180, true)
             }
             R.id.btnRotate270 -> {
-                rotateDegree(270,true)
+                rotateDegree(270, true)
             }
             R.id.btn90CounterClockwiseVerticalFlip -> {
-                rotateDegree(0,false)
+                rotateDegree(0, false)
             }
             R.id.btn90Clockwise -> {
-                rotateDegree(1,false)
+                rotateDegree(1, false)
             }
             R.id.btn90CounterClockwise -> {
-                rotateDegree(2,false)
+                rotateDegree(2, false)
             }
             R.id.btn90ClockwiseVerticalFlip -> {
-                rotateDegree(3,false)
+                rotateDegree(3, false)
             }
         }
     }
@@ -73,21 +72,14 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
             }
             else -> {
                 processStart()
-                val gate = CyclicBarrier(2)
-                object : Thread() {
-                    override fun run() {
-                        gate.await()
-                        rotateProcess(degree,isRotate)
-                    }
-                }.start()
-                gate.await()
+                rotateProcess(degree, isRotate)
             }
         }
     }
 
     private fun rotateProcess(degree: Int, isRotate: Boolean) {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = if(isRotate) {
+        val query = if (isRotate) {
             FFmpegQueryExtension.rotateVideo(tvInputPathVideo.text.toString(), degree, outputPath)
         } else {
             FFmpegQueryExtension.flipVideo(tvInputPathVideo.text.toString(), degree, outputPath)

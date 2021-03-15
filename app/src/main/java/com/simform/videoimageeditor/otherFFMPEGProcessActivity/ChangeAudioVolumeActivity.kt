@@ -11,7 +11,6 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_change_audio_valume.btnAudioPath
 import kotlinx.android.synthetic.main.activity_change_audio_valume.btnChange
 import kotlinx.android.synthetic.main.activity_change_audio_valume.mProgressView
@@ -37,23 +36,15 @@ class ChangeAudioVolumeActivity : BaseActivity(R.layout.activity_change_audio_va
                         return
                     }
                 }
-
                 processStart()
-                val gate = CyclicBarrier(2)
-                object : Thread() {
-                    override fun run() {
-                        gate.await()
-                        mergeAudioProcess()
-                    }
-                }.start()
-                gate.await()
+                mergeAudioProcess()
             }
         }
     }
 
     private fun mergeAudioProcess() {
         val outputPath = Common.getFilePath(this, Common.MP3)
-        val query = FFmpegQueryExtension.audioVolumeUpdate(tvInputPathAudio.text.toString(),volume = 0.1f, outputPath)
+        val query = FFmpegQueryExtension.audioVolumeUpdate(tvInputPathAudio.text.toString(), volume = 0.1f, outputPath)
         CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text

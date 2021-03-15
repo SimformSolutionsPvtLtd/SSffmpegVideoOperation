@@ -12,7 +12,6 @@ import com.simform.videooperations.Common.RATIO_1
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_aspect_ratio.btnAspectRatio
 import kotlinx.android.synthetic.main.activity_aspect_ratio.btnVideoPath
 import kotlinx.android.synthetic.main.activity_aspect_ratio.mProgressView
@@ -38,14 +37,7 @@ class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio, R.strin
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                applyRatioProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        applyRatioProcess()
                     }
                 }
             }
@@ -54,7 +46,7 @@ class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio, R.strin
 
     private fun applyRatioProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = FFmpegQueryExtension.applyRatio(tvInputPathVideo.text.toString(),RATIO_1, outputPath)
+        val query = FFmpegQueryExtension.applyRatio(tvInputPathVideo.text.toString(), RATIO_1, outputPath)
 
         CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {

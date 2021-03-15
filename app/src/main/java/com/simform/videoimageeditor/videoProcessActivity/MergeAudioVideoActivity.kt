@@ -10,12 +10,11 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_merge_audio_video.btnMp3Path
 import kotlinx.android.synthetic.main.activity_merge_audio_video.btnMerge
+import kotlinx.android.synthetic.main.activity_merge_audio_video.btnMp3Path
 import kotlinx.android.synthetic.main.activity_merge_audio_video.btnVideoPath
-import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathAudio
 import kotlinx.android.synthetic.main.activity_merge_audio_video.mProgressView
+import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathAudio
 import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathVideo
 import kotlinx.android.synthetic.main.activity_merge_audio_video.tvOutputPath
 
@@ -46,14 +45,7 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                mergeProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        mergeProcess()
                     }
                 }
             }

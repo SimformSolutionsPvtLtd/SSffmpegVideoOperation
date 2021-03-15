@@ -14,7 +14,6 @@ import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import java.io.File
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_compress_video.btnCompress
 import kotlinx.android.synthetic.main.activity_compress_video.btnVideoPath
 import kotlinx.android.synthetic.main.activity_compress_video.inputFileSize
@@ -42,14 +41,7 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                compressProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        compressProcess()
                     }
                 }
             }

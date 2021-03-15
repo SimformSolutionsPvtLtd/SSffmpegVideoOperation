@@ -9,17 +9,16 @@ import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
-import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.FFmpegCallBack
+import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import com.simform.videooperations.Paths
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_combine_videos.btnCombine
+import kotlinx.android.synthetic.main.activity_combine_videos.btnVideoPath
 import kotlinx.android.synthetic.main.activity_combine_videos.mProgressView
 import kotlinx.android.synthetic.main.activity_combine_videos.tvInputPathImage
 import kotlinx.android.synthetic.main.activity_combine_videos.tvOutputPath
-import kotlinx.android.synthetic.main.activity_combine_videos.btnVideoPath
 import kotlinx.android.synthetic.main.activity_merge_image_and_video.tvInputPathVideo
 
 class CombineVideosActivity : BaseActivity(R.layout.activity_combine_videos, R.string.merge_videos) {
@@ -42,14 +41,7 @@ class CombineVideosActivity : BaseActivity(R.layout.activity_combine_videos, R.s
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                combineVideosProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        combineVideosProcess()
                     }
                 }
             }
@@ -62,7 +54,7 @@ class CombineVideosActivity : BaseActivity(R.layout.activity_combine_videos, R.s
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
                     val size: Int = mediaFiles.size
-                    tvInputPathImage.text = "$size"+ (if (size == 1) " Video " else " Videos ") + "selected"
+                    tvInputPathImage.text = "$size" + (if (size == 1) " Video " else " Videos ") + "selected"
                     isVideoSelected = true
                     CompletableFuture.runAsync {
                         retriever = MediaMetadataRetriever()
@@ -89,16 +81,16 @@ class CombineVideosActivity : BaseActivity(R.layout.activity_combine_videos, R.s
     }
 
     private fun processStart() {
-            btnVideoPath.isEnabled = false
-            btnCombine.isEnabled = false
-            mProgressView.visibility = View.VISIBLE
+        btnVideoPath.isEnabled = false
+        btnCombine.isEnabled = false
+        mProgressView.visibility = View.VISIBLE
     }
 
     private fun combineVideosProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val pathsList = ArrayList<Paths>()
         mediaFiles?.let {
-            for (element in it){
+            for (element in it) {
                 val paths = Paths()
                 paths.filePath = element.path
                 paths.isImageFile = false
@@ -113,7 +105,7 @@ class CombineVideosActivity : BaseActivity(R.layout.activity_combine_videos, R.s
             )
             CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
-                    tvOutputPath.text = logMessage?.text
+                    tvOutputPath.text = logMessage.text
                 }
 
                 override fun success() {

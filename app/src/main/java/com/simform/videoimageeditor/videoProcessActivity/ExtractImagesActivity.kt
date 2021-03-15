@@ -12,7 +12,6 @@ import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.Statistics
 import java.io.File
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_extract_images.btnExtract
 import kotlinx.android.synthetic.main.activity_extract_images.btnVideoPath
 import kotlinx.android.synthetic.main.activity_extract_images.mProgressView
@@ -38,14 +37,7 @@ class ExtractImagesActivity : BaseActivity(R.layout.activity_extract_images, R.s
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                extractProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        extractProcess()
                     }
                 }
             }

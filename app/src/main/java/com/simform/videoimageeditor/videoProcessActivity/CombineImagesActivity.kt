@@ -13,7 +13,6 @@ import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import com.simform.videooperations.Paths
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_combine_images.btnCombine
 import kotlinx.android.synthetic.main.activity_combine_images.btnImagePath
 import kotlinx.android.synthetic.main.activity_combine_images.edtSecond
@@ -43,14 +42,7 @@ class CombineImagesActivity : BaseActivity(R.layout.activity_combine_images, R.s
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                combineImagesProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        combineImagesProcess()
                     }
                 }
             }

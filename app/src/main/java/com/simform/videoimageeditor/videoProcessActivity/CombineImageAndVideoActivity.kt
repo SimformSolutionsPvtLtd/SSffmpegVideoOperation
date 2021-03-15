@@ -14,9 +14,15 @@ import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension.combineImagesAndVideos
 import com.simform.videooperations.LogMessage
 import com.simform.videooperations.Paths
-import kotlinx.android.synthetic.main.activity_merge_image_and_video.*
 import java.util.concurrent.CompletableFuture.runAsync
-import java.util.concurrent.CyclicBarrier
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.btnCombine
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.btnImagePath
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.btnVideoPath
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.edtSecond
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.mProgressView
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.tvInputPathImage
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.tvInputPathVideo
+import kotlinx.android.synthetic.main.activity_merge_image_and_video.tvOutputPath
 
 class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_and_video, R.string.merge_image_and_video) {
     private var isInputVideoSelected = false
@@ -49,14 +55,7 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                combineImageAndVideoProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        combineImageAndVideoProcess()
                     }
                 }
             }

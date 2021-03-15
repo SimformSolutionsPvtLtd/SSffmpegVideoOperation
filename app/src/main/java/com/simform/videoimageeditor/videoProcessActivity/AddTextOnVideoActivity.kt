@@ -15,7 +15,6 @@ import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import java.util.concurrent.CompletableFuture.runAsync
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_add_text_on_video.btnAdd
 import kotlinx.android.synthetic.main.activity_add_text_on_video.btnVideoPath
 import kotlinx.android.synthetic.main.activity_add_text_on_video.edtText
@@ -59,14 +58,7 @@ class AddTextOnVideoActivity : BaseActivity(R.layout.activity_add_text_on_video,
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                addTextProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        addTextProcess()
                     }
                 }
             }
@@ -81,8 +73,8 @@ class AddTextOnVideoActivity : BaseActivity(R.layout.activity_add_text_on_video,
         val yPos = height?.let {
             (edtYPos.text.toString().toFloat().times(it)).div(100)
         }
-        val fontPath =  getFileFromAssets(this, "little_lord.ttf").absolutePath
-        val query = FFmpegQueryExtension.addTextOnVideo(tvInputPathVideo.text.toString(), edtText.text.toString(), xPos, yPos, fontPath = fontPath,true,28,"red", outputPath)
+        val fontPath = getFileFromAssets(this, "little_lord.ttf").absolutePath
+        val query = FFmpegQueryExtension.addTextOnVideo(tvInputPathVideo.text.toString(), edtText.text.toString(), xPos, yPos, fontPath = fontPath, true, 28, "red", outputPath)
         CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text

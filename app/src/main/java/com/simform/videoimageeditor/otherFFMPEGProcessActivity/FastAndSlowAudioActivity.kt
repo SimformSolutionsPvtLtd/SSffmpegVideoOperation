@@ -10,9 +10,8 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_fast_and_slow_audio.btnMotion
 import kotlinx.android.synthetic.main.activity_fast_and_slow_audio.btnAudioPath
+import kotlinx.android.synthetic.main.activity_fast_and_slow_audio.btnMotion
 import kotlinx.android.synthetic.main.activity_fast_and_slow_audio.mProgressView
 import kotlinx.android.synthetic.main.activity_fast_and_slow_audio.motionType
 import kotlinx.android.synthetic.main.activity_fast_and_slow_audio.tvInputPathAudio
@@ -37,14 +36,7 @@ class FastAndSlowAudioActivity : BaseActivity(R.layout.activity_fast_and_slow_au
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                motionProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        motionProcess()
                     }
                 }
             }

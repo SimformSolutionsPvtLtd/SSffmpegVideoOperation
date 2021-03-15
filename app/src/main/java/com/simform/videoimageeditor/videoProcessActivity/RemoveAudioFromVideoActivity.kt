@@ -11,7 +11,6 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_remove_audio_from_video.btnRemove
 import kotlinx.android.synthetic.main.activity_remove_audio_from_video.btnVideoPath
 import kotlinx.android.synthetic.main.activity_remove_audio_from_video.mProgressView
@@ -37,14 +36,7 @@ class RemoveAudioFromVideoActivity : BaseActivity(R.layout.activity_remove_audio
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                removeAudioProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        removeAudioProcess()
                     }
                 }
             }

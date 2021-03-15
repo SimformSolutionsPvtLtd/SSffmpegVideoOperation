@@ -1,8 +1,6 @@
 package com.simform.videoimageeditor.otherFFMPEGProcessActivity
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
@@ -14,14 +12,13 @@ import com.simform.videooperations.Common.BITRATE_128
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_compress_audio.btnAudioPath
 import kotlinx.android.synthetic.main.activity_compress_audio.btnChange
 import kotlinx.android.synthetic.main.activity_compress_audio.mProgressView
 import kotlinx.android.synthetic.main.activity_compress_audio.tvInputPathAudio
 import kotlinx.android.synthetic.main.activity_compress_audio.tvOutputPath
 
-class CompressAudioActivity : BaseActivity(R.layout.activity_compress_audio,R.string.compress_audio) {
+class CompressAudioActivity : BaseActivity(R.layout.activity_compress_audio, R.string.compress_audio) {
     private var isInputAudioSelected: Boolean = false
     override fun initialization() {
         btnAudioPath.setOnClickListener(this)
@@ -40,23 +37,15 @@ class CompressAudioActivity : BaseActivity(R.layout.activity_compress_audio,R.st
                         return
                     }
                 }
-
                 processStart()
-                val gate = CyclicBarrier(2)
-                object : Thread() {
-                    override fun run() {
-                        gate.await()
-                        compressAudioProcess()
-                    }
-                }.start()
-                gate.await()
+                compressAudioProcess()
             }
         }
     }
 
     private fun compressAudioProcess() {
         val outputPath = Common.getFilePath(this, Common.MP3)
-        val query = FFmpegQueryExtension.compressAudio(inputAudioPath = tvInputPathAudio.text.toString(), bitrate = BITRATE_128,output = outputPath)
+        val query = FFmpegQueryExtension.compressAudio(inputAudioPath = tvInputPathAudio.text.toString(), bitrate = BITRATE_128, output = outputPath)
         CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text

@@ -10,10 +10,9 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_merge_image_and_mp3.btnMp3Path
 import kotlinx.android.synthetic.main.activity_merge_image_and_mp3.btnImagePath
 import kotlinx.android.synthetic.main.activity_merge_image_and_mp3.btnMerge
+import kotlinx.android.synthetic.main.activity_merge_image_and_mp3.btnMp3Path
 import kotlinx.android.synthetic.main.activity_merge_image_and_mp3.mProgressView
 import kotlinx.android.synthetic.main.activity_merge_image_and_mp3.tvInputPathAudio
 import kotlinx.android.synthetic.main.activity_merge_image_and_mp3.tvInputPathImage
@@ -46,14 +45,7 @@ class MergeImageAndMP3Activity : BaseActivity(R.layout.activity_merge_image_and_
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                mergeProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        mergeProcess()
                     }
                 }
             }

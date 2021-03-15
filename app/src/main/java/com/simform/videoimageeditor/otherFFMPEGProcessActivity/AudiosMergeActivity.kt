@@ -13,7 +13,6 @@ import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import com.simform.videooperations.Paths
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_audios_merge.btnAudioPath
 import kotlinx.android.synthetic.main.activity_audios_merge.btnMerge
 import kotlinx.android.synthetic.main.activity_audios_merge.mProgressView
@@ -34,21 +33,13 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
             }
             R.id.btnMerge -> {
                 mediaFiles?.size?.let {
-                    if(it < 2 || !isInputAudioSelected) {
-                        Toast.makeText(this,getString(R.string.min_audio_selection_validation),Toast.LENGTH_SHORT).show()
+                    if (it < 2 || !isInputAudioSelected) {
+                        Toast.makeText(this, getString(R.string.min_audio_selection_validation), Toast.LENGTH_SHORT).show()
                         return
                     }
                 }
-
                 processStart()
-                val gate = CyclicBarrier(2)
-                object : Thread() {
-                    override fun run() {
-                        gate.await()
-                        mergeAudioProcess()
-                    }
-                }.start()
-                gate.await()
+                mergeAudioProcess()
             }
         }
     }
@@ -107,11 +98,11 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
             Common.AUDIO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
                     val size: Int = mediaFiles.size
-                    if(size > 1) {
+                    if (size > 1) {
                         tvInputPathAudio.text = "$size Audio selected"
                         isInputAudioSelected = true
                     } else {
-                        Toast.makeText(this,getString(R.string.min_audio_selection_validation),Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.min_audio_selection_validation), Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(this, getString(R.string.min_audio_selection_validation), Toast.LENGTH_SHORT).show()

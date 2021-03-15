@@ -18,7 +18,6 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_crop_audio.btnAudioPath
 import kotlinx.android.synthetic.main.activity_crop_audio.btnConvert
 import kotlinx.android.synthetic.main.activity_crop_audio.btnSelectEndTime
@@ -75,14 +74,7 @@ class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.cr
                     else -> {
                         if (isValidation()) {
                             processStart()
-                            val gate = CyclicBarrier(2)
-                            object : Thread() {
-                                override fun run() {
-                                    gate.await()
-                                    cutProcess()
-                                }
-                            }.start()
-                            gate.await()
+                            cutProcess()
                         } else {
                             Toast.makeText(this, getString(R.string.start_time_end_time_validation_message), Toast.LENGTH_SHORT).show()
                         }

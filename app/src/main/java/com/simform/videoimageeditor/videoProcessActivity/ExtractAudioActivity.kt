@@ -10,7 +10,6 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_extract_audio.btnExtract
 import kotlinx.android.synthetic.main.activity_extract_audio.btnVideoPath
 import kotlinx.android.synthetic.main.activity_extract_audio.mProgressView
@@ -36,14 +35,7 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio, R.str
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                extractProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        extractProcess()
                     }
                 }
             }

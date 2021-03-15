@@ -10,7 +10,6 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.btnMotion
 import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.btnVideoPath
 import kotlinx.android.synthetic.main.activity_fast_and_slow_video_motion.mProgressView
@@ -37,14 +36,7 @@ class FastAndSlowVideoMotionActivity : BaseActivity(R.layout.activity_fast_and_s
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                motionProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        motionProcess()
                     }
                 }
             }

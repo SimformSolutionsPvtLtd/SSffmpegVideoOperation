@@ -10,7 +10,6 @@ import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import java.util.concurrent.CyclicBarrier
 import kotlinx.android.synthetic.main.activity_reverse.btnMotion
 import kotlinx.android.synthetic.main.activity_reverse.btnVideoPath
 import kotlinx.android.synthetic.main.activity_reverse.isWithAudioSwitch
@@ -37,14 +36,7 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse, R.string.re
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                reverseProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        reverseProcess()
                     }
                 }
             }

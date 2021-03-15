@@ -13,7 +13,6 @@ import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CyclicBarrier
 import java.util.concurrent.TimeUnit
 import kotlinx.android.synthetic.main.activity_video_fade_in_fade_out.btnApplyFadeInFadeOut
 import kotlinx.android.synthetic.main.activity_video_fade_in_fade_out.btnVideoPath
@@ -41,14 +40,7 @@ class VideoFadeInFadeOutActivity : BaseActivity(R.layout.activity_video_fade_in_
                     }
                     else -> {
                         processStart()
-                        val gate = CyclicBarrier(2)
-                        object : Thread() {
-                            override fun run() {
-                                gate.await()
-                                fadeInFadeOutProcess()
-                            }
-                        }.start()
-                        gate.await()
+                        fadeInFadeOutProcess()
                     }
                 }
             }
