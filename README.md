@@ -136,6 +136,8 @@ CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
 same for other queries.
 And you can apply your query also
 
+For more info go to __[Multimedia Operations for Android using FFmpeg](https://medium.com/simform-engineering/multimedia-operations-for-android-using-ffmpeg-78f1fb480a83)__
+
 ## Find this library useful? :heart:
 Support it by joining __[stargazers](https://github.com/SimformSolutionsPvtLtd/ffmpeg_video_operation/stargazers)__ for this repository. :star:
 
