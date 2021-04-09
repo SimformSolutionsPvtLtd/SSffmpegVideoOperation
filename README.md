@@ -76,7 +76,7 @@ FFmpeg Android runs on the following architectures:
 
 	```
 	dependencies {
-		implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOperation:1.0.2'
+		implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOperation:1.0.3'
 	}
 	```
 
