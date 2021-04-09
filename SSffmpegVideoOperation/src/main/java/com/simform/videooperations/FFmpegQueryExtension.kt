@@ -186,7 +186,7 @@ object FFmpegQueryExtension {
             add("-i")
             add(inputVideo)
             add("-s")
-            add("{${width}x${height}")
+            add("${width}x${height}")
             add("-r")
             add("${if (FRAME_RATE >= 10) FRAME_RATE - 5 else FRAME_RATE}")
             add("-vcodec")
