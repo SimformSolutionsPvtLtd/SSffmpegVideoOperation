@@ -22,6 +22,18 @@ object CallBackOfQuery {
         gate.await()
     }
 
+    fun cancelProcess(executionId: Long) {
+        if (!executionId.equals(0)) {
+            FFmpeg.cancel(executionId)
+        } else {
+            FFmpeg.cancel()
+        }
+    }
+
+    fun cancelProcess() {
+        FFmpeg.cancel()
+    }
+
     private fun process(context: AppCompatActivity, query: Array<String>, ffmpegCallBack: FFmpegCallBack) {
         Config.enableLogCallback { logMessage ->
             val logs = LogMessage(logMessage.executionId, logMessage.level, logMessage.text)
