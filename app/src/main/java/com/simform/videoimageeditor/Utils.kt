@@ -1,14 +1,14 @@
-package com.simform.videoimageeditor.utils
+package com.simform.videoimageeditor
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 
 /**
- * Created by Ashvin Vavaliya on 22,January,2021
+ * Created by Ashvin Vavaliya on 06,July,2021
  * Simform Solutions Pvt Ltd.
  */
-object utils {
+class Utils {
     fun addSupportActionBar(context: AppCompatActivity, title: Int) {
         if (context.supportActionBar != null) {
             context.supportActionBar?.setDisplayHomeAsUpEnabled(true)

@@ -10,7 +10,7 @@ import java.util.concurrent.CyclicBarrier
  * Created by Ashvin Vavaliya on 22,January,2021
  * Simform Solutions Pvt Ltd.
  */
-object CallBackOfQuery {
+public class CallBackOfQuery {
     fun callQuery(context: AppCompatActivity, query: Array<String>, fFmpegCallBack: FFmpegCallBack) {
         val gate = CyclicBarrier(2)
         object : Thread() {

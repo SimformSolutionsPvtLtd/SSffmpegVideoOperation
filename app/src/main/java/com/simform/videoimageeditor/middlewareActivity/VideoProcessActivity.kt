@@ -3,7 +3,6 @@ package com.simform.videoimageeditor.middlewareActivity
 import android.view.View
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
-import com.simform.videoimageeditor.utils.utils.openActivity
 import com.simform.videoimageeditor.videoProcessActivity.*
 import kotlinx.android.synthetic.main.activity_video_process.*
 
@@ -38,61 +37,61 @@ class VideoProcessActivity : BaseActivity(R.layout.activity_video_process, R.str
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnCutVideo -> {
-                openActivity(this, CutVideoUsingTimeActivity())
+                utils.openActivity(this, CutVideoUsingTimeActivity())
             }
             R.id.btnImageToVideo -> {
-                openActivity(this, ImageToVideoConvertActivity())
+                utils.openActivity(this, ImageToVideoConvertActivity())
             }
             R.id.btnAddWaterMarkOnVideo -> {
-                openActivity(this, AddWaterMarkOnVideoActivity())
+                utils.openActivity(this, AddWaterMarkOnVideoActivity())
             }
             R.id.btnCombineImageVideo -> {
-                openActivity(this, CombineImageAndVideoActivity())
+                utils.openActivity(this, CombineImageAndVideoActivity())
             }
             R.id.btnCombineImages -> {
-                openActivity(this, CombineImagesActivity())
+                utils.openActivity(this, CombineImagesActivity())
             }
             R.id.btnCombineVideos -> {
-                openActivity(this, CombineVideosActivity())
+                utils.openActivity(this, CombineVideosActivity())
             }
             R.id.btnCompressVideo -> {
-                openActivity(this, CompressVideoActivity())
+                utils.openActivity(this, CompressVideoActivity())
             }
             R.id.btnExtractVideo -> {
-                openActivity(this, ExtractImagesActivity())
+                utils.openActivity(this, ExtractImagesActivity())
             }
             R.id.btnExtractAudio -> {
-                openActivity(this, ExtractAudioActivity())
+                utils.openActivity(this, ExtractAudioActivity())
             }
             R.id.btnMotion -> {
-                openActivity(this, FastAndSlowVideoMotionActivity())
+                utils.openActivity(this, FastAndSlowVideoMotionActivity())
             }
             R.id.btnReverseVideo -> {
-                openActivity(this, ReverseVideoActivity())
+                utils.openActivity(this, ReverseVideoActivity())
             }
             R.id.btnFadeInFadeOutVideo -> {
-                openActivity(this, VideoFadeInFadeOutActivity())
+                utils.openActivity(this, VideoFadeInFadeOutActivity())
             }
             R.id.btnVideoConvertIntoGIF -> {
-                openActivity(this, VideoToGifActivity())
+                utils.openActivity(this, VideoToGifActivity())
             }
             R.id.btnVideoRotateFlip -> {
-                openActivity(this, VideoRotateFlipActivity())
+                utils.openActivity(this, VideoRotateFlipActivity())
             }
             R.id.btnMergeVideoAndAudio -> {
-                openActivity(this, MergeAudioVideoActivity())
+                utils.openActivity(this, MergeAudioVideoActivity())
             }
             R.id.btnAddTextOnVideo -> {
-                openActivity(this, AddTextOnVideoActivity())
+                utils.openActivity(this, AddTextOnVideoActivity())
             }
             R.id.btnRemoveAudioFromVideo -> {
-                openActivity(this, RemoveAudioFromVideoActivity())
+                utils.openActivity(this, RemoveAudioFromVideoActivity())
             }
             R.id.btnMergeImageAndAudio -> {
-                openActivity(this, MergeImageAndMP3Activity())
+                utils.openActivity(this, MergeImageAndMP3Activity())
             }
             R.id.btnSetAspectRatio -> {
-                openActivity(this, AspectRatioActivity())
+                utils.openActivity(this, AspectRatioActivity())
             }
         }
     }

@@ -46,9 +46,9 @@ class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio, R.strin
 
     private fun applyRatioProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = FFmpegQueryExtension.applyRatio(tvInputPathVideo.text.toString(), RATIO_1, outputPath)
+        val query = ffmpegQueryExtension.applyRatio(tvInputPathVideo.text.toString(), RATIO_1, outputPath)
 
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

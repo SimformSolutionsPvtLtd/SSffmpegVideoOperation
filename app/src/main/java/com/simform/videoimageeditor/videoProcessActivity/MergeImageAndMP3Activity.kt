@@ -54,9 +54,9 @@ class MergeImageAndMP3Activity : BaseActivity(R.layout.activity_merge_image_and_
 
     private fun mergeProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = FFmpegQueryExtension.mergeImageAndAudio(tvInputPathImage.text.toString(), tvInputPathAudio.text.toString(), outputPath)
+        val query = ffmpegQueryExtension.mergeImageAndAudio(tvInputPathImage.text.toString(), tvInputPathAudio.text.toString(), outputPath)
 
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

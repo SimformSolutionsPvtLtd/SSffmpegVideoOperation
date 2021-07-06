@@ -15,7 +15,6 @@ import com.simform.videooperations.Common.TIME_FORMAT
 import com.simform.videooperations.Common.VIDEO_FILE_REQUEST_CODE
 import com.simform.videooperations.Common.stringForTime
 import com.simform.videooperations.FFmpegCallBack
-import com.simform.videooperations.FFmpegQueryExtension.cutVideo
 import com.simform.videooperations.LogMessage
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -150,8 +149,8 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     @SuppressLint("SetTextI18n")
     private fun cutProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = cutVideo(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        val query = ffmpegQueryExtension.cutVideo(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

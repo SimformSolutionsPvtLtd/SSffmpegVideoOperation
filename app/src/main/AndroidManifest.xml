@@ -17,9 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VideoImageEditor">
-        <activity android:name=".otherFFMPEGProcessActivity.CompressAudioActivity">
-
-        </activity>
+        <activity android:name=".otherFFMPEGProcessActivity.CompressAudioActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".otherFFMPEGProcessActivity.CropAudioActivity"
             android:screenOrientation="portrait" />

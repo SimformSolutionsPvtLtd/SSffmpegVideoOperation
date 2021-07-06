@@ -107,9 +107,9 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
             val heightScale = height?.let { height ->
                 (edtYScale.text.toString().toFloat().times(height)).div(100)
             }
-            val query = FFmpegQueryExtension.mergeGIF(pathsList, xPos, yPos, widthScale, heightScale, outputPath)
+            val query = ffmpegQueryExtension.mergeGIF(pathsList, xPos, yPos, widthScale, heightScale, outputPath)
 
-            CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }

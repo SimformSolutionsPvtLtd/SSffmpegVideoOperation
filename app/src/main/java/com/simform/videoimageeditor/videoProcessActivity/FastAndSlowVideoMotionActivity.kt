@@ -51,8 +51,8 @@ class FastAndSlowVideoMotionActivity : BaseActivity(R.layout.activity_fast_and_s
             setpts = 2.0
             atempo = 0.5
         }
-        val query = FFmpegQueryExtension.videoMotion(tvInputPathVideo.text.toString(), outputPath, setpts, atempo)
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        val query = ffmpegQueryExtension.videoMotion(tvInputPathVideo.text.toString(), outputPath, setpts, atempo)
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

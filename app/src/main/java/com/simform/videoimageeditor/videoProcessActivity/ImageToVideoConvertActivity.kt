@@ -66,9 +66,9 @@ class ImageToVideoConvertActivity : BaseActivity(R.layout.activity_image_to_vide
     private fun createVideo() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val size: ISize = SizeOfImage(tvInputPath.text.toString())
-        val query = FFmpegQueryExtension.imageToVideo(tvInputPath.text.toString(), outputPath, edtSecond.text.toString().toInt(), size.width(), size.height())
+        val query = ffmpegQueryExtension.imageToVideo(tvInputPath.text.toString(), outputPath, edtSecond.text.toString().toInt(), size.width(), size.height())
 
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

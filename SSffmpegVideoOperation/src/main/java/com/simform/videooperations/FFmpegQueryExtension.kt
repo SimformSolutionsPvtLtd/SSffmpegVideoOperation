@@ -4,8 +4,8 @@ package com.simform.videooperations
  * Created by Ashvin Vavaliya on 10,December,2020
  * Simform Solutions Pvt Ltd.
  */
-object FFmpegQueryExtension {
-    var FRAME_RATE: Int = 25 // Default value
+public class FFmpegQueryExtension {
+    public var FRAME_RATE: Int = 25 // Default value
 
     /**
      * startTime = 00:00:00 HH:MM:SS
