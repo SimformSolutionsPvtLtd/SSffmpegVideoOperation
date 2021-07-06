@@ -55,9 +55,9 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
                 pathsList.add(paths)
             }
 
-            val query = FFmpegQueryExtension.mergeAudios(pathsList, DURATION_FIRST, outputPath)
+            val query = ffmpegQueryExtension.mergeAudios(pathsList, DURATION_FIRST, outputPath)
 
-            CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }

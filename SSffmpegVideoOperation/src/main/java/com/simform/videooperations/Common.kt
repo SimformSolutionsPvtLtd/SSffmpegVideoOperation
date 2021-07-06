@@ -8,7 +8,6 @@ import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
-import com.simform.videooperations.FFmpegQueryExtension.FRAME_RATE
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -84,7 +83,7 @@ object Common {
                 val mime = format.getString(MediaFormat.KEY_MIME)
                 if (mime?.startsWith("video/") == true) {
                     if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) {
-                        FRAME_RATE = format.getInteger(MediaFormat.KEY_FRAME_RATE)
+                        FFmpegQueryExtension().FRAME_RATE = format.getInteger(MediaFormat.KEY_FRAME_RATE)
                     }
                 }
             }

@@ -74,8 +74,8 @@ class AddTextOnVideoActivity : BaseActivity(R.layout.activity_add_text_on_video,
             (edtYPos.text.toString().toFloat().times(it)).div(100)
         }
         val fontPath = getFileFromAssets(this, "little_lord.ttf").absolutePath
-        val query = FFmpegQueryExtension.addTextOnVideo(tvInputPathVideo.text.toString(), edtText.text.toString(), xPos, yPos, fontPath = fontPath, true, 28, "red", outputPath)
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        val query = ffmpegQueryExtension.addTextOnVideo(tvInputPathVideo.text.toString(), edtText.text.toString(), xPos, yPos, fontPath = fontPath, isTextBackgroundDisplay = true, fontSize = 28, fontcolor = "red", output = outputPath)
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

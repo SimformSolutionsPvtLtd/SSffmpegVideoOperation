@@ -14,7 +14,6 @@ import com.simform.videooperations.Common.VIDEO
 import com.simform.videooperations.Common.getFilePath
 import com.simform.videooperations.Common.selectFile
 import com.simform.videooperations.FFmpegCallBack
-import com.simform.videooperations.FFmpegQueryExtension.addVideoWaterMark
 import com.simform.videooperations.LogMessage
 import java.util.concurrent.CompletableFuture.runAsync
 import kotlinx.android.synthetic.main.activity_add_water_mark_on_video.btnAdd
@@ -110,8 +109,8 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
         val yPos = height?.let {
             (edtYPos.text.toString().toFloat().times(it)).div(100)
         }
-        val query = addVideoWaterMark(tvInputPathVideo.text.toString(), tvInputPathImage.text.toString(), xPos, yPos, outputPath)
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        val query = ffmpegQueryExtension.addVideoWaterMark(tvInputPathVideo.text.toString(), tvInputPathImage.text.toString(), xPos, yPos, outputPath)
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

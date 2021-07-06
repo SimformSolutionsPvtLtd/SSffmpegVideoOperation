@@ -46,9 +46,9 @@ class VideoToGifActivity : BaseActivity(R.layout.activity_video_to_gif, R.string
 
     private fun convertProcess() {
         val outputPath = Common.getFilePath(this, Common.GIF)
-        val query = FFmpegQueryExtension.convertVideoToGIF(tvInputPathVideo.text.toString(), outputPath)
+        val query = ffmpegQueryExtension.convertVideoToGIF(tvInputPathVideo.text.toString(), outputPath)
 
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

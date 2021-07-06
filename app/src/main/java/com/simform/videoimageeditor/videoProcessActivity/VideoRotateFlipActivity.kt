@@ -80,12 +80,12 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
     private fun rotateProcess(degree: Int, isRotate: Boolean) {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val query = if (isRotate) {
-            FFmpegQueryExtension.rotateVideo(tvInputPathVideo.text.toString(), degree, outputPath)
+            ffmpegQueryExtension.rotateVideo(tvInputPathVideo.text.toString(), degree, outputPath)
         } else {
-            FFmpegQueryExtension.flipVideo(tvInputPathVideo.text.toString(), degree, outputPath)
+            ffmpegQueryExtension.flipVideo(tvInputPathVideo.text.toString(), degree, outputPath)
         }
 
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

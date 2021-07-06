@@ -97,13 +97,13 @@ class CombineVideosActivity : BaseActivity(R.layout.activity_combine_videos, R.s
                 pathsList.add(paths)
             }
 
-            val query = FFmpegQueryExtension.combineVideos(
+            val query = ffmpegQueryExtension.combineVideos(
                 pathsList,
                 width,
                 height,
                 outputPath
             )
-            CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }

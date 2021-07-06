@@ -89,9 +89,9 @@ class CombineImagesActivity : BaseActivity(R.layout.activity_combine_images, R.s
                 pathsList.add(paths)
             }
 
-            val query = FFmpegQueryExtension.combineImagesAndVideos(pathsList, 640, 480, edtSecond.text.toString(), outputPath)
+            val query = ffmpegQueryExtension.combineImagesAndVideos(pathsList, 640, 480, edtSecond.text.toString(), outputPath)
 
-            CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }

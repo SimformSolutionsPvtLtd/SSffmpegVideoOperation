@@ -45,9 +45,9 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse, R.string.re
 
     private fun reverseProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = FFmpegQueryExtension.videoReverse(tvInputPathVideo.text.toString(), isWithAudioSwitch.isChecked, outputPath)
+        val query = ffmpegQueryExtension.videoReverse(tvInputPathVideo.text.toString(), isWithAudioSwitch.isChecked, outputPath)
 
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

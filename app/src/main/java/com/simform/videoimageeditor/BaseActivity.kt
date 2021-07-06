@@ -8,7 +8,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
-import com.simform.videoimageeditor.utils.utils.addSupportActionBar
+import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.FileSelection
 
 /**
@@ -22,11 +22,13 @@ abstract class BaseActivity(view: Int, title: Int) : AppCompatActivity(), View.O
     var width: Int? = 0
     var mediaFiles: List<MediaFile>? = null
     var retriever: MediaMetadataRetriever? = null
+    val utils = Utils()
+    val ffmpegQueryExtension = FFmpegQueryExtension()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutView)
-        addSupportActionBar(this, toolbarTitle)
+        utils.addSupportActionBar(this, toolbarTitle)
         initialization()
     }
 

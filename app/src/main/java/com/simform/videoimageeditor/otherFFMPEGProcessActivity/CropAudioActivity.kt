@@ -146,8 +146,8 @@ class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.cr
     @SuppressLint("SetTextI18n")
     private fun cutProcess() {
         val outputPath = Common.getFilePath(this, Common.MP3)
-        val query = FFmpegQueryExtension.cutAudio(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        val query = ffmpegQueryExtension.cutAudio(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

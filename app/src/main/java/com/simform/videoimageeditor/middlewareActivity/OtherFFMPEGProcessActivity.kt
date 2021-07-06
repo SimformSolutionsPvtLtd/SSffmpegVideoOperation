@@ -9,7 +9,6 @@ import com.simform.videoimageeditor.otherFFMPEGProcessActivity.CompressAudioActi
 import com.simform.videoimageeditor.otherFFMPEGProcessActivity.CropAudioActivity
 import com.simform.videoimageeditor.otherFFMPEGProcessActivity.FastAndSlowAudioActivity
 import com.simform.videoimageeditor.otherFFMPEGProcessActivity.MergeGIFActivity
-import com.simform.videoimageeditor.utils.utils.openActivity
 import kotlinx.android.synthetic.main.activity_other_ffmpeg_process.btnAudiosVolumeUpdate
 import kotlinx.android.synthetic.main.activity_other_ffmpeg_process.btnCompressAudio
 import kotlinx.android.synthetic.main.activity_other_ffmpeg_process.btnCutAudio
@@ -31,22 +30,22 @@ class OtherFFMPEGProcessActivity : BaseActivity(R.layout.activity_other_ffmpeg_p
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnMergeGIF -> {
-                openActivity(this, MergeGIFActivity())
+                utils.openActivity(this, MergeGIFActivity())
             }
             R.id.btnMergeAudios -> {
-                openActivity(this, AudiosMergeActivity())
+                utils.openActivity(this, AudiosMergeActivity())
             }
             R.id.btnAudiosVolumeUpdate -> {
-                openActivity(this, ChangeAudioVolumeActivity())
+                utils.openActivity(this, ChangeAudioVolumeActivity())
             }
             R.id.btnFastAndSlowAudio -> {
-                openActivity(this, FastAndSlowAudioActivity())
+                utils.openActivity(this, FastAndSlowAudioActivity())
             }
             R.id.btnCutAudio -> {
-                openActivity(this, CropAudioActivity())
+                utils.openActivity(this, CropAudioActivity())
             }
             R.id.btnCompressAudio -> {
-                openActivity(this, CompressAudioActivity())
+                utils.openActivity(this, CompressAudioActivity())
             }
         }
     }

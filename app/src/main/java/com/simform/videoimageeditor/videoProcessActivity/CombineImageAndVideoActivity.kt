@@ -11,7 +11,6 @@ import com.simform.videoimageeditor.R
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
-import com.simform.videooperations.FFmpegQueryExtension.combineImagesAndVideos
 import com.simform.videooperations.LogMessage
 import com.simform.videooperations.Paths
 import java.util.concurrent.CompletableFuture.runAsync
@@ -91,7 +90,7 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
         }
     }
 
-    fun combineImageAndVideoProcess() {
+    private fun combineImageAndVideoProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val paths = ArrayList<Paths>()
 
@@ -106,9 +105,9 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
         paths.add(videoPaths1)
         paths.add(videoPaths2)
 
-        val query = combineImagesAndVideos(paths, width, height, edtSecond.text.toString(), outputPath)
+        val query = ffmpegQueryExtension.combineImagesAndVideos(paths, width, height, edtSecond.text.toString(), outputPath)
 
-        CallBackOfQuery.callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
