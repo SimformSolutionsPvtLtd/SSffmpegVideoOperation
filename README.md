@@ -1,6 +1,8 @@
 # FFMPEG video operations
 
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-1.4.21-blue.svg)](https://kotlinlang.org)  [![Platform](https://img.shields.io/badge/Platform-Android-green.svg?style=flat)](https://www.android.com/) [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=19) [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-SSffmpegVideoOperation-green.svg?style=flat )]( https://android-arsenal.com/details/1/8250 )
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-1.5.30-blue.svg)](https://kotlinlang.org) 
+[![Platform](https://img.shields.io/badge/Platform-Android-green.svg?style=flat)](https://www.
+android.com/) [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=19) [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-SSffmpegVideoOperation-green.svg?style=flat )]( https://android-arsenal.com/details/1/8250 )
 
 
 FFmpeg compiled for Android.
@@ -52,7 +54,7 @@ FFmpeg Android runs on the following architectures:
 - Multi-threading
 - Supports zlib and Media-codec system libraries
 - Camera access on supported devices
-- Supports API Level 21+
+- Supports API Level 24+
 
 ### Support target sdk
 - 30
@@ -76,7 +78,7 @@ FFmpeg Android runs on the following architectures:
 
 	```
 	dependencies {
-		implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOperation:1.0.6'
+		implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOperation:1.0.7'
 	}
 	```
 
