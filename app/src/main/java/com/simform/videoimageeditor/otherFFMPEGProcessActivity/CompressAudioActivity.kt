@@ -46,7 +46,7 @@ class CompressAudioActivity : BaseActivity(R.layout.activity_compress_audio, R.s
     private fun compressAudioProcess() {
         val outputPath = Common.getFilePath(this, Common.MP3)
         val query = ffmpegQueryExtension.compressAudio(inputAudioPath = tvInputPathAudio.text.toString(), bitrate = BITRATE_128, output = outputPath)
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

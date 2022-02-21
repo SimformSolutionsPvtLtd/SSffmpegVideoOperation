@@ -63,7 +63,7 @@ class ExtractImagesActivity : BaseActivity(R.layout.activity_extract_images, R.s
         val outputPath = Common.getFilePath(this, Common.IMAGE)
         val query = ffmpegQueryExtension.extractImages(tvInputPathVideo.text.toString(), outputPath, spaceOfFrame = 4f)
         var totalFramesExtracted = 0
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun statisticsProcess(statistics: Statistics) {
                 totalFramesExtracted = statistics.videoFrameNumber
                 tvOutputPath.text = "Frames : ${statistics.videoFrameNumber}"

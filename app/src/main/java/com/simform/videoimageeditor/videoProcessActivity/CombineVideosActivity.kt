@@ -103,7 +103,7 @@ class CombineVideosActivity : BaseActivity(R.layout.activity_combine_videos, R.s
                 height,
                 outputPath
             )
-            CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }

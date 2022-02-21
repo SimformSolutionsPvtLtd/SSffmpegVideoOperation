@@ -1,5 +1,7 @@
 package com.simform.videooperations
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.arthenica.mobileffmpeg.Config
@@ -11,12 +13,16 @@ import java.util.concurrent.CyclicBarrier
  * Simform Solutions Pvt Ltd.
  */
 public class CallBackOfQuery {
-    fun callQuery(context: AppCompatActivity, query: Array<String>, fFmpegCallBack: FFmpegCallBack) {
+
+
+
+
+    fun callQuery(query: Array<String>, fFmpegCallBack: FFmpegCallBack) {
         val gate = CyclicBarrier(2)
         object : Thread() {
             override fun run() {
                 gate.await()
-                process(context, query, fFmpegCallBack)
+                process(query, fFmpegCallBack)
             }
         }.start()
         gate.await()
@@ -34,29 +40,38 @@ public class CallBackOfQuery {
         FFmpeg.cancel()
     }
 
-    private fun process(context: AppCompatActivity, query: Array<String>, ffmpegCallBack: FFmpegCallBack) {
+    private fun process(query: Array<String>, ffmpegCallBack: FFmpegCallBack) {
+        val querylooper = Handler(Looper.getMainLooper())
         Config.enableLogCallback { logMessage ->
-            val logs = LogMessage(logMessage.executionId, logMessage.level, logMessage.text)
-            ffmpegCallBack.process(logs)
+            querylooper.post {
+                val logs = LogMessage(logMessage.executionId, logMessage.level, logMessage.text)
+                ffmpegCallBack.process(logs)
+            }
         }
         Config.enableStatisticsCallback { statistics ->
-            val statisticsLog =
-                Statistics(statistics.executionId, statistics.videoFrameNumber, statistics.videoFps, statistics.videoQuality, statistics.size, statistics.time, statistics.bitrate, statistics.speed)
-            ffmpegCallBack.statisticsProcess(statisticsLog)
+            querylooper.post {
+                val statisticsLog =
+                    Statistics(statistics.executionId, statistics.videoFrameNumber, statistics.videoFps, statistics.videoQuality, statistics.size, statistics.time, statistics.bitrate, statistics.speed)
+                ffmpegCallBack.statisticsProcess(statisticsLog)
+            }
         }
         when (FFmpeg.execute(query)) {
             Config.RETURN_CODE_SUCCESS -> {
-                context.runOnUiThread {
+                querylooper.post {
                     ffmpegCallBack.success()
                 }
             }
             Config.RETURN_CODE_CANCEL -> {
-                ffmpegCallBack.cancel()
-                FFmpeg.cancel()
+                querylooper.post{
+                    ffmpegCallBack.cancel()
+                    FFmpeg.cancel()
+                }
             }
             else -> {
-                ffmpegCallBack.failed()
-                Config.printLastCommandOutput(Log.INFO)
+                querylooper.post{
+                    ffmpegCallBack.failed()
+                    Config.printLastCommandOutput(Log.INFO)
+                }
             }
         }
     }

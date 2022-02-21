@@ -46,7 +46,7 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio, R.str
         val outputPath = Common.getFilePath(this, Common.MP3)
         val query = ffmpegQueryExtension.extractAudio(tvInputPathVideo.text.toString(), outputPath)
 
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

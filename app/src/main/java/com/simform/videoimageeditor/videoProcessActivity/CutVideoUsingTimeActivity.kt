@@ -150,7 +150,7 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     private fun cutProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val query = ffmpegQueryExtension.cutVideo(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }

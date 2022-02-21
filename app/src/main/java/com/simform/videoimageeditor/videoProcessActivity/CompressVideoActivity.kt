@@ -10,7 +10,6 @@ import com.simform.videoimageeditor.R
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
-import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import java.io.File
 import java.util.concurrent.CompletableFuture
@@ -72,13 +71,12 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
 
     private fun compressProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = ffmpegQueryExtension.compressor(tvInputPathVideo.text.toString(), width, height, outputPath)
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        val query = ffmpegQueryExtension.compressorH264(tvInputPathVideo.text.toString(), width, height, outputPath)
+        CallBackOfQuery().callQuery( query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
 
-            @SuppressLint("SetTextI18n")
             override fun success() {
                 tvOutputPath.text = String.format(getString(R.string.output_path_with_size), outputPath, Common.getFileSize(File(outputPath)))
                 processStop()
@@ -95,11 +93,9 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
     }
 
     private fun processStop() {
-        runOnUiThread {
             btnVideoPath.isEnabled = true
             btnCompress.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {
