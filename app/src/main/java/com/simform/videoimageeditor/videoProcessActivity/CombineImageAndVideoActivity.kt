@@ -107,7 +107,7 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
 
         val query = ffmpegQueryExtension.combineImagesAndVideos(paths, width, height, edtSecond.text.toString(), outputPath)
 
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
@@ -128,12 +128,10 @@ class CombineImageAndVideoActivity : BaseActivity(R.layout.activity_merge_image_
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = true
-            btnImagePath.isEnabled = true
-            btnCombine.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnVideoPath.isEnabled = true
+        btnImagePath.isEnabled = true
+        btnCombine.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {

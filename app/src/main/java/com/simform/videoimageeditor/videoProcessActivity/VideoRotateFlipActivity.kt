@@ -85,7 +85,7 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
             ffmpegQueryExtension.flipVideo(tvInputPathVideo.text.toString(), degree, outputPath)
         }
 
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
@@ -121,13 +121,11 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = true
-            btnRotate90.isEnabled = true
-            btnRotate180.isEnabled = true
-            btnRotate270.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnVideoPath.isEnabled = true
+        btnRotate90.isEnabled = true
+        btnRotate180.isEnabled = true
+        btnRotate270.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {

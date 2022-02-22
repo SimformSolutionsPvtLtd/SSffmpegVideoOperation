@@ -109,7 +109,7 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
             }
             val query = ffmpegQueryExtension.mergeGIF(pathsList, xPos, yPos, widthScale, heightScale, outputPath)
 
-            CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }
@@ -131,11 +131,9 @@ class MergeGIFActivity : BaseActivity(R.layout.activity_merge_gif, R.string.merg
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnGifPath.isEnabled = true
-            btnMerge.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnGifPath.isEnabled = true
+        btnMerge.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {

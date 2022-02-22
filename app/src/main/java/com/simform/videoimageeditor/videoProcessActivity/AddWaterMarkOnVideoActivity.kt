@@ -110,7 +110,7 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
             (edtYPos.text.toString().toFloat().times(it)).div(100)
         }
         val query = ffmpegQueryExtension.addVideoWaterMark(tvInputPathVideo.text.toString(), tvInputPathImage.text.toString(), xPos, yPos, outputPath)
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
@@ -131,12 +131,10 @@ class AddWaterMarkOnVideoActivity : BaseActivity(R.layout.activity_add_water_mar
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = true
-            btnImagePath.isEnabled = true
-            btnAdd.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnVideoPath.isEnabled = true
+        btnImagePath.isEnabled = true
+        btnAdd.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {
