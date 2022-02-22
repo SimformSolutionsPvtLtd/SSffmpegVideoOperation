@@ -12,7 +12,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.simform.videooperations'
                 artifactId = 'videooperations'
-                version = '1.0.7'
+                version = '1.0.8'
             }
         }
     }

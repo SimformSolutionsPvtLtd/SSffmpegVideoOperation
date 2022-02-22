@@ -3,7 +3,6 @@ package com.simform.videooperations
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.FFmpeg
 import java.util.concurrent.CyclicBarrier
