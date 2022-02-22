@@ -45,7 +45,16 @@ class CallBackOfQuery {
         }
         Config.enableStatisticsCallback { statistics ->
             val statisticsLog =
-                Statistics(statistics.executionId, statistics.videoFrameNumber, statistics.videoFps, statistics.videoQuality, statistics.size, statistics.time, statistics.bitrate, statistics.speed)
+                Statistics(
+                    statistics.executionId,
+                    statistics.videoFrameNumber,
+                    statistics.videoFps,
+                    statistics.videoQuality,
+                    statistics.size,
+                    statistics.time,
+                    statistics.bitrate,
+                    statistics.speed
+                )
             processHandler.post {
                 ffmpegCallBack.statisticsProcess(statisticsLog)
             }
@@ -67,7 +76,7 @@ class CallBackOfQuery {
                     ffmpegCallBack.failed()
                     Config.printLastCommandOutput(Log.INFO)
                 }
-                }
+            }
         }
     }
 }
