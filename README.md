@@ -78,7 +78,7 @@ FFmpeg Android runs on the following architectures:
 
 	```
 	dependencies {
-		implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOperation:1.0.7'
+		implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOperation:1.0.8'
 	}
 	```
 
@@ -88,7 +88,7 @@ This is all you have to do to load the FFmpeg library.
 In this sample code we will run the FFmpeg -version command in background call.
 ```java
   val query:Array<String> = "-i, input,....,...., outout"
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun statisticsProcess(statistics: Statistics) {
                 Log.i("FFMPEG LOG : ", statistics.videoFrameNumber)
             }
@@ -115,7 +115,7 @@ In this sample code we will run the FFmpeg -version command in background call.
 val startTimeString = "00:01:00" (HH:MM:SS)
 val endTimeString = "00:02:00" (HH:MM:SS)
 val query:Array<String> = FFmpegQueryExtension().cutVideo(inputPath, startTimeString, endTimeString, outputPath)
-CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun statisticsProcess(statistics: Statistics) {
                 Log.i("FFMPEG LOG : ", statistics.videoFrameNumber)
             }
