@@ -45,7 +45,7 @@ class ChangeAudioVolumeActivity : BaseActivity(R.layout.activity_change_audio_va
     private fun mergeAudioProcess() {
         val outputPath = Common.getFilePath(this, Common.MP3)
         val query = ffmpegQueryExtension.audioVolumeUpdate(tvInputPathAudio.text.toString(), volume = 0.1f, output = outputPath)
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
@@ -66,11 +66,9 @@ class ChangeAudioVolumeActivity : BaseActivity(R.layout.activity_change_audio_va
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnAudioPath.isEnabled = true
-            btnChange.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnAudioPath.isEnabled = true
+        btnChange.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {

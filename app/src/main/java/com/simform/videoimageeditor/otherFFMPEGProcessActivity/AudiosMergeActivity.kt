@@ -57,7 +57,7 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
 
             val query = ffmpegQueryExtension.mergeAudios(pathsList, DURATION_FIRST, outputPath)
 
-            CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+            CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
                     tvOutputPath.text = logMessage.text
                 }
@@ -79,11 +79,9 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnAudioPath.isEnabled = true
-            btnMerge.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnAudioPath.isEnabled = true
+        btnMerge.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {

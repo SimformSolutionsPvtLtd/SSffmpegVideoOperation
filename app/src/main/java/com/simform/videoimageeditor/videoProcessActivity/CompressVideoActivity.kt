@@ -73,7 +73,7 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
     private fun compressProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val query = ffmpegQueryExtension.compressor(tvInputPathVideo.text.toString(), width, height, outputPath)
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
@@ -95,11 +95,9 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = true
-            btnCompress.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnVideoPath.isEnabled = true
+        btnCompress.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {

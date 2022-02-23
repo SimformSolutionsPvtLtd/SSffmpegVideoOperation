@@ -56,7 +56,7 @@ class MergeImageAndMP3Activity : BaseActivity(R.layout.activity_merge_image_and_
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val query = ffmpegQueryExtension.mergeImageAndAudio(tvInputPathImage.text.toString(), tvInputPathAudio.text.toString(), outputPath)
 
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
@@ -99,12 +99,10 @@ class MergeImageAndMP3Activity : BaseActivity(R.layout.activity_merge_image_and_
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnImagePath.isEnabled = true
-            btnMp3Path.isEnabled = true
-            btnMerge.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnImagePath.isEnabled = true
+        btnMp3Path.isEnabled = true
+        btnMerge.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {

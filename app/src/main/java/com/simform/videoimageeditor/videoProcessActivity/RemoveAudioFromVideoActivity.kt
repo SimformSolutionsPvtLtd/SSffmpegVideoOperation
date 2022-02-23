@@ -47,7 +47,7 @@ class RemoveAudioFromVideoActivity : BaseActivity(R.layout.activity_remove_audio
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val query = ffmpegQueryExtension.removeAudioFromVideo(tvInputPathVideo.text.toString(), outputPath)
 
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
@@ -83,11 +83,9 @@ class RemoveAudioFromVideoActivity : BaseActivity(R.layout.activity_remove_audio
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = true
-            btnRemove.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnVideoPath.isEnabled = true
+        btnRemove.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {

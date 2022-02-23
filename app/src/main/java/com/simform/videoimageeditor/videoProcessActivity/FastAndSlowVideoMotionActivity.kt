@@ -52,7 +52,7 @@ class FastAndSlowVideoMotionActivity : BaseActivity(R.layout.activity_fast_and_s
             atempo = 0.5
         }
         val query = ffmpegQueryExtension.videoMotion(tvInputPathVideo.text.toString(), outputPath, setpts, atempo)
-        CallBackOfQuery().callQuery(this, query, object : FFmpegCallBack {
+        CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
                 tvOutputPath.text = logMessage.text
             }
@@ -86,11 +86,9 @@ class FastAndSlowVideoMotionActivity : BaseActivity(R.layout.activity_fast_and_s
     }
 
     private fun processStop() {
-        runOnUiThread {
-            btnVideoPath.isEnabled = true
-            btnMotion.isEnabled = true
-            mProgressView.visibility = View.GONE
-        }
+        btnVideoPath.isEnabled = true
+        btnMotion.isEnabled = true
+        mProgressView.visibility = View.GONE
     }
 
     private fun processStart() {
