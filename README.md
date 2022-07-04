@@ -1,6 +1,6 @@
 # FFMPEG video operations
 
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-1.5.30-blue.svg)](https://kotlinlang.org) 
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-1.7.0-blue.svg)](https://kotlinlang.org) 
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg?style=flat)](https://www.android.com/) 
 [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=19) [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-SSffmpegVideoOperation-green.svg?style=flat )]( https://android-arsenal.com/details/1/8250 )
 
