@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityCompressVideoBinding
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
@@ -14,19 +15,19 @@ import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import java.io.File
 import java.util.concurrent.CompletableFuture
-import kotlinx.android.synthetic.main.activity_compress_video.btnCompress
-import kotlinx.android.synthetic.main.activity_compress_video.btnVideoPath
-import kotlinx.android.synthetic.main.activity_compress_video.inputFileSize
-import kotlinx.android.synthetic.main.activity_compress_video.mProgressView
-import kotlinx.android.synthetic.main.activity_compress_video.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_compress_video.tvOutputPath
 
 class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.string.compress_a_video) {
     private var isInputVideoSelected: Boolean = false
+    private lateinit var binding: ActivityCompressVideoBinding
 
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnCompress.setOnClickListener(this)
+        binding = ActivityCompressVideoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@CompressVideoActivity)
+            btnCompress.setOnClickListener(this@CompressVideoActivity)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -53,16 +54,16 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathVideo.text = mediaFiles[0].path
+                    binding.tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                     CompletableFuture.runAsync {
                         retriever = MediaMetadataRetriever()
-                        retriever?.setDataSource(tvInputPathVideo.text.toString())
+                        retriever?.setDataSource(binding.tvInputPathVideo.text.toString())
                         val bit = retriever?.frameAtTime
                         width = bit?.width
                         height = bit?.height
                     }
-                    inputFileSize.text = "Input file Size : ${Common.getFileSize(File(tvInputPathVideo.text.toString()))}"
+                    binding.inputFileSize.text = "Input file Size : ${Common.getFileSize(File(binding.tvInputPathVideo.text.toString()))}"
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
                 }
@@ -72,15 +73,15 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
 
     private fun compressProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = ffmpegQueryExtension.compressor(tvInputPathVideo.text.toString(), width, height, outputPath)
+        val query = ffmpegQueryExtension.compressor(binding.tvInputPathVideo.text.toString(), width, height, outputPath)
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             @SuppressLint("SetTextI18n")
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path_with_size), outputPath, Common.getFileSize(File(outputPath)))
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path_with_size), outputPath, Common.getFileSize(File(outputPath)))
                 processStop()
             }
 
@@ -95,14 +96,18 @@ class CompressVideoActivity : BaseActivity(R.layout.activity_compress_video, R.s
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnCompress.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnCompress.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnCompress.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnCompress.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }

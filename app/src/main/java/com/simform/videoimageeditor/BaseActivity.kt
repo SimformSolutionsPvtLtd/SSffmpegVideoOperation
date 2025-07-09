@@ -27,9 +27,9 @@ abstract class BaseActivity(view: Int, title: Int) : AppCompatActivity(), View.O
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layoutView)
-        utils.addSupportActionBar(this, toolbarTitle)
+        // Content view will be set by individual activities using view binding
         initialization()
+        utils.addSupportActionBar(this, toolbarTitle)
     }
 
     protected abstract fun initialization()

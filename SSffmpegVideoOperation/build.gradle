@@ -25,12 +25,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "29.0.3"
-
+    namespace 'com.simform.videooperations'
     defaultConfig {
+        compileSdk 35
         minSdkVersion 24
-        targetSdkVersion 30
+        targetSdkVersion 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

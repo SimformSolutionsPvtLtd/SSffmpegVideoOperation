@@ -5,23 +5,25 @@ import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityReverseBinding
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import kotlinx.android.synthetic.main.activity_reverse.btnMotion
-import kotlinx.android.synthetic.main.activity_reverse.btnVideoPath
-import kotlinx.android.synthetic.main.activity_reverse.isWithAudioSwitch
-import kotlinx.android.synthetic.main.activity_reverse.mProgressView
-import kotlinx.android.synthetic.main.activity_reverse.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_reverse.tvOutputPath
 
 class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse, R.string.reverse_video) {
+    private lateinit var binding: ActivityReverseBinding
     private var isInputVideoSelected: Boolean = false
+    
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnMotion.setOnClickListener(this)
+        binding = ActivityReverseBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@ReverseVideoActivity)
+            btnMotion.setOnClickListener(this@ReverseVideoActivity)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -45,15 +47,15 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse, R.string.re
 
     private fun reverseProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = ffmpegQueryExtension.videoReverse(tvInputPathVideo.text.toString(), isWithAudioSwitch.isChecked, outputPath)
+        val query = ffmpegQueryExtension.videoReverse(binding.tvInputPathVideo.text.toString(), binding.isWithAudioSwitch.isChecked, outputPath)
 
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -72,7 +74,7 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse, R.string.re
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathVideo.text = mediaFiles[0].path
+                    binding.tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
@@ -82,14 +84,18 @@ class ReverseVideoActivity : BaseActivity(R.layout.activity_reverse, R.string.re
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnMotion.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnMotion.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnMotion.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnMotion.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }

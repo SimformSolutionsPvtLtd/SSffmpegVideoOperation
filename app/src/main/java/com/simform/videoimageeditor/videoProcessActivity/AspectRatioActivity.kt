@@ -6,23 +6,25 @@ import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityAspectRatioBinding
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.Common.RATIO_1
 import com.simform.videooperations.FFmpegCallBack
-import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import kotlinx.android.synthetic.main.activity_aspect_ratio.btnAspectRatio
-import kotlinx.android.synthetic.main.activity_aspect_ratio.btnVideoPath
-import kotlinx.android.synthetic.main.activity_aspect_ratio.mProgressView
-import kotlinx.android.synthetic.main.activity_aspect_ratio.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_aspect_ratio.tvOutputPath
 
 class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio, R.string.apply_aspect_ratio) {
+    private lateinit var binding: ActivityAspectRatioBinding
     private var isInputVideoSelected: Boolean = false
+    
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnAspectRatio.setOnClickListener(this)
+        binding = ActivityAspectRatioBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@AspectRatioActivity)
+            btnAspectRatio.setOnClickListener(this@AspectRatioActivity)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -46,15 +48,15 @@ class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio, R.strin
 
     private fun applyRatioProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = ffmpegQueryExtension.applyRatio(tvInputPathVideo.text.toString(), RATIO_1, outputPath)
+        val query = ffmpegQueryExtension.applyRatio(binding.tvInputPathVideo.text.toString(), RATIO_1, outputPath)
 
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -74,7 +76,7 @@ class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio, R.strin
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathVideo.text = mediaFiles[0].path
+                    binding.tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
@@ -84,15 +86,19 @@ class AspectRatioActivity : BaseActivity(R.layout.activity_aspect_ratio, R.strin
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnAspectRatio.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnAspectRatio.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnAspectRatio.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnAspectRatio.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 
 }

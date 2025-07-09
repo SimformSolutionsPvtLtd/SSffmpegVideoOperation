@@ -6,22 +6,25 @@ import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityRemoveAudioFromVideoBinding
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import kotlinx.android.synthetic.main.activity_remove_audio_from_video.btnRemove
-import kotlinx.android.synthetic.main.activity_remove_audio_from_video.btnVideoPath
-import kotlinx.android.synthetic.main.activity_remove_audio_from_video.mProgressView
-import kotlinx.android.synthetic.main.activity_remove_audio_from_video.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_remove_audio_from_video.tvOutputPath
 
 class RemoveAudioFromVideoActivity : BaseActivity(R.layout.activity_remove_audio_from_video, R.string.audio_remove_from_video) {
+    private lateinit var binding: ActivityRemoveAudioFromVideoBinding
     private var isInputVideoSelected: Boolean = false
+    
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnRemove.setOnClickListener(this)
+        binding = ActivityRemoveAudioFromVideoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@RemoveAudioFromVideoActivity)
+            btnRemove.setOnClickListener(this@RemoveAudioFromVideoActivity)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -45,15 +48,15 @@ class RemoveAudioFromVideoActivity : BaseActivity(R.layout.activity_remove_audio
 
     private fun removeAudioProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = ffmpegQueryExtension.removeAudioFromVideo(tvInputPathVideo.text.toString(), outputPath)
+        val query = ffmpegQueryExtension.removeAudioFromVideo(binding.tvInputPathVideo.text.toString(), outputPath)
 
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -73,7 +76,7 @@ class RemoveAudioFromVideoActivity : BaseActivity(R.layout.activity_remove_audio
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathVideo.text = mediaFiles[0].path
+                    binding.tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
@@ -83,14 +86,18 @@ class RemoveAudioFromVideoActivity : BaseActivity(R.layout.activity_remove_audio
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnRemove.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnRemove.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnRemove.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnRemove.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }

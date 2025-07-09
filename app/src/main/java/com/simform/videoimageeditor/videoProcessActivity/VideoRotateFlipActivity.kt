@@ -6,34 +6,30 @@ import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityVideoRotateFlipBinding
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90Clockwise
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90ClockwiseVerticalFlip
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90CounterClockwise
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.btn90CounterClockwiseVerticalFlip
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.btnRotate180
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.btnRotate270
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.btnRotate90
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.btnVideoPath
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.mProgressView
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_video_rotate_flip.tvOutputPath
 
 class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip, R.string.video_rotate) {
+    private lateinit var binding: ActivityVideoRotateFlipBinding
     private var isInputVideoSelected: Boolean = false
+    
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnRotate90.setOnClickListener(this)
-        btnRotate180.setOnClickListener(this)
-        btnRotate270.setOnClickListener(this)
-        btn90CounterClockwiseVerticalFlip.setOnClickListener(this)
-        btn90Clockwise.setOnClickListener(this)
-        btn90CounterClockwise.setOnClickListener(this)
-        btn90ClockwiseVerticalFlip.setOnClickListener(this)
+        binding = ActivityVideoRotateFlipBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@VideoRotateFlipActivity)
+            btnRotate90.setOnClickListener(this@VideoRotateFlipActivity)
+            btnRotate180.setOnClickListener(this@VideoRotateFlipActivity)
+            btnRotate270.setOnClickListener(this@VideoRotateFlipActivity)
+            btn90CounterClockwiseVerticalFlip.setOnClickListener(this@VideoRotateFlipActivity)
+            btn90Clockwise.setOnClickListener(this@VideoRotateFlipActivity)
+            btn90CounterClockwise.setOnClickListener(this@VideoRotateFlipActivity)
+            btn90ClockwiseVerticalFlip.setOnClickListener(this@VideoRotateFlipActivity)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -80,18 +76,18 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
     private fun rotateProcess(degree: Int, isRotate: Boolean) {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
         val query = if (isRotate) {
-            ffmpegQueryExtension.rotateVideo(tvInputPathVideo.text.toString(), degree, outputPath)
+            ffmpegQueryExtension.rotateVideo(binding.tvInputPathVideo.text.toString(), degree, outputPath)
         } else {
-            ffmpegQueryExtension.flipVideo(tvInputPathVideo.text.toString(), degree, outputPath)
+            ffmpegQueryExtension.flipVideo(binding.tvInputPathVideo.text.toString(), degree, outputPath)
         }
 
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -111,7 +107,7 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathVideo.text = mediaFiles[0].path
+                    binding.tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
@@ -121,18 +117,22 @@ class VideoRotateFlipActivity : BaseActivity(R.layout.activity_video_rotate_flip
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnRotate90.isEnabled = true
-        btnRotate180.isEnabled = true
-        btnRotate270.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnRotate90.isEnabled = true
+            btnRotate180.isEnabled = true
+            btnRotate270.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnRotate90.isEnabled = false
-        btnRotate180.isEnabled = false
-        btnRotate270.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnRotate90.isEnabled = false
+            btnRotate180.isEnabled = false
+            btnRotate270.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }
