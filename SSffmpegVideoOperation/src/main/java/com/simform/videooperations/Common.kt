@@ -1,15 +1,23 @@
 package com.simform.videooperations
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.media.MediaExtractor
 import android.media.MediaFormat
+import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.OpenableColumns
 import android.text.TextUtils
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.config.Configurations
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
 import java.text.DecimalFormat
 import java.util.Formatter
@@ -162,7 +170,20 @@ object Common {
     }
 
     fun getFilePath(context: Context, fileExtension: String) : String {
-        val dir = File(context.getExternalFilesDir(Common.OUT_PUT_DIR).toString())
+        val dir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when  {
+                TextUtils.equals(fileExtension, VIDEO) -> Environment.DIRECTORY_MOVIES
+                TextUtils.equals(fileExtension, IMAGE) || TextUtils.equals(fileExtension, GIF) -> Environment.DIRECTORY_PICTURES
+                TextUtils.equals(fileExtension, MP3) -> Environment.DIRECTORY_MUSIC
+                else -> Environment.DIRECTORY_DOWNLOADS
+            }.let {
+                File(Environment.getExternalStoragePublicDirectory(it).toString())
+            }
+        } else {
+            // Fallback to app's private external files dir on older Android versions
+            File(context.getExternalFilesDir(Common.OUT_PUT_DIR).toString())
+        }
+
         if (!dir.exists()) {
             dir.mkdirs()
         }
@@ -181,7 +202,12 @@ object Common {
                 extension = ".mp3"
             }
         }
-        val dest = File(dir.path + File.separator + Common.OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + extension)
+        val dest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            File(dir, File.separator + System.currentTimeMillis().div(1000L) + extension)
+        } else {
+            // Fallback for devices below Android 14
+            File(dir.path + File.separator + OUT_PUT_DIR + System.currentTimeMillis().div(1000L) + extension)
+        }
         return dest.absolutePath
     }
 
@@ -196,4 +222,47 @@ object Common {
                 }
             }
         }
+
+    fun saveFileToTempAndGetPath(context: Context, uri: Uri): String? {
+        val contentResolver = context.contentResolver
+        val fileName = getFileNameFromUri(contentResolver, uri)
+        val tempFile = File(context.cacheDir, fileName)
+
+        return try {
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            tempFile.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun getFileNameFromUri(contentResolver: ContentResolver, uri: Uri): String {
+        var name = "temp_file"
+        val returnCursor = contentResolver.query(uri, null, null, null, null)
+        returnCursor?.use {
+            val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (it.moveToFirst() && nameIndex >= 0) {
+                name = it.getString(nameIndex)
+            }
+        }
+        return name
+    }
+
+    fun getDurationFromFile(file: File): Long {
+        val retriever = MediaMetadataRetriever()
+        return try {
+            retriever.setDataSource(file.absolutePath)
+            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0L
+        } finally {
+            retriever.release()
+        }
+    }
 }

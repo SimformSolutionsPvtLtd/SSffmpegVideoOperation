@@ -1,13 +1,17 @@
 package com.simform.videoimageeditor.videoProcessActivity
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityCutVideoUsingTimeBinding
 import com.simform.videoimageeditor.ikovac.timepickerwithseconds.MyTimePickerDialog
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
@@ -16,49 +20,52 @@ import com.simform.videooperations.Common.VIDEO_FILE_REQUEST_CODE
 import com.simform.videooperations.Common.stringForTime
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.LogMessage
+import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.btnConvert
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.btnSelectEndTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.btnSelectStartTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.btnVideoPath
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.edtEndTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.edtStartTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.mProgressView
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.tvInputPath
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.tvMaxTime
-import kotlinx.android.synthetic.main.activity_cut_video_using_time.tvOutputPath
 
 
 class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using_time, R.string.cut_video_using_time) {
     private var startTimeString: String? = null
     private var endTimeString: String? = null
     private var maxTimeString: String? = null
+    private lateinit var binding: ActivityCutVideoUsingTimeBinding
 
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnSelectStartTime.setOnClickListener(this)
-        btnSelectEndTime.setOnClickListener(this)
-        btnConvert.setOnClickListener(this)
+        binding = ActivityCutVideoUsingTimeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@CutVideoUsingTimeActivity)
+            btnSelectStartTime.setOnClickListener(this@CutVideoUsingTimeActivity)
+            btnSelectEndTime.setOnClickListener(this@CutVideoUsingTimeActivity)
+            btnConvert.setOnClickListener(this@CutVideoUsingTimeActivity)
+        }
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
+                // check if device is 14 or plus
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pickSingleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+                } else {
+                    // Fallback for devices below Android 14
+                    Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
+                }
             }
             R.id.btnSelectStartTime -> {
                 if (!TextUtils.isEmpty(maxTimeString) && !TextUtils.equals(maxTimeString, getString(R.string.zero_time))) {
-                    selectTime(edtStartTime, true)
+                    selectTime(binding.edtStartTime, true)
                 } else {
                     Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.btnSelectEndTime -> {
                 if (!TextUtils.isEmpty(maxTimeString) && !TextUtils.equals(maxTimeString, getString(R.string.zero_time))) {
-                    selectTime(edtEndTime, false)
+                    selectTime(binding.edtEndTime, false)
                 } else {
                     Toast.makeText(this, getString(R.string.input_video_validate_message), Toast.LENGTH_SHORT).show()
                 }
@@ -91,9 +98,21 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     override fun selectedFiles(mediaFiles: List<MediaFile>?, requestCode: Int) {
         if (requestCode == VIDEO_FILE_REQUEST_CODE) {
             if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                tvInputPath.text = mediaFiles[0].path
-                maxTimeString = stringForTime(mediaFiles[0].duration)
-                tvMaxTime.text = "Selected video max time : $maxTimeString"
+                binding.tvInputPath.text =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Common.saveFileToTempAndGetPath(this, mediaFiles[0].uri)
+                } else {
+                    mediaFiles[0].path
+                }
+                maxTimeString =
+                    stringForTime(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Common.getDurationFromFile(File(binding.tvInputPath.text.toString()))
+                    } else {
+                            mediaFiles[0].duration
+                        }
+                    )
+                binding.tvMaxTime.text = "Selected video max time : $maxTimeString"
             } else {
                 Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
             }
@@ -149,14 +168,14 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     @SuppressLint("SetTextI18n")
     private fun cutProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = ffmpegQueryExtension.cutVideo(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
+        val query = ffmpegQueryExtension.cutVideo(binding.tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -171,18 +190,22 @@ class CutVideoUsingTimeActivity : BaseActivity(R.layout.activity_cut_video_using
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnSelectStartTime.isEnabled = true
-        btnSelectEndTime.isEnabled = true
-        btnConvert.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnSelectStartTime.isEnabled = true
+            btnSelectEndTime.isEnabled = true
+            btnConvert.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnSelectStartTime.isEnabled = false
-        btnSelectEndTime.isEnabled = false
-        btnConvert.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnSelectStartTime.isEnabled = false
+            btnSelectEndTime.isEnabled = false
+            btnConvert.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }
