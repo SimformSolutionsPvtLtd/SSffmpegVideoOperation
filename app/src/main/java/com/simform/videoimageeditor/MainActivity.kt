@@ -1,18 +1,25 @@
 package com.simform.videoimageeditor
 
 import android.view.View
+import com.simform.videoimageeditor.databinding.ActivityMainBinding
 import com.simform.videoimageeditor.middlewareActivity.OtherFFMPEGProcessActivity
 import com.simform.videoimageeditor.middlewareActivity.VideoProcessActivity
-import kotlinx.android.synthetic.main.activity_main.imageGifOperation
-import kotlinx.android.synthetic.main.activity_main.videoOperation
 
 class MainActivity : BaseActivity(R.layout.activity_main, R.string.ffpmeg_title) {
+    
+    private lateinit var binding: ActivityMainBinding
+    
     override fun initialization() {
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
         supportActionBar?.title = getString(R.string.ffpmeg_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(false)
-        videoOperation.setOnClickListener(this)
-        imageGifOperation.setOnClickListener(this)
+        binding.apply {
+            videoOperation.setOnClickListener(this@MainActivity)
+            imageGifOperation.setOnClickListener(this@MainActivity)
+        }
     }
 
     override fun onClick(v: View?) {

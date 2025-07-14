@@ -46,7 +46,7 @@ public class FFmpegQueryExtension {
             add("-i")
             add(input)
             add("-s")
-            add("${width}x${height}")
+            add("${((width ?: 0)/2) * 2}x${((height ?: 0)/2) * 2}") // Ensure width and height are even numbers
             add("-vf")
             add("format=yuv420p,$fade")
             add("-t")
