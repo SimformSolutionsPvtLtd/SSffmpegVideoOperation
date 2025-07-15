@@ -11,7 +11,14 @@ public class FFmpegQueryExtension {
      * startTime = 00:00:00 HH:MM:SS
      * endTime = 00:00:00 HH:MM:SS
      */
-    fun cutVideo(inputVideoPath: String, startTime: String?, endTime: String?, output: String): Array<String> { Common.getFrameRate(inputVideoPath)
+    fun cutVideo(
+        inputVideoPath: String,
+        startTime: String?,
+        endTime: String?,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
+        Common.getFrameRate(inputVideoPath)
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -23,7 +30,7 @@ public class FFmpegQueryExtension {
             add("-r")
             add("$FRAME_RATE")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
@@ -35,7 +42,14 @@ public class FFmpegQueryExtension {
      * width = video width
      * height = video height
      */
-    fun imageToVideo(input: String, output: String, second: Int, width: Int?, height: Int?): Array<String> {
+    fun imageToVideo(
+        input: String,
+        output: String,
+        second: Int,
+        width: Int?,
+        height: Int?,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val fadeEndDuration = second - 0.5
         Common.getFrameRate(input)
         val fade = "fps=$FRAME_RATE,fade=type=in:duration=1,fade=type=out:duration=0.5:start_time=$fadeEndDuration"
@@ -46,13 +60,13 @@ public class FFmpegQueryExtension {
             add("-i")
             add(input)
             add("-s")
-            add("${width}x${height}")
+            add("${((width ?: 0)/2) * 2}x${((height ?: 0)/2) * 2}") // Ensure width and height are even numbers
             add("-vf")
             add("format=yuv420p,$fade")
             add("-t")
             add("$second")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
@@ -62,23 +76,56 @@ public class FFmpegQueryExtension {
      * posX = X position of water-mark in percentage (1% to 100%)
      * posY = Y position of water-mark in percentage (1% to 100%)
      */
-    fun addVideoWaterMark(inputVideo: String, imageInput: String, posX: Float?, posY: Float?, output: String): Array<String> {
-        val inputs: ArrayList<String> = ArrayList()
-        inputs.apply {
-            add("-i")
-            add(inputVideo)
-            add("-i")
-            add(imageInput)
-            add("-filter_complex")
-            add("overlay=$posX:$posY")
-            add("-preset")
-            add("ultrafast")
-            add(output)
+    fun addVideoWaterMark(
+        inputVideo: String,
+        imageInput: String,
+        posX: Float?,           // Optional custom X coordinate
+        posY: Float?,           // Optional custom Y coordinate
+        output: String,
+        position: String?,      // e.g. "center", "fill", etc.
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
+        val inputs = arrayListOf("-i", inputVideo, "-i", imageInput)
+
+        val filterComplex = when (position?.lowercase()) {
+            "fill" -> "[1:v][0:v]scale2ref=w=iw:h=ih[wm][base];[base][wm]overlay=0:0"
+            "crop" -> "[1:v][0:v]scale2ref=w='if(gt(a,iw/ih),iw,-1)':h='if(gt(a,iw/ih),-1,ih)'[wm][base];[base][wm]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2"
+            "center" -> "overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2"
+            "top-left" -> "overlay=0:0"
+            "top-right" -> "overlay=W-w:0"
+            "bottom-left" -> "overlay=0:H-h"
+            "bottom-right" -> "overlay=W-w:H-h"
+            else -> {
+                // Use custom x and y if provided, else default to 0
+                val x = posX?.toString() ?: "0"
+                val y = posY?.toString() ?: "0"
+                "overlay=$x:$y"
+            }
         }
-        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+
+        inputs.addAll(
+            listOf(
+                "-filter_complex", filterComplex,
+                "-preset", EncodingQuality.getQualityString(encodingQuality),
+                "-y", // Overwrite output if exists
+                output
+            )
+        )
+        return inputs.toArray(arrayOfNulls(inputs.size))
     }
 
-    fun addTextOnVideo(inputVideo: String, textInput: String, posX: Float?, posY: Float?, fontPath: String, isTextBackgroundDisplay: Boolean, fontSize: Int, fontcolor: String, output: String): Array<String> {
+    fun addTextOnVideo(
+        inputVideo: String,
+        textInput: String,
+        posX: Float?,
+        posY: Float?,
+        fontPath: String,
+        isTextBackgroundDisplay: Boolean,
+        fontSize: Int,
+        fontcolor: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         var borderQuery = ""
         if (isTextBackgroundDisplay) {
@@ -92,13 +139,19 @@ public class FFmpegQueryExtension {
             add("-c:a")
             add("copy")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun combineImagesAndVideos(paths: ArrayList<Paths>, width: Int?, height: Int?, second: String, output: String): Array<String> {
+    fun combineImagesAndVideos(
+        paths: ArrayList<Paths>,
+        width: Int?, height: Int?,
+        second: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         for (i in 0 until paths.size) {
             //for input
@@ -116,7 +169,8 @@ public class FFmpegQueryExtension {
                 inputs.add(paths[i].filePath)
             }
         }
-
+        inputs.add("-vsync")
+        inputs.add("2")
         var query: String? = ""
         var queryAudio: String? = ""
         for (i in 0 until paths.size) {
@@ -130,34 +184,69 @@ public class FFmpegQueryExtension {
                 "[" + i + "v][" + i + ":a]"
             }
         }
-        return getResult(inputs, query, queryAudio, paths, output)
+        return getResult(inputs, query, queryAudio, paths, output, encodingQuality)
     }
 
-    fun combineVideos(paths: ArrayList<Paths>, width: Int?, height: Int?, output: String): Array<String> {
-        val inputs: ArrayList<String> = ArrayList()
-        var query: String? = ""
-        var queryAudio: String? = ""
-        for (i in 0 until paths.size) {
-            //for input
+    fun combineVideos(
+        paths: ArrayList<Paths>,
+        width: Int?,
+        height: Int?,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
+        val inputs = ArrayList<String>()
+        var query = ""
+        var queryAudio = ""
+        val videoInputs = mutableListOf<String>()
+        val audioInputs = mutableListOf<String>()
+        var hasMissingAudio = false
+
+        for (i in paths.indices) {
+            // Add input
             inputs.add("-i")
             inputs.add(paths[i].filePath)
 
-            //for video setting with width and height
-            query = query?.trim()
-            query += "[" + i + ":v]scale=${width}x${height},setdar=$width/$height[" + i + "v];"
+            // Video scaling + fps normalization
+            query += "[$i:v]scale=${width}x${height},setdar=${width}/${height},fps=${FFmpegQueryExtension().FRAME_RATE}[$i" + "v];"
+            videoInputs.add("[$i" + "v]")
 
-            //for video and audio combine {without audio this query not supported so applied this function}
-            queryAudio = queryAudio?.trim()
-            queryAudio += if (paths[i].isImageFile) {
-                "[" + i + "v][" + paths.size + ":a]"
+            // Audio stream
+            val audioLabel = "[$i" + "a]"
+            if (paths[i].hasAudio) {
+                queryAudio += "[$i:a]aresample=async=1,asetpts=N/SR/TB$audioLabel;"
             } else {
-                "[" + i + "v][" + i + ":a]"
+                queryAudio += "[${paths.size}:a]aresample=async=1,asetpts=N/SR/TB$audioLabel;"
+                hasMissingAudio = true
             }
+            audioInputs.add(audioLabel)
         }
-        return getResult(inputs, query, queryAudio, paths, output)
+
+        // Add anullsrc only if any input lacks audio
+        if (hasMissingAudio) {
+            inputs.add("-f")
+            inputs.add("lavfi")
+            inputs.add("-t")
+            inputs.add("0.1")
+            inputs.add("-i")
+            inputs.add("anullsrc")
+        }
+
+        // Build concat input block: [0v][0a][1v][1a]...
+        val concatInputs = paths.indices.joinToString("") { i ->
+            "${videoInputs[i]}${audioInputs[i]}"
+        }
+
+        return getResult(inputs, query, queryAudio + concatInputs, paths, output, encodingQuality)
     }
 
-    private fun getResult(inputs: java.util.ArrayList<String>, query: String?, queryAudio: String?, paths: ArrayList<Paths>, output: String): Array<String> {
+    private fun getResult(
+        inputs: java.util.ArrayList<String>,
+        query: String?,
+        queryAudio: String?,
+        paths: ArrayList<Paths>,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         inputs.apply {
             add("-f")
             add("lavfi")
@@ -172,41 +261,58 @@ public class FFmpegQueryExtension {
             add("-map")
             add("[a]")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun compressor(inputVideo: String, width: Int?, height: Int?, outputVideo: String): Array<String> {
-        Common.getFrameRate(inputVideo)
-        val inputs: ArrayList<String> = ArrayList()
+    fun compressor(
+        inputVideo: String,
+        width: Int?,
+        height: Int?,
+        outputVideo: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
+        val inputs = ArrayList<String>()
+        val targetWidth = width ?: 720
+        val targetHeight = height ?: 1280
+
         inputs.apply {
             add("-y")
             add("-i")
             add(inputVideo)
-            add("-s")
-            add("${width}x${height}")
-            add("-r")
-            add("${if (FRAME_RATE >= 10) FRAME_RATE - 5 else FRAME_RATE}")
-            add("-vcodec")
-            add("mpeg4")
+            add("-vf")
+            add("scale=$targetWidth:$targetHeight")  // Resize to target dimensions
+            add("-c:v")
+            add("libx264")
             add("-b:v")
-            add("150k")
-            add("-b:a")
-            add("48000")
-            add("-ac")
-            add("2")
-            add("-ar")
-            add("22050")
+            add("600k") // Target video bitrate (adjust to make file smaller)
+            add("-maxrate")
+            add("700k") // Control peak bitrate
+            add("-bufsize")
+            add("1000k") // Smoothing buffer
             add("-preset")
-            add("ultrafast")
+            add("faster")
+            add("-c:a")
+            add("aac")
+            add("-b:a")
+            add("96k") // Lower audio bitrate
+            add("-movflags")
+            add("+faststart") // Optimize for streaming
+            add("-preset")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(outputVideo)
         }
-        return inputs.toArray(arrayOfNulls<String>(inputs.size))
+        return inputs.toArray(arrayOfNulls(inputs.size))
     }
 
-    fun extractImages(inputVideo: String, output: String, spaceOfFrame: Float): Array<String> {
+    fun extractImages(
+        inputVideo: String,
+        output: String,
+        spaceOfFrame: Float,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -216,13 +322,17 @@ public class FFmpegQueryExtension {
             // If you will get frame per second then replace fps=1 and
             // if you will get frames per 30 seconds then replace it into fps = 1/30
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun extractAudio(inputVideo: String, output: String): Array<String> {
+    fun extractAudio(
+        inputVideo: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-y")
@@ -238,13 +348,19 @@ public class FFmpegQueryExtension {
             add("-f")
             add("mp3")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun videoMotion(inputVideo: String, output: String, setpts: Double, atempo: Double): Array<String> {
+    fun videoMotion(
+        inputVideo: String,
+        output: String,
+        setpts: Double,
+        atempo: Double,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-y")
@@ -263,13 +379,18 @@ public class FFmpegQueryExtension {
             add("-vcodec")
             add("mpeg4")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun videoReverse(inputVideo: String, isWithAudioReverse: Boolean, output: String): Array<String> {
+    fun videoReverse(
+        inputVideo: String,
+        isWithAudioReverse: Boolean,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -285,13 +406,20 @@ public class FFmpegQueryExtension {
                 add("reverse")
             }
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun videoFadeInFadeOut(inputVideo: String, duration: Long, fadeInEndSeconds: Int, fadeOutStartSeconds: Int, output: String): Array<String> {
+    fun videoFadeInFadeOut(
+        inputVideo: String,
+        duration: Long,
+        fadeInEndSeconds: Int,
+        fadeOutStartSeconds: Int,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-y")
@@ -302,25 +430,34 @@ public class FFmpegQueryExtension {
             add("-vf")
             add("fade=t=in:st=0:d=$fadeInEndSeconds,fade=t=out:st=${duration - fadeOutStartSeconds}:d=$fadeOutStartSeconds")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun convertVideoToGIF(inputVideo: String, output: String): Array<String> {
+    fun convertVideoToGIF(
+        inputVideo: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
             add(inputVideo)
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun rotateVideo(inputVideo: String, degree: Int, output: String): Array<String> {
+    fun rotateVideo(
+        inputVideo: String,
+        degree: Int,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -332,7 +469,7 @@ public class FFmpegQueryExtension {
             add("-codec")
             add("copy")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
@@ -344,7 +481,12 @@ public class FFmpegQueryExtension {
      * degree = 2: 90 Counter Clockwise
      * degree = 3: 90 Clockwise and Vertical Flip
     */
-    fun flipVideo(inputVideo: String, degree: Int, output: String): Array<String> {
+    fun flipVideo(
+        inputVideo: String,
+        degree: Int,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -352,13 +494,18 @@ public class FFmpegQueryExtension {
             add("-vf")
             add("transpose=$degree")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun mergeAudioVideo(inputVideo: String, inputAudio: String, output: String): Array<String> {
+    fun mergeAudioVideo(
+        inputVideo: String,
+        inputAudio: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -376,26 +523,35 @@ public class FFmpegQueryExtension {
             add("-y")
             add("-shortest")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun removeAudioFromVideo(inputVideo: String, output: String): Array<String> {
+    fun removeAudioFromVideo(
+        inputVideo: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
             add(inputVideo)
             add("-an")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun mergeImageAndAudio(inputImage: String, inputAudio: String, output: String): Array<String> {
+    fun mergeImageAndAudio(
+        inputImage: String,
+        inputAudio: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-y")
@@ -409,13 +565,18 @@ public class FFmpegQueryExtension {
             add("-c:a")
             add("copy")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun applyRatio(inputVideo: String, ratio: String, output: String): Array<String> {
+    fun applyRatio(
+        inputVideo: String,
+        ratio: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -423,13 +584,21 @@ public class FFmpegQueryExtension {
             add("-aspect")
             add(ratio)
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun mergeGIF(gifInput: ArrayList<Paths>, posX: Float?, posY: Float?, width: Float?, height: Float?, output: String): Array<String> {
+    fun mergeGIF(
+        gifInput: ArrayList<Paths>,
+        posX: Float?,
+        posY: Float?,
+        width: Float?,
+        height: Float?,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-y")
@@ -442,13 +611,18 @@ public class FFmpegQueryExtension {
             add("-filter_complex")
             add("[1]scale=$width:$height[s1];[0][s1]overlay=$posX:$posY:shortest=1")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun mergeAudios(inputAudioList: ArrayList<Paths>, duration: String, output: String): Array<String> {
+    fun mergeAudios(
+        inputAudioList: ArrayList<Paths>,
+        duration: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             for (i in 0 until inputAudioList.size) {
@@ -462,13 +636,18 @@ public class FFmpegQueryExtension {
             add("-q:a")
             add("0")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun audioVolumeUpdate(inputFile: String, volume: Float, output: String): Array<String>
+    fun audioVolumeUpdate(
+        inputFile: String,
+        volume: Float,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String>
     {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
@@ -477,13 +656,18 @@ public class FFmpegQueryExtension {
             add("-af")
             add("volume=$volume")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun audioMotion(inputVideo: String, output: String, atempo: Double): Array<String> {
+    fun audioMotion(
+        inputVideo: String,
+        output: String,
+        atempo: Double,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -492,13 +676,19 @@ public class FFmpegQueryExtension {
             add("atempo=$atempo")
             add("-vn")
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun cutAudio(inputVideoPath: String, startTime: String?, endTime: String?, output: String): Array<String> {
+    fun cutAudio(
+        inputVideoPath: String,
+        startTime: String?,
+        endTime: String?,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         Common.getFrameRate(inputVideoPath)
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
@@ -509,13 +699,18 @@ public class FFmpegQueryExtension {
             add("-to")
             add(endTime.toString())
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
     }
 
-    fun compressAudio(inputAudioPath: String, bitrate: String, output: String): Array<String> {
+    fun compressAudio(
+        inputAudioPath: String,
+        bitrate: String,
+        output: String,
+        encodingQuality: EncodingQuality = EncodingQuality.FASTEST
+    ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         inputs.apply {
             add("-i")
@@ -523,7 +718,7 @@ public class FFmpegQueryExtension {
             add("-ab")
             add(bitrate)
             add("-preset")
-            add("ultrafast")
+            add(EncodingQuality.getQualityString(encodingQuality))
             add(output)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))

@@ -5,26 +5,27 @@ import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityMergeAudioVideoBinding
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import kotlinx.android.synthetic.main.activity_merge_audio_video.btnMerge
-import kotlinx.android.synthetic.main.activity_merge_audio_video.btnMp3Path
-import kotlinx.android.synthetic.main.activity_merge_audio_video.btnVideoPath
-import kotlinx.android.synthetic.main.activity_merge_audio_video.mProgressView
-import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathAudio
-import kotlinx.android.synthetic.main.activity_merge_audio_video.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_merge_audio_video.tvOutputPath
 
 class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video, R.string.merge_video_and_audio) {
+    private lateinit var binding: ActivityMergeAudioVideoBinding
     private var isInputVideoSelected: Boolean = false
     private var isInputAudioSelected: Boolean = false
+    
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnMp3Path.setOnClickListener(this)
-        btnMerge.setOnClickListener(this)
+        binding = ActivityMergeAudioVideoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@MergeAudioVideoActivity)
+            btnMp3Path.setOnClickListener(this@MergeAudioVideoActivity)
+            btnMerge.setOnClickListener(this@MergeAudioVideoActivity)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -54,15 +55,15 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
 
     private fun mergeProcess() {
         val outputPath = Common.getFilePath(this, Common.VIDEO)
-        val query = ffmpegQueryExtension.mergeAudioVideo(tvInputPathVideo.text.toString(), tvInputPathAudio.text.toString(), outputPath)
+        val query = ffmpegQueryExtension.mergeAudioVideo(binding.tvInputPathVideo.text.toString(), binding.tvInputPathAudio.text.toString(), outputPath)
 
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -81,7 +82,7 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathVideo.text = mediaFiles[0].path
+                    binding.tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
@@ -89,7 +90,7 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
             }
             Common.AUDIO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathAudio.text = mediaFiles[0].path
+                    binding.tvInputPathAudio.text = mediaFiles[0].path
                     isInputAudioSelected = true
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
@@ -99,16 +100,20 @@ class MergeAudioVideoActivity : BaseActivity(R.layout.activity_merge_audio_video
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnMp3Path.isEnabled = true
-        btnMerge.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnMp3Path.isEnabled = true
+            btnMerge.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnMp3Path.isEnabled = false
-        btnMerge.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnMp3Path.isEnabled = false
+            btnMerge.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }

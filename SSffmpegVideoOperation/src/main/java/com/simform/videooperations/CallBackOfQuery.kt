@@ -63,6 +63,7 @@ class CallBackOfQuery {
             Config.RETURN_CODE_SUCCESS -> {
                 processHandler.post {
                     ffmpegCallBack.success()
+                    FFmpeg.cancel()
                 }
             }
             Config.RETURN_CODE_CANCEL -> {
