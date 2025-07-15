@@ -12,6 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/btnCutVideo"
             android:text="@string/cut_video_using_time"
@@ -19,7 +25,7 @@
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
         <Button
             android:id="@+id/btnImageToVideo"

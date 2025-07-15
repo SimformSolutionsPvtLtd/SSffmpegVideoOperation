@@ -1,6 +1,7 @@
 package com.simform.videoimageeditor.otherFFMPEGProcessActivity
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
@@ -8,53 +9,63 @@ import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityCropAudioBinding
 import com.simform.videoimageeditor.ikovac.timepickerwithseconds.MyTimePickerDialog
+import com.simform.videoimageeditor.utils.enableEdgeToEdge
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
+import com.simform.videooperations.Common.stringForTime
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.LogMessage
+import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlinx.android.synthetic.main.activity_crop_audio.btnAudioPath
-import kotlinx.android.synthetic.main.activity_crop_audio.btnConvert
-import kotlinx.android.synthetic.main.activity_crop_audio.btnSelectEndTime
-import kotlinx.android.synthetic.main.activity_crop_audio.btnSelectStartTime
-import kotlinx.android.synthetic.main.activity_crop_audio.edtEndTime
-import kotlinx.android.synthetic.main.activity_crop_audio.edtStartTime
-import kotlinx.android.synthetic.main.activity_crop_audio.mProgressView
-import kotlinx.android.synthetic.main.activity_crop_audio.tvInputPath
-import kotlinx.android.synthetic.main.activity_crop_audio.tvMaxTime
-import kotlinx.android.synthetic.main.activity_crop_audio.tvOutputPath
 
 class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.crop_audio_using_time) {
     private var startTimeString: String? = null
     private var endTimeString: String? = null
     private var maxTimeString: String? = null
+    private lateinit var binding: ActivityCropAudioBinding
 
     override fun initialization() {
-        btnAudioPath.setOnClickListener(this)
-        btnSelectStartTime.setOnClickListener(this)
-        btnSelectEndTime.setOnClickListener(this)
-        btnConvert.setOnClickListener(this)
+        binding = ActivityCropAudioBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        enableEdgeToEdge(binding.toolbar.root)
+        binding.toolbar.textTitle.text = getString(R.string.crop_audio_using_time)
+        binding.apply {
+            btnAudioPath.setOnClickListener(this@CropAudioActivity)
+            btnSelectStartTime.setOnClickListener(this@CropAudioActivity)
+            btnSelectEndTime.setOnClickListener(this@CropAudioActivity)
+            btnConvert.setOnClickListener(this@CropAudioActivity)
+        }
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnAudioPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = true)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pickAudio.launch(arrayOf("audio/*"))
+                } else {
+                    Common.selectFile(
+                        this,
+                        maxSelection = 1,
+                        isImageSelection = false,
+                        isAudioSelection = true
+                    )
+                }
             }
             R.id.btnSelectStartTime -> {
                 if (!TextUtils.isEmpty(maxTimeString) && !TextUtils.equals(maxTimeString, getString(R.string.zero_time))) {
-                    selectTime(edtStartTime, true)
+                    selectTime(binding.edtStartTime, true)
                 } else {
                     Toast.makeText(this, getString(R.string.input_audio_validate_message), Toast.LENGTH_SHORT).show()
                 }
             }
             R.id.btnSelectEndTime -> {
                 if (!TextUtils.isEmpty(maxTimeString) && !TextUtils.equals(maxTimeString, getString(R.string.zero_time))) {
-                    selectTime(edtEndTime, false)
+                    selectTime(binding.edtEndTime, false)
                 } else {
                     Toast.makeText(this, getString(R.string.input_audio_validate_message), Toast.LENGTH_SHORT).show()
                 }
@@ -87,9 +98,21 @@ class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.cr
     override fun selectedFiles(mediaFiles: List<MediaFile>?, requestCode: Int) {
         if (requestCode == Common.AUDIO_FILE_REQUEST_CODE) {
             if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                tvInputPath.text = mediaFiles[0].path
-                maxTimeString = Common.stringForTime(mediaFiles[0].duration)
-                tvMaxTime.text = "Selected audio max time : $maxTimeString"
+                binding.tvInputPath.text =
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Common.saveFileToTempAndGetPath(this, mediaFiles[0].uri)
+                    } else {
+                        mediaFiles[0].path ?: ""
+                    }
+                maxTimeString =
+                    stringForTime(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Common.getDurationFromFile(File(binding.tvInputPath.text.toString()))
+                    } else {
+                        mediaFiles[0].duration
+                    }
+                )
+                binding.tvMaxTime.text = "Selected audio max time : $maxTimeString"
             } else {
                 Toast.makeText(this, getString(R.string.audio_not_selected_toast_message), Toast.LENGTH_SHORT).show()
             }
@@ -145,14 +168,14 @@ class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.cr
     @SuppressLint("SetTextI18n")
     private fun cutProcess() {
         val outputPath = Common.getFilePath(this, Common.MP3)
-        val query = ffmpegQueryExtension.cutAudio(tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
+        val query = ffmpegQueryExtension.cutAudio(binding.tvInputPath.text.toString(), startTimeString, endTimeString, outputPath)
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -167,18 +190,22 @@ class CropAudioActivity : BaseActivity(R.layout.activity_crop_audio, R.string.cr
     }
 
     private fun processStop() {
-        btnAudioPath.isEnabled = true
-        btnSelectStartTime.isEnabled = true
-        btnSelectEndTime.isEnabled = true
-        btnConvert.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnAudioPath.isEnabled = true
+            btnSelectStartTime.isEnabled = true
+            btnSelectEndTime.isEnabled = true
+            btnConvert.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnAudioPath.isEnabled = false
-        btnSelectStartTime.isEnabled = false
-        btnSelectEndTime.isEnabled = false
-        btnConvert.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnAudioPath.isEnabled = false
+            btnSelectStartTime.isEnabled = false
+            btnSelectEndTime.isEnabled = false
+            btnConvert.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }

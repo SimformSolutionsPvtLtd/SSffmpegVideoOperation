@@ -1,35 +1,47 @@
 package com.simform.videoimageeditor.otherFFMPEGProcessActivity
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.View
 import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityAudiosMergeBinding
+import com.simform.videoimageeditor.utils.enableEdgeToEdge
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.Common.DURATION_FIRST
 import com.simform.videooperations.FFmpegCallBack
-import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import com.simform.videooperations.Paths
-import kotlinx.android.synthetic.main.activity_audios_merge.btnAudioPath
-import kotlinx.android.synthetic.main.activity_audios_merge.btnMerge
-import kotlinx.android.synthetic.main.activity_audios_merge.mProgressView
-import kotlinx.android.synthetic.main.activity_audios_merge.tvInputPathAudio
-import kotlinx.android.synthetic.main.activity_audios_merge.tvOutputPath
 
 class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.string.merge_audios) {
+    private lateinit var binding: ActivityAudiosMergeBinding
     private var isInputAudioSelected: Boolean = false
+    
     override fun initialization() {
-        btnAudioPath.setOnClickListener(this)
-        btnMerge.setOnClickListener(this)
+        binding = ActivityAudiosMergeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        enableEdgeToEdge(binding.toolbar.root)
+        binding.toolbar.textTitle.text = getString(R.string.merge_audios)
+        binding.btnAudioPath.setOnClickListener(this)
+        binding.btnMerge.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnAudioPath -> {
-                Common.selectFile(this, maxSelection = 10, isImageSelection = false, isAudioSelection = true)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pickMultipleAudio.launch(arrayOf("audio/*"))
+                } else {
+                    Common.selectFile(
+                        this,
+                        maxSelection = 10,
+                        isImageSelection = false,
+                        isAudioSelection = true
+                    )
+                }
             }
             R.id.btnMerge -> {
                 mediaFiles?.size?.let {
@@ -50,7 +62,12 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
         mediaFiles?.let {
             for (element in it) {
                 val paths = Paths()
-                paths.filePath = element.path
+                paths.filePath =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Common.saveFileToTempAndGetPath(this, element.uri) ?: ""
+                    } else {
+                        element.path ?: ""
+                    }
                 paths.isImageFile = true
                 pathsList.add(paths)
             }
@@ -59,11 +76,11 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
 
             CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
                 override fun process(logMessage: LogMessage) {
-                    tvOutputPath.text = logMessage.text
+                    binding.tvOutputPath.text = logMessage.text
                 }
 
                 override fun success() {
-                    tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                    binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                     processStop()
                 }
 
@@ -79,15 +96,19 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
     }
 
     private fun processStop() {
-        btnAudioPath.isEnabled = true
-        btnMerge.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnAudioPath.isEnabled = true
+            btnMerge.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnAudioPath.isEnabled = false
-        btnMerge.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnAudioPath.isEnabled = false
+            btnMerge.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 
     @SuppressLint("NewApi")
@@ -97,7 +118,7 @@ class AudiosMergeActivity : BaseActivity(R.layout.activity_audios_merge, R.strin
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
                     val size: Int = mediaFiles.size
                     if (size > 1) {
-                        tvInputPathAudio.text = "$size Audio selected"
+                        binding.tvInputPathAudio.text = "$size Audio selected"
                         isInputAudioSelected = true
                     } else {
                         Toast.makeText(this, getString(R.string.min_audio_selection_validation), Toast.LENGTH_SHORT).show()
