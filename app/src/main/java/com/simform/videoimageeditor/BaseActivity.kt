@@ -2,12 +2,16 @@ package com.simform.videoimageeditor
 
 import android.content.Intent
 import android.media.MediaMetadataRetriever
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
 import com.jaiselrahman.filepicker.model.MediaFile
+import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.FileSelection
 
@@ -24,12 +28,108 @@ abstract class BaseActivity(view: Int, title: Int) : AppCompatActivity(), View.O
     var retriever: MediaMetadataRetriever? = null
     val utils = Utils()
     val ffmpegQueryExtension = FFmpegQueryExtension()
+    val pickSingleMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val mediaType = when (contentResolver.getType(uri)?.substringBefore('/')) {
+                    "image" -> MediaFile.TYPE_IMAGE
+                    "video" -> MediaFile.TYPE_VIDEO
+                    "audio" -> MediaFile.TYPE_AUDIO
+                    else -> MediaFile.TYPE_FILE
+                }
+
+                val mediaFile = MediaFile().apply {
+                    setUri(uri)
+                    setMediaType(mediaType)
+                    setMimeType(contentResolver.getType(uri))
+                    setName(uri.lastPathSegment ?: "Unknown")
+                }
+
+                val requestCode = when (mediaType) {
+                    MediaFile.TYPE_IMAGE -> Common.IMAGE_FILE_REQUEST_CODE
+                    MediaFile.TYPE_VIDEO -> Common.VIDEO_FILE_REQUEST_CODE
+                    MediaFile.TYPE_AUDIO -> Common.AUDIO_FILE_REQUEST_CODE
+                    else -> Common.VIDEO_FILE_REQUEST_CODE // Default to video for unknown types
+                }
+
+                val mediaFiles = listOf(mediaFile)
+                this.mediaFiles = mediaFiles
+                (this as FileSelection).selectedFiles(mediaFiles, requestCode)
+            } else {
+                Toast.makeText(this, "User cancelled the selection", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris ->
+        if (uris.isNotEmpty()) {
+            val mediaFiles = uris.map { uri ->
+                val mediaType = when (contentResolver.getType(uri)?.substringBefore('/')) {
+                    "image" -> MediaFile.TYPE_IMAGE
+                    "video" -> MediaFile.TYPE_VIDEO
+                    "audio" -> MediaFile.TYPE_AUDIO
+                    else -> MediaFile.TYPE_FILE
+                }
+
+                MediaFile().apply {
+                    setUri(uri)
+                    setMediaType(mediaType)
+                    setMimeType(contentResolver.getType(uri))
+                    setName(uri.lastPathSegment ?: "Unknown")
+                }
+            }
+            val requestCode = when (contentResolver.getType(mediaFiles.first().uri)?.substringBefore('/')) {
+                "image" -> Common.IMAGE_FILE_REQUEST_CODE
+                "video" -> Common.VIDEO_FILE_REQUEST_CODE
+                "audio" -> Common.AUDIO_FILE_REQUEST_CODE
+                else -> Common.VIDEO_FILE_REQUEST_CODE// Default to video for unknown types
+            }
+            this.mediaFiles = mediaFiles
+            (this as FileSelection).selectedFiles(mediaFiles, requestCode)
+        } else {
+            Toast.makeText(this, "User cancelled the selection", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    val pickAudio = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            // Got audio Uri, do something with it
+            val mediaFiles = listOf(MediaFile().apply {
+                setUri(uri)
+                setMediaType(MediaFile.TYPE_AUDIO)
+                setMimeType(contentResolver.getType(uri))
+                setName(uri.lastPathSegment ?: "Unknown")
+            })
+            this.mediaFiles = mediaFiles
+            (this as FileSelection).selectedFiles(mediaFiles, Common.AUDIO_FILE_REQUEST_CODE)
+        } else {
+            Toast.makeText(this, "No audio selected", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    val pickMultipleAudio = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
+        if (uris != null) {
+            // Got audio Uri, do something with it
+            val mediaFiles = uris.map { uri ->
+                MediaFile().apply {
+                    setUri(uri)
+                    setMediaType(MediaFile.TYPE_AUDIO)
+                    setMimeType(contentResolver.getType(uri))
+                    setName(uri.lastPathSegment ?: "Unknown")
+                }
+            }
+            this.mediaFiles = mediaFiles
+            (this as FileSelection).selectedFiles(mediaFiles, Common.AUDIO_FILE_REQUEST_CODE)
+        } else {
+            Toast.makeText(this, "No audio selected", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layoutView)
-        utils.addSupportActionBar(this, toolbarTitle)
+        // Content view will be set by individual activities using view binding
         initialization()
+        utils.addSupportActionBar(this, toolbarTitle)
     }
 
     protected abstract fun initialization()
@@ -43,7 +143,7 @@ abstract class BaseActivity(view: Int, title: Int) : AppCompatActivity(), View.O
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK && data != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             mediaFiles = data.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES)
             (this as FileSelection).selectedFiles(mediaFiles,requestCode)
         }

@@ -1,34 +1,45 @@
 package com.simform.videoimageeditor.videoProcessActivity
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityVideoToGifBinding
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
 import java.util.concurrent.CyclicBarrier
-import kotlinx.android.synthetic.main.activity_video_to_gif.btnConvertIntoGif
-import kotlinx.android.synthetic.main.activity_video_to_gif.btnVideoPath
-import kotlinx.android.synthetic.main.activity_video_to_gif.mProgressView
-import kotlinx.android.synthetic.main.activity_video_to_gif.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_video_to_gif.tvOutputPath
 
 class VideoToGifActivity : BaseActivity(R.layout.activity_video_to_gif, R.string.video_to_gif) {
     private var isInputVideoSelected: Boolean = false
+    private lateinit var binding: ActivityVideoToGifBinding
+    
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnConvertIntoGif.setOnClickListener(this)
+        binding = ActivityVideoToGifBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@VideoToGifActivity)
+            btnConvertIntoGif.setOnClickListener(this@VideoToGifActivity)
+        }
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnVideoPath -> {
-                Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    pickSingleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+                } else {
+                    // Fallback for devices below Android 14
+                    Common.selectFile(this, maxSelection = 1, isImageSelection = false, isAudioSelection = false)
+                }
             }
             R.id.btnConvertIntoGif -> {
                 when {
@@ -46,15 +57,15 @@ class VideoToGifActivity : BaseActivity(R.layout.activity_video_to_gif, R.string
 
     private fun convertProcess() {
         val outputPath = Common.getFilePath(this, Common.GIF)
-        val query = ffmpegQueryExtension.convertVideoToGIF(tvInputPathVideo.text.toString(), outputPath)
+        val query = ffmpegQueryExtension.convertVideoToGIF(binding.tvInputPathVideo.text.toString(), outputPath)
 
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -74,7 +85,11 @@ class VideoToGifActivity : BaseActivity(R.layout.activity_video_to_gif, R.string
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathVideo.text = mediaFiles[0].path
+                    binding.tvInputPathVideo.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Common.saveFileToTempAndGetPath(this, mediaFiles[0].uri)
+                    } else {
+                        mediaFiles[0].path
+                    }
                     isInputVideoSelected = true
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
@@ -84,14 +99,18 @@ class VideoToGifActivity : BaseActivity(R.layout.activity_video_to_gif, R.string
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnConvertIntoGif.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnConvertIntoGif.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnConvertIntoGif.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnConvertIntoGif.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }
