@@ -9,6 +9,7 @@
 /captures
 .externalNativeBuild
 libs/
+!libs/mobile-ffmpeg.aar
 .idea/gradle.xml
 .idea/misc.xml
 .idea/modules.xml
