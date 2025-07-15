@@ -62,27 +62,130 @@ FFmpeg Android runs on the following architectures:
 ### Dependency
 - [MobileFFmpeg](https://github.com/tanersener/mobile-ffmpeg)
 
-### Gradle Dependency
-* Add it in your root build.gradle at the end of repositories:
+**Note:** This library includes the mobile-ffmpeg.aar file (full version) in the `SSffmpegVideoOperation/libs/` directory. The full version includes all FFmpeg features and codecs needed for comprehensive video operations.
 
-	```
+**For JitPack users:** The mobile-ffmpeg dependency is automatically included when you use the JitPack dependency. No additional setup required!
+
+### Integration Guide
+
+This library uses the mobile-ffmpeg AAR dependency which is included in the library's libs folder. Follow these simple steps to integrate the library into your project.
+
+#### Step 1: Download the Library
+* Download or clone this repository
+* Copy the `SSffmpegVideoOperation` module folder to your project
+
+#### Step 2: Integration Methods
+
+**Option A: Using JitPack (Recommended - Simple One-Line Integration)**
+
+This is the easiest way to integrate the library. JitPack will build the library along with the mobile-ffmpeg dependency automatically.
+
+* Add JitPack repository to your root build.gradle:
+
+	```gradle
 	allprojects {
 	    repositories {
-		...
+		google()
+		mavenCentral()
 		maven { url 'https://jitpack.io' }
 	    }
 	}
 	```
 
-* Add the dependency in your app's build.gradle file
+* Add the dependency in your app's build.gradle file:
 
-	```
+	```gradle
 	dependencies {
 		implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOperation:1.0.8'
 	}
 	```
 
-This is all you have to do to load the FFmpeg library.
+**That's it!** JitPack will automatically handle the mobile-ffmpeg.aar dependency that's included in this repository. No additional configuration needed.
+
+**Option B: Local Integration (For Customization)**
+
+If you want to modify the library or integrate it locally, follow these steps:
+
+1. **Add the library module to your `settings.gradle`:**
+   ```gradle
+   include ':app', ':SSffmpegVideoOperation'
+   // If the SSffmpegVideoOperation folder is in a different location:
+   // project(':SSffmpegVideoOperation').projectDir = new File('path/to/SSffmpegVideoOperation')
+   ```
+
+2. **Configure repositories in your app's `build.gradle`:**
+   ```gradle
+   android {
+       // ... your existing configuration
+   }
+
+   repositories {
+       google()
+       mavenCentral()
+       flatDir {
+           dirs '../SSffmpegVideoOperation/libs'
+       }
+   }
+
+   dependencies {
+       implementation project(':SSffmpegVideoOperation')
+       // ... your other dependencies
+   }
+   ```
+
+3. **The SSffmpegVideoOperation module is already configured with:**
+   - `libs/mobile-ffmpeg.aar` - The full version of mobile-ffmpeg
+   - Proper repository configuration in its `build.gradle`:
+     ```gradle
+     repositories {
+         flatDir {
+             dirs 'libs'
+         }
+     }
+     
+     dependencies {
+         implementation(name: 'mobile-ffmpeg', ext: 'aar')
+         // ... other dependencies
+     }
+     ```
+
+**Important Notes:**
+- The `mobile-ffmpeg.aar` file is already included in `SSffmpegVideoOperation/libs/`
+- No additional setup is required for the AAR dependency
+- The library uses `flatDir` repository to resolve the local AAR file
+- Make sure to sync your project after adding the module
+
+## How JitPack Integration Works
+
+When you use the JitPack dependency (`implementation 'com.github.SimformSolutionsPvtLtd:SSffmpegVideoOperation:1.0.8'`):
+
+1. **JitPack automatically builds** your library from the GitHub repository
+2. **Includes mobile-ffmpeg.aar** - The AAR file in `SSffmpegVideoOperation/libs/` is packaged with the library
+3. **Resolves dependencies** - All transitive dependencies are handled automatically
+4. **No local setup needed** - Users don't need to manually handle AAR files or repository configurations
+
+This approach gives you the best of both worlds:
+- **Simple integration** for users via JitPack
+- **Full control** over the mobile-ffmpeg dependency
+- **No external dependencies** on repositories that might change or become unavailable
+
+#### Step 3: Add Required Permissions
+Add these permissions to your AndroidManifest.xml:
+```xml
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+```
+
+#### Step 4: ProGuard Configuration (if using ProGuard/R8)
+Add these rules to your proguard-rules.pro:
+```
+-keep class com.arthenica.mobileffmpeg.** { *; }
+-keep class com.simform.videooperations.** { *; }
+```
+
+This setup ensures proper AAR dependency resolution and avoids the "Direct local .aar file dependencies are not supported" error when building AAR libraries.
 
 ### Run FFmpeg command
 In this sample code we will run the FFmpeg -version command in background call.
@@ -137,6 +240,64 @@ CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
 ```
 same for other queries.
 And you can apply your query also
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+#### 1. "Could not find mobile-ffmpeg.aar" Error
+**Solution:** 
+- Ensure the `SSffmpegVideoOperation/libs/mobile-ffmpeg.aar` file exists
+- Check that your app's build.gradle has the correct flatDir repository configuration:
+  ```gradle
+  repositories {
+      flatDir {
+          dirs '../SSffmpegVideoOperation/libs'
+      }
+  }
+  ```
+
+#### 2. "INSTALL_PARSE_FAILED_NO_CERTIFICATES" Error
+**Solution:** Ensure your release builds are properly signed. Add signing configuration to your app's build.gradle:
+```gradle
+android {
+    signingConfigs {
+        debug {
+            storeFile file("${System.getProperty('user.home')}/.android/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug  // Use debug signing for testing
+            // For production, create and use a proper release keystore
+        }
+    }
+}
+```
+
+#### 3. Build Sync Issues
+**Solution:** 
+- Make sure the SSffmpegVideoOperation module is properly included in settings.gradle
+- Verify the module path is correct
+- Clean and rebuild the project
+
+#### 4. FFmpeg Commands Not Working
+**Solution:** 
+- Check if you have the required permissions
+- Ensure input and output file paths are correct and accessible
+- Verify the FFmpeg command syntax
+
+#### 5. Memory Issues with Large Videos
+**Solution:**
+- Process videos in smaller chunks
+- Use appropriate compression settings
+- Consider using background processing for large files
+
+#### 6. "flatDir should be avoided" Warning
+**Solution:** This warning can be ignored. While flatDir is not the recommended approach for published libraries, it's acceptable for local AAR dependencies and works reliably for this use case.
 
 ## Medium Blog
 For more info go to __[Multimedia Operations for Android using FFmpeg](https://medium.com/simform-engineering/multimedia-operations-for-android-using-ffmpeg-78f1fb480a83)__

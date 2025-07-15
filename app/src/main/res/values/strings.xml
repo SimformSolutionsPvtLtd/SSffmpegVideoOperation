@@ -116,4 +116,6 @@
     <string name="time_set">Set time</string>
     <string name="cancel">Cancel</string>
     <string name="time">Time : </string>
+    <string name="title">title</string>
+    <string name="back_button">Back button</string>
 </resources>

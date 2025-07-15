@@ -11,6 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/btnMergeGIF"
             android:text="@string/merge_gifs"
@@ -18,7 +24,7 @@
             style="@style/ButtonStyle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
         <Button
             android:id="@+id/btnMergeAudios"

@@ -7,4 +7,5 @@ package com.simform.videooperations
 class Paths {
     var filePath : String = ""
     var isImageFile : Boolean = false
+    var hasAudio: Boolean = false
 }
