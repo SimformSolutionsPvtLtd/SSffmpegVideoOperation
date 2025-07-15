@@ -46,7 +46,7 @@ public class FFmpegQueryExtension {
             add("-i")
             add(input)
             add("-s")
-            add("${width}x${height}")
+            add("${((width ?: 0)/2) * 2}x${((height ?: 0)/2) * 2}") // Ensure width and height are even numbers
             add("-vf")
             add("format=yuv420p,$fade")
             add("-t")
@@ -116,7 +116,8 @@ public class FFmpegQueryExtension {
                 inputs.add(paths[i].filePath)
             }
         }
-
+        inputs.add("-vsync")
+        inputs.add("2")
         var query: String? = ""
         var queryAudio: String? = ""
         for (i in 0 until paths.size) {
@@ -134,27 +135,49 @@ public class FFmpegQueryExtension {
     }
 
     fun combineVideos(paths: ArrayList<Paths>, width: Int?, height: Int?, output: String): Array<String> {
-        val inputs: ArrayList<String> = ArrayList()
-        var query: String? = ""
-        var queryAudio: String? = ""
-        for (i in 0 until paths.size) {
-            //for input
+        val inputs = ArrayList<String>()
+        var query = ""
+        var queryAudio = ""
+        val videoInputs = mutableListOf<String>()
+        val audioInputs = mutableListOf<String>()
+        var hasMissingAudio = false
+
+        for (i in paths.indices) {
+            // Add input
             inputs.add("-i")
             inputs.add(paths[i].filePath)
 
-            //for video setting with width and height
-            query = query?.trim()
-            query += "[" + i + ":v]scale=${width}x${height},setdar=$width/$height[" + i + "v];"
+            // Video scaling + fps normalization
+            query += "[$i:v]scale=${width}x${height},setdar=${width}/${height},fps=${FFmpegQueryExtension().FRAME_RATE}[$i" + "v];"
+            videoInputs.add("[$i" + "v]")
 
-            //for video and audio combine {without audio this query not supported so applied this function}
-            queryAudio = queryAudio?.trim()
-            queryAudio += if (paths[i].isImageFile) {
-                "[" + i + "v][" + paths.size + ":a]"
+            // Audio stream
+            val audioLabel = "[$i" + "a]"
+            if (paths[i].hasAudio) {
+                queryAudio += "[$i:a]aresample=async=1,asetpts=N/SR/TB$audioLabel;"
             } else {
-                "[" + i + "v][" + i + ":a]"
+                queryAudio += "[${paths.size}:a]aresample=async=1,asetpts=N/SR/TB$audioLabel;"
+                hasMissingAudio = true
             }
+            audioInputs.add(audioLabel)
         }
-        return getResult(inputs, query, queryAudio, paths, output)
+
+        // Add anullsrc only if any input lacks audio
+        if (hasMissingAudio) {
+            inputs.add("-f")
+            inputs.add("lavfi")
+            inputs.add("-t")
+            inputs.add("0.1")
+            inputs.add("-i")
+            inputs.add("anullsrc")
+        }
+
+        // Build concat input block: [0v][0a][1v][1a]...
+        val concatInputs = paths.indices.joinToString("") { i ->
+            "${videoInputs[i]}${audioInputs[i]}"
+        }
+
+        return getResult(inputs, query, queryAudio + concatInputs, paths, output)
     }
 
     private fun getResult(inputs: java.util.ArrayList<String>, query: String?, queryAudio: String?, paths: ArrayList<Paths>, output: String): Array<String> {

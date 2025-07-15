@@ -5,22 +5,25 @@ import android.widget.Toast
 import com.jaiselrahman.filepicker.model.MediaFile
 import com.simform.videoimageeditor.BaseActivity
 import com.simform.videoimageeditor.R
+import com.simform.videoimageeditor.databinding.ActivityExtractAudioBinding
 import com.simform.videooperations.CallBackOfQuery
 import com.simform.videooperations.Common
 import com.simform.videooperations.FFmpegCallBack
 import com.simform.videooperations.FFmpegQueryExtension
 import com.simform.videooperations.LogMessage
-import kotlinx.android.synthetic.main.activity_extract_audio.btnExtract
-import kotlinx.android.synthetic.main.activity_extract_audio.btnVideoPath
-import kotlinx.android.synthetic.main.activity_extract_audio.mProgressView
-import kotlinx.android.synthetic.main.activity_extract_audio.tvInputPathVideo
-import kotlinx.android.synthetic.main.activity_extract_audio.tvOutputPath
 
-class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio, R.string.extract_audio_from_video) {
+class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio, R.string.extract_audio) {
+    private lateinit var binding: ActivityExtractAudioBinding
     private var isInputVideoSelected: Boolean = false
+
     override fun initialization() {
-        btnVideoPath.setOnClickListener(this)
-        btnExtract.setOnClickListener(this)
+        binding = ActivityExtractAudioBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.apply {
+            btnVideoPath.setOnClickListener(this@ExtractAudioActivity)
+            btnExtract.setOnClickListener(this@ExtractAudioActivity)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -35,24 +38,24 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio, R.str
                     }
                     else -> {
                         processStart()
-                        extractProcess()
+                        extractAudioProcess()
                     }
                 }
             }
         }
     }
 
-    private fun extractProcess() {
+    private fun extractAudioProcess() {
         val outputPath = Common.getFilePath(this, Common.MP3)
-        val query = ffmpegQueryExtension.extractAudio(tvInputPathVideo.text.toString(), outputPath)
+        val query = ffmpegQueryExtension.extractAudio(binding.tvInputPathVideo.text.toString(), outputPath)
 
         CallBackOfQuery().callQuery(query, object : FFmpegCallBack {
             override fun process(logMessage: LogMessage) {
-                tvOutputPath.text = logMessage.text
+                binding.tvOutputPath.text = logMessage.text
             }
 
             override fun success() {
-                tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
+                binding.tvOutputPath.text = String.format(getString(R.string.output_path), outputPath)
                 processStop()
             }
 
@@ -70,7 +73,7 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio, R.str
         when (requestCode) {
             Common.VIDEO_FILE_REQUEST_CODE -> {
                 if (mediaFiles != null && mediaFiles.isNotEmpty()) {
-                    tvInputPathVideo.text = mediaFiles[0].path
+                    binding.tvInputPathVideo.text = mediaFiles[0].path
                     isInputVideoSelected = true
                 } else {
                     Toast.makeText(this, getString(R.string.video_not_selected_toast_message), Toast.LENGTH_SHORT).show()
@@ -80,14 +83,18 @@ class ExtractAudioActivity : BaseActivity(R.layout.activity_extract_audio, R.str
     }
 
     private fun processStop() {
-        btnVideoPath.isEnabled = true
-        btnExtract.isEnabled = true
-        mProgressView.visibility = View.GONE
+        binding.apply {
+            btnVideoPath.isEnabled = true
+            btnExtract.isEnabled = true
+            mProgressView.root.visibility = View.GONE
+        }
     }
 
     private fun processStart() {
-        btnVideoPath.isEnabled = false
-        btnExtract.isEnabled = false
-        mProgressView.visibility = View.VISIBLE
+        binding.apply {
+            btnVideoPath.isEnabled = false
+            btnExtract.isEnabled = false
+            mProgressView.root.visibility = View.VISIBLE
+        }
     }
 }
